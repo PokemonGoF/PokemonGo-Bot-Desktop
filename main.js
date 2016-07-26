@@ -261,6 +261,7 @@ function startPython(auth, code, lat, long, opts) {
     };
 
     renameFiles()
+
     
     var data=fs.readFileSync('gofbot/config.json');
 
@@ -288,6 +289,15 @@ function startPython(auth, code, lat, long, opts) {
                             
                             
     fs.writeFileSync('gofbot/web/userdata.js', userdata_code.join('\n') , 'utf-8');
+
+    //temporary fix for location bug in PokemonGo-Bot
+    try {
+        //test to see if settings exist
+        var location_path = 'gofbot/web/location-' + settings.username + '.json';
+        fs.openSync(location_path, 'r+');
+      } catch (err) {
+        fs.writeFileSync(location_path,"{}");
+    }
 
     settings.location = "" + lat + "," + long;
 
