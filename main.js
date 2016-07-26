@@ -230,25 +230,38 @@ function startPython(auth, code, lat, long, opts) {
 
     logData('Bot path: ' + path.join(__dirname, 'gofbot/web'));
     logData('python ' + serverCmdLine.join(' '));
-   
-    //rename config
-    try {
-      //test to see if settings exist
-      var setting_path = 'gofbot/config.json';
-      fs.openSync(setting_path, 'r+');
-    } catch (err) {
-      fs.renameSync('gofbot/config.json.example',setting_path);
-    }
+    
+    var renameFiles = function(){
+      //rename config
+      try {
+        //test to see if settings exist
+        var setting_path = 'gofbot/config.json';
+        fs.openSync(setting_path, 'r+');
+      } catch (err) {
+        fs.renameSync('gofbot/config.json.example',setting_path);
+      }
 
-    //rename release_config
-    try {
-      //test to see if settings exist
-      var release_path = 'gofbot/release_config.json';
-      fs.openSync(release_path, 'r+');
-    } catch (err) {
-      fs.renameSync('gofbot/release_config.json.example',release_path);
-    }
+      //rename release_config
+      try {
+        //test to see if settings exist
+        var release_path = 'gofbot/release_config.json';
+        fs.openSync(release_path, 'r+');
+      } catch (err) {
+        fs.renameSync('gofbot/release_config.json.example',release_path);
+      }
 
+      //rename user file
+      try {
+        //test to see if settings exist
+        var user_path = 'gofbot/web/userdata.js';
+        fs.openSync(user_path, 'r+');
+      } catch (err) {
+        fs.renameSync('gofbot/web/userdata.js.example',user_path);
+      }
+    };
+
+    renameFiles()
+    
     var data=fs.readFileSync('gofbot/config.json');
 
     var settings = JSON.parse(data);
@@ -262,6 +275,19 @@ function startPython(auth, code, lat, long, opts) {
       settings.password = opts.ptc_password;
       settings.username = opts.ptc_username;
     }
+
+    settings.gmapkey = opts.google_maps_api
+
+
+    var userdata_code = ['var users = ["' + settings.username + '"];',
+                            'var userZoom = true;',
+                            'var userFollow = true;',
+                            'var imageExt = ".png";',
+                            'var gMapsAPIKey = "' + settings.gmapkey + '";',
+    ]
+                            
+                            
+    fs.writeFileSync('gofbot/web/userdata.js', userdata_code.join('\n') , 'utf-8');
 
     settings.location = "" + lat + "," + long;
 
