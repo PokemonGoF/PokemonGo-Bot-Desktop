@@ -104,6 +104,9 @@ app.on('window-all-closed', function() {
   if (subpy && subpy.pid) {
     killProcess(subpy.pid);
   }
+  if (server && server.pid) {
+    killProcess(server.pid);
+  }
   app.quit();
 });
 
@@ -111,7 +114,6 @@ app.on('ready', function() {
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 
-  startPython()
   setupMainWindow();
 });
 
@@ -125,6 +127,9 @@ function setupMainWindow() {
     mainWindow = null;
     if (subpy && subpy.pid) {
       killProcess(subpy.pid);
+    }
+    if (server && server.pid) {
+      killProcess(server.pid);
     }
   });
 }
@@ -154,6 +159,9 @@ ipcMain.on('logout', function(event, auth, code, lat, long, opts) {
     if (subpy && subpy.pid) {
       killProcess(subpy.pid);
     }
+    if (server && server.pid) {
+      killProcess(server.pid);
+    }
   }
   procStarted = false;
   mainWindow.close();
@@ -177,8 +185,8 @@ ipcMain.on('installUpdate', function(event) {
 });
 function startPython() {
 
-  //mainWindow.loadURL('file://' + __dirname + '/main.html');
-  //mainWindow.openDevTools();
+  mainWindow.loadURL('file://' + __dirname + '/main.html');
+  // mainWindow.openDevTools();
 
   // Find open port
   var portfinder = require('portfinder');
@@ -188,7 +196,7 @@ function startPython() {
 
     // Run python web server
     var cmdLine = [
-      './pokecli.py'
+      './pokecli.py',
     ];
 
     if (false) {
@@ -209,6 +217,31 @@ function startPython() {
       pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
     }
 
+    var serverCmdLine = [
+      '-m',
+      'SimpleHTTPServer',
+      port
+    ];
+
+    logData('Bot path: ' + path.join(__dirname, 'gofbot/web'));
+    logData('python ' + serverCmdLine.join(' '));
+
+
+    server = require('child_process').spawn(pythonCmd, serverCmdLine, {
+      cwd: path.join(__dirname, 'gofbot/web'),
+      detached: true
+    });
+
+    server.stdout.on('data', (data) => {
+      console.log(`Python: ${data}`);
+      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    });
+    server.stderr.on('data', (data) => {
+      console.log(`Python: ${data}`);
+      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    });
+
+    
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
       cwd: path.join(__dirname, 'gofbot'),
       detached: true
@@ -223,6 +256,8 @@ function startPython() {
       mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
     });
 
+    
+
     var rq = require('request-promise');
     mainAddr = 'http://localhost:' + port;
 
@@ -234,6 +269,9 @@ function startPython() {
         mainWindow = null;
         if (subpy && subpy.pid) {
           killProcess(subpy.pid);
+        }
+        if (server && server.pid) {
+          killProcess(server.pid);
         }
         procStarted = false;
       });
