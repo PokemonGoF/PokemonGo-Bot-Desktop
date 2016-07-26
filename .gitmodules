@@ -1,0 +1,3 @@
+[submodule "gofbot"]
+	path = gofbot
+	url = https://github.com/PokemonGoF/PokemonGo-Bot

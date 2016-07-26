@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Pokémon GO - Live Map</title>
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                html, body {
+                    height: 100%;
+                    width: 100%;
+                }
+                .container-fluid {
+                    margin: 0 auto;
+                    height: 100%;
+                    padding: 0;
+                }
+                .content {
+                    height: calc(100% - 50px);
+                    overflow: auto;
+                }
+                #top-nav {
+                    height: 50px;
+                }
+                #control {
+                    padding-top: 9px;
+                }
+                #control .row {
+                    padding-left: 10px;
+                    padding-right: 10px;
+                }
+                #not-sharing {
+                    color: #f00;
+                    display: none;
+                }
+                #sharing {
+                    color: #093;
+                }
+                .sharing-on, #api-status-down, #api-status-up {
+                    display: none;
+                }
+            </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div id="header">
+                <div class="row text-center">
+                    <div class="col-xs-12" id="top-nav">
+                        <div id="loading">
+                            <h3>Loading, please wait...</h3>
+                        </div>
+                        <div id="control" style="display:none;">
+                            <div class="row">
+                                <span id="update-notice" style="display:none;">
+                                    <a href="#" onclick="startUpdate()" style="color: #f00">
+                                        Update available, click here to install
+                                    </a>
+                                </span>
+                                <div class="col-xs-4 text-left">
+                                    <button onclick="logout()"
+                                        class="btn btn-xl btn-primary">Logout</button>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <a href="#" class="btn btn-xl btn-default" id="api-status-waiting">Waiting</a>
+                                    <a href="#" class="btn btn-xl btn-danger" id="api-status-down">Outage</a>
+                                    <a href="#" class="btn btn-xl btn-success" id="api-status-up">Operational</a>
+                                </div>
+                                <div class="col-xs-4 text-right">
+                                    <button data-toggle="modal" data-target="#mobile"
+                                        class="btn btn-xl btn-info">Mobile</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <webview id="mapview" autosize="on"
+                    src="about:blank"
+                    style="display:inline-flex; height: 100%; width: 100%;"></webview>
+            </div>
+        </div>
+
+        <div class="modal fade" id="mobile" tabindex="-1"
+            role="dialog" aria-labelledby="mobileModalLbl">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="mobileModalLbl">Mobile Access</h4>
+              </div>
+              <div class="modal-body">
+                <div class="text-center">
+                    <h2 id="not-sharing">Not Enabled</h2>
+                    <h2 id="sharing" class="sharing-on">Enabled</h2>
+                    <div id="share-info" class="sharing-on">
+                        <br>
+                        <div id="qrcode" align="center"></div>
+                        <br>
+                        <br>
+                        <strong>URL:</strong> <a id="sharing-url"></a>
+                    </div>
+                    <br>
+                    <br>
+                    <span>To toggle sharing, click the button below.</span>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-warning" id="mobileToggle" onclick="toggleMobile()">Toggle Sharing</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </body>
+
+  <script type="text/javascript">
+    window.$ = window.jQuery = require('./jquery.js');
+  </script>
+  <script src="./bootstrap.js"></script>
+  <script src="./qrcode.js"></script>
+
+  <script type="text/javascript">
+
+    var electron = require('electron').remote;
+    var BrowserWindow = electron.BrowserWindow;
+    var ipcRenderer = require('electron').ipcRenderer;
+    var url = require('url');
+    var request = require('request');
+    var ngrok = require('./ngrok');
+    var localtunnel = require('localtunnel')
+    var serverUrl = null;
+    var mapView = document.getElementById('mapview');
+
+    var geoLat, geoLon, mobileTunnel;
+
+    navigator.geolocation.getCurrentPosition(function success(position) {
+        geoLat = position.coords.latitude;
+        geoLon = position.coords.longitude;
+        $('#lat').val(geoLat);
+        $('#lon').val(geoLon);
+        console.log("Got location: " + geoLat + ", " + geoLon);
+    }, function error(err) {
+        console.log("Error getting location, trying second provider", err);
+        $.getJSON("http://ipinfo.io", function(ipinfo){
+            console.log("Found location ["+ipinfo.loc+"] by ipinfo.io");
+            var latLong = ipinfo.loc.split(",");
+            geoLat = latLong[0];
+            geoLon = latLong[1];
+            $('#lat').val(geoLat);
+            $('#lon').val(geoLon);
+        });
+    });
+
+    ipcRenderer.on('server-up', function(evt, url) {
+        console.log('server up');
+        serverUp(url);
+    });
+
+    ipcRenderer.on('update-ready', function(evt, url) {
+        $('#update-notice').show();
+    });
+
+    ipcRenderer.on('pythonLog', function(evt, data) {
+        console.log(data.msg);
+        handleServerStatus(data.msg);
+    });
+
+    ipcRenderer.on('appLog', function(evt, data) {
+        console.log(data.msg);
+    });
+
+    function handleServerStatus(msg) {
+        if (msg.indexOf('Completed ') >= 0) {
+            $('#api-status-waiting,#api-status-down').hide();
+            $('#api-status-up').show();
+        } else if (msg.indexOf('retrying') >= 0) {
+            $('#api-status-waiting,#api-status-up').hide();
+            $('#api-status-down').show();
+        }
+    }
+
+    function startUpdate() {
+        ipcRenderer.send('installUpdate');
+    }
+
+    function logout() {
+        ipcRenderer.send('logout');
+    }
+
+    function serverUp(url) {
+        serverUrl = url;
+        try {
+            mapView.loadURL(serverUrl);
+            $('#loading').hide();
+            $('#control').show();
+        } catch (e) {
+            console.log(e)
+            setTimeout(function() {serverUp(url)}, 500);
+        }
+    }
+
+    function setupMobile() {
+        $('#not-sharing').show();
+        $('.sharing-on').hide();
+        mobileTunnel = null;
+        electron.app.on('before-quit', function(){
+            if (mobileTunnel){
+                mobileTunnel.close();
+            }
+        });
+    }
+
+    function toggleMobile() {
+        $("#mobileToggle").prop("disabled",true);
+        if (mobileTunnel) {
+            mobileTunnel.close();
+        } else {
+            var parsedServerUrl = url.parse(serverUrl);
+            mobileTunnel = localtunnel(parsedServerUrl.port, {
+                local_host: '127.0.0.1'
+                }, function(err, tunnel) {
+                if (err) {
+                    console.log(err);
+                }
+                if (!tunnel.url) {
+                    console.log('No url received');
+                    alert('Unable to start tunnel');
+                    return;
+                }
+
+                $("#mobileToggle").prop("disabled",false);
+                console.log('Got URL: ' + tunnel.url);
+                $('#not-sharing').hide();
+                $('.sharing-on').show();
+                $('#sharing-url').html(tunnel.url);
+                $('#sharing-url').attr('href', tunnel.url);
+                $('#sharing-url').attr('target', '_blank');
+                $('#qrcode').html('');
+                new QRCode(
+                    document.getElementById("qrcode"), {
+                        text: tunnel.url,
+                        width: 128,
+                        height: 128
+                    });
+            });
+            mobileTunnel.on('close', function() {
+                $('#not-sharing').show();
+                $('.sharing-on').hide();
+                mobileTunnel = null;
+                $("#mobileToggle").prop("disabled",false);
+            });
+        }
+    }
+
+    function setLocation() {
+        geoLat = $('#lat').val();
+        geoLon = $('#lon').val();
+        request.get(serverUrl + '/next_loc?lat=' + geoLat + '&lon=' + geoLon);
+    }
+
+    $( document ).ready(function(){
+        ipcRenderer.send('getServer');
+        $('#lat').val(geoLat);
+        $('#lon').val(geoLon);
+        setupMobile();
+    });
+
+  </script>
+
+</html>
