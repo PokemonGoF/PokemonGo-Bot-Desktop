@@ -11,9 +11,11 @@ Development Environment
 git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
 
 
+```
 brew install python node 
 pip install virtualenv 
 npm install 
+```
 
 To run the project, run:
 
