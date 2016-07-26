@@ -201,7 +201,7 @@ function startPython() {
 
 
     // console.log(cmdLine);
-    logData('Maps path: ' + path.join(__dirname, 'map'));
+    logData('Bot path: ' + path.join(__dirname, 'gofbot'));
     logData('python ' + cmdLine.join(' '));
 
     var pythonCmd = 'python';
@@ -210,7 +210,7 @@ function startPython() {
     }
 
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
-      cwd: path.join(__dirname, 'map'),
+      cwd: path.join(__dirname, 'gofbot'),
       detached: true
     });
 
