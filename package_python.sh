@@ -1,5 +1,6 @@
 #!/bin/bash
-source map/ve/bin/activate
+
+source gofbot/penv/bin/activate
 cd gofbot
 pip install -r requirements.txt --target ./packages
 touch ./packages/google/__init__.py
