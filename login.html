@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Pokémon Go - Login</title>
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="row text-center">
+            <div class="col-xs-12">
+                <h1>Login to Pokémon GO</h1>
+                <small id="version"></small>
+                <br>
+                <span id="update-notice" style="display:none;">
+                    <a href="#" onclick="startUpdate()" style="color: #f00">
+                        Update available, click here to install
+                    </a>
+                </span>
+                <br>
+                <h3>Google Accounts</h3>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <button class="btn btn-lg btn-block btn-primary login"
+                            onclick="doGoogleLogin()">Login with Google</button>
+                    </div>
+                </div>
+                <hr>
+                <h3>Pokémon Trainers Club Accounts</h3>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <form id="ptc_form" onsubmit="doPTCLogin()">
+                            <input id="ptc_username" class="form-control" type="text"
+                                placeholder="Username" required>
+                            <input id="ptc_password" class="form-control" type="password"
+                                placeholder="Password" required>
+                            <button class="btn btn-lg btn-block btn-primary login"
+                                onclick="doPTCLogin()">Login with PTC</button>
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="remember" checked="1"> Remember login info</label>
+                            </div>
+                        </form>
+                        <br>
+                        <span id="ptc_errors" style="color: #f00"></span>
+                    </div>
+                </div>
+
+                <hr>
+                <h4>Config Options</h4>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                            <div class="row">
+                                <div class="col-xs-10 col-xs-offset-2">
+                                    <div class="col-xs-5">
+                                        <input id="lat" class="form-control"
+                                            type="text" placeholder="Latitude">
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <input id="lon" class="form-control"
+                                            type="text" placeholder="Longitude">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <span>
+                                    Set to override, leave blank to use Geolocation
+                                </span>
+                            </div>
+                    </div>
+                </div>
+
+                <hr>
+
+<!--                 <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="showgym" checked="1">
+                                            Show Gyms
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="showstop" checked="1">
+                                            Show PokéStops
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-4">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="onlylure">
+                                            Only PokéStops with Lures
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+<!--                 <hr>
+
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-4">
+                                    <div class="form-group">
+                                      <select class="form-control" id="filter_type">
+                                        <option value="0">No Filter</option>
+                                        <option value="include">Only Show</option>
+                                        <option value="exclude">Do Not Show</option>
+                                      </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-8">
+                                    <div class="form-group">
+                                        <input id="pokeids" class="form-control"
+                                            type="text" placeholder="Comma-separated Pokemon IDs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span>
+                                Fill in a list of Pokemon to filter (ex: <code>1,2,3,4</code>)
+                            </span>
+                        </div>
+                    </div>
+                </div> -->
+                <hr>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
+                            <div class="col-xs-6 col-xs-offset-3">
+                                <div class="col-xs-10">
+                                    <input id="radius" class="form-control"
+                                        type="number" placeholder="Radius (default 7)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span>
+                                Larger numbers increase search area but updates are slower.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <br>
+
+            </div>
+        </div>
+    </body>
+
+  <script type="text/javascript">
+
+    window.$ = window.jQuery = require('./jquery.js');
+
+    var fs = require('fs');
+    var url = require('url');
+    var request = require('request');
+    var querystring = require('querystring');
+    var electron = require('electron').remote;
+    var BrowserWindow = electron.BrowserWindow;
+    var ipcRenderer = require('electron').ipcRenderer;
+
+    var ptcJar = request.jar();
+    var ptcReq = request.defaults({
+        headers: {'User-Agent': 'niantic'},
+        jar: ptcJar
+    });
+
+    var geoLat = 34.0432108;
+    var geoLon = -118.2675059;
+
+    $( document ).ready(function(){
+        // Show version
+        $('#version').html('Version ' + electron.app.getVersion());
+        // Get checkbox state
+        [
+            'remember'//, 'showgym', 'showstop', 'onlylure'
+        ].forEach(function(elem){
+            if (localStorage.getItem(elem)) {
+                document.getElementById(elem).checked = (
+                    localStorage.getItem(elem) == "true");
+            }
+            $('#' + elem).change(function() {
+                localStorage.setItem(elem, !!this.checked);
+            });
+        });
+
+        if (checked('remember')) {
+            setupValue('ptc_username', $('#ptc_username'));
+            setupValue('ptc_password', $('#ptc_password'));
+        }
+
+        // setupValueAndSetter('filter_type', $('#filter_type'));
+        // setupValueAndSetter('pokeids', $('#pokeids'));
+        setupValueAndSetter('radius', $('#radius'));
+
+        setupValue('last_lat', $('#lat'));
+        setupValue('last_lon', $('#lon'));
+    });
+
+    function setupValue(key, elem) {
+        if (localStorage.getItem(key)) {
+            elem.val(localStorage.getItem(key));
+        }
+    }
+
+    function setupValueAndSetter(key, elem) {
+        setupValue(key, elem);
+        elem.change(function() {
+            localStorage.setItem(key, elem.val());
+        });
+    }
+
+    function checked(elemId) {
+        return document.getElementById(elemId).checked;
+    }
+
+    function saveState() {
+        if (checked('remember')) {
+            localStorage.setItem("ptc_username", $('#ptc_username').val());
+            localStorage.setItem("ptc_password", $('#ptc_password').val());
+        }
+        localStorage.setItem("last_lat", $('#lat').val());
+        localStorage.setItem("last_lon", $('#lon').val());
+    }
+
+    navigator.geolocation.getCurrentPosition(function success(position) {
+        geoLat = position.coords.latitude;
+        geoLon = position.coords.longitude;
+        $('#lat').prop('placeholder', geoLat);
+        $('#lon').prop('placeholder', geoLon);
+        console.log("Got location: " + geoLat + ", " + geoLon);
+    }, function error(err) {
+        console.log("Error getting location, trying second provider", err);
+        $.getJSON("http://ipinfo.io", function(ipinfo){
+            console.log("Found location ["+ipinfo.loc+"] by ipinfo.io");
+            var latLong = ipinfo.loc.split(",");
+            geoLat = latLong[0];
+            geoLon = latLong[1];
+            $('#lat').prop('placeholder', geoLat);
+            $('#lon').prop('placeholder', geoLon);
+        });
+    });
+
+    ipcRenderer.on('update-ready', function(evt, url) {
+        $('#update-notice').show();
+    });
+
+    ipcRenderer.on('pythonLog', function(evt, data) {
+        console.log(data.msg);
+        handleServerStatus(data.msg);
+    });
+
+    ipcRenderer.on('appLog', function(evt, data) {
+        console.log(data.msg);
+    });
+
+    function startUpdate() {
+        ipcRenderer.send('installUpdate');
+    }
+
+    function doLogin(ssoUrl, callback) {
+      var authWindow = new BrowserWindow(
+        { width: 800, height: 600, show: false,
+            'node-integration': false, title: 'Login' });
+
+      authWindow.loadURL(ssoUrl);
+      authWindow.show();
+
+      authWindow.webContents.on('will-navigate', function (event, newUrl) {
+        callback(authWindow, newUrl);
+      });
+
+      authWindow.webContents.on('did-navigate', function (event, newUrl) {
+        callback(authWindow, newUrl);
+      });
+
+      authWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
+        callback(authWindow, newUrl);
+      });
+
+      // Reset the authWindow on close
+      authWindow.on('close', function() {
+          authWindow = null;
+          toggleLogin(false);
+      }, false);
+    }
+
+    function toggleLogin(disabled) {
+        saveState();
+        jQuery('.login').prop("disabled", disabled);
+    }
+
+    function checkParams() {
+        // if ($('#pokeids').val() != '') {
+        //     if (!$('#pokeids').val().match(/^[0-9,]+$/)) {
+        //         alert('Invalid Pokemon IDs. Only numbers and commas allowed.');
+        //         return false;
+        //     }
+        // }
+        if ($('#radius').val() != '') {
+            if (!$('#radius').val().match(/^[0-9]+$/)) {
+                alert('Invalid Radius. Only numbers allowed.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function doGoogleLogin() {
+        if (!checkParams()){
+            return;
+        }
+        toggleLogin(true);
+        doLogin("https://accounts.google.com/o/oauth2/auth?" + jQuery.param( {
+            "response_type": "code",
+            "client_id": "848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com",
+            "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+            "scope":"openid email https://www.googleapis.com/auth/userinfo.email"
+        } ), handleGoogleCallback);
+    }
+
+    function doPTCLogin() {
+        if (!checkParams()){
+            return;
+        }
+        toggleLogin(true);
+        jQuery('#ptc_errors').html('');
+        var username = jQuery('#ptc_username').val(),
+            password = jQuery('#ptc_password').val();
+
+        // Reset cookie jar
+        ptcJar = request.jar();
+
+        // Get Login session from SSO servers
+        ptcReq.get('https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize',
+        function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                doPTCLoginStep2(username, password, JSON.parse(body));
+            } else {
+                console.log(error);
+                toggleLogin(false);
+                alert('Oops! Something went wrong and we couldn\'t ' +
+                    'log you in. Please try again. Code 6.');
+            }
+        });
+
+        return false;
+    }
+
+    function doPTCLoginStep2(user, pass, session) {
+        var loginData = {
+            'lt': session.lt,
+            'execution': session.execution,
+            '_eventId': 'submit',
+            'username': user,
+            'password': pass
+        };
+
+        ptcReq.post(
+                'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize',
+                {form: loginData},
+                function (error, response, body) {
+                    if (!error && response.statusCode == 302) {
+                        var rawRedirect = response.headers.location;
+                        handlePokemonCallback(rawRedirect);
+                    } else {
+                        toggleLogin(false);
+                        var errors = null;
+                        try {
+                            errors = JSON.parse(body).errors;
+                            errors = errors.join(' ');
+                        } catch(e) {}
+                        if (errors) {
+                            jQuery('#ptc_errors').html(errors);
+                        } else {
+                            alert('Oops! Something went wrong and we couldn\'t ' +
+                                'log you in. Please try again. Code 7.');
+                        }
+                    }
+                }
+            );
+    }
+
+    function handlePokemonCallback(newUrl) {
+
+      // Login by passing in password to prevent timeouts
+      completeLogin('ptc', '');
+
+    }
+
+    function handleGoogleCallback(authWindow, newUrl) {
+        var parsedUrl = url.parse(newUrl, true);
+
+        if (parsedUrl.hostname != 'accounts.google.com') {
+            return;
+        }
+
+        if (parsedUrl.pathname != '/o/oauth2/approval') {
+            return;
+        }
+
+        var winContents = authWindow.webContents;
+
+        winContents.on('dom-ready', function(){
+
+            winContents.executeJavaScript(
+                'document.getElementById("code").value',
+                true,
+                function(result) {
+                    var code = result;
+                    if (code) {
+                        // Close the browser if code found or error
+                        authWindow.destroy();
+                    }
+
+                    if (code) {
+                        getGoogleToken(code);
+                    } else {
+                        toggleLogin(false);
+                        alert('Oops! Something went wrong and we couldn\'t ' +
+                            'log you in. Please try again. Code 1.');
+                    }
+                });
+
+        });
+
+        function getGoogleToken(code) {
+            request.post(
+                'https://accounts.google.com/o/oauth2/token',
+                { form: {
+                    'client_id': '848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com',
+                    'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob',
+                    'client_secret': 'NCjF1TLi2CcY6t5mt0ZveuL7',
+                    'grant_type': 'authorization_code',
+                    'code': code,
+                } },
+                function (error, response, body) {
+                    if (!error && response.statusCode == 200) {
+                        completeLogin('google', JSON.parse(body).id_token);
+                    } else {
+                        toggleLogin(false);
+                        alert('Oops! Something went wrong and we couldn\'t ' +
+                            'log you in. Please try again. Code 4.');
+                    }
+                }
+            );
+        }
+
+    }
+
+    function completeLogin(auth, code) {
+        var userLat = $('#lat').val(),
+            userLon = $('#lon').val();
+        if (userLat != '') {
+            geoLat = userLat;
+        }
+        if (userLon != '') {
+            geoLon = userLon;
+        }
+        ipcRenderer.send('startPython', auth, code, geoLat, geoLon, {
+            // show_gyms: checked('showgym'),
+            // show_pokestops: checked('showstop'),
+            // only_stops_with_lures: checked('onlylure'),
+            // filter_pokemon: $('#filter_type').val(),
+            // pokemon_ids: $('#pokeids').val(),
+            radius: $('#radius').val(),
+            username: $('#ptc_username').val(),
+            password: $('#ptc_password').val()
+        });
+    }
+
+  </script>
+
+</html>
