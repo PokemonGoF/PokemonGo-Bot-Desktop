@@ -235,35 +235,35 @@ function startPython(auth, code, lat, long, opts) {
       //rename config
       try {
         //test to see if settings exist
-        var setting_path = 'gofbot/config.json';
+        var setting_path = path.join(__dirname, 'gofbot/config.json');
         fs.openSync(setting_path, 'r+');
       } catch (err) {
-        fs.renameSync('gofbot/config.json.example',setting_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/config.json.example'),setting_path);
       }
 
       //rename release_config
       try {
         //test to see if settings exist
-        var release_path = 'gofbot/release_config.json';
+        var release_path = path.join(__dirname, 'gofbot/release_config.json');
         fs.openSync(release_path, 'r+');
       } catch (err) {
-        fs.renameSync('gofbot/release_config.json.example',release_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/release_config.json.example'),release_path);
       }
 
       //rename user file
       try {
         //test to see if settings exist
-        var user_path = 'gofbot/web/userdata.js';
+        var user_path = path.join(__dirname, 'gofbot/web/userdata.js');
         fs.openSync(user_path, 'r+');
       } catch (err) {
-        fs.renameSync('gofbot/web/userdata.js.example',user_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/web/userdata.js.example'),user_path);
       }
     };
 
     renameFiles()
 
     
-    var data=fs.readFileSync('gofbot/config.json');
+    var data=fs.readFileSync(path.join(__dirname, 'gofbot/config.json'));
 
     var settings = JSON.parse(data);
     
@@ -288,12 +288,12 @@ function startPython(auth, code, lat, long, opts) {
     ]
                             
                             
-    fs.writeFileSync('gofbot/web/userdata.js', userdata_code.join('\n') , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n') , 'utf-8');
 
     //temporary fix for location bug in PokemonGo-Bot
     try {
         //test to see if settings exist
-        var location_path = 'gofbot/web/location-' + settings.username + '.json';
+        var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
         fs.openSync(location_path, 'r+');
       } catch (err) {
         fs.writeFileSync(location_path,"{}");
@@ -301,7 +301,7 @@ function startPython(auth, code, lat, long, opts) {
 
     settings.location = "" + lat + "," + long;
 
-    fs.writeFileSync('gofbot/config.json', JSON.stringify(settings) , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/config.json'), JSON.stringify(settings) , 'utf-8');
 
 
 
