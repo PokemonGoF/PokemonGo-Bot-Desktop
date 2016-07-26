@@ -242,7 +242,7 @@ function startPython(auth, code, lat, long, opts) {
     try {
       //test to see if settings exist
       var release_path = 'gofbot/release_config.json'
-      fs.openSync(setting_path, 'r+');
+      fs.openSync(release_path, 'r+');
     } catch (err) {
       fs.renameSync('gofbot/release_config.json.example',release_path)
     }
