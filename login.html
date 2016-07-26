@@ -255,9 +255,13 @@
         if (checked('remember')) {
             localStorage.setItem("ptc_username", $('#ptc_username').val());
             localStorage.setItem("ptc_password", $('#ptc_password').val());
+            localStorage.setItem("google_username", $('#google_username').val());
+            localStorage.setItem("google_password", $('#google_password').val());
         }
         localStorage.setItem("last_lat", $('#lat').val());
         localStorage.setItem("last_lon", $('#lon').val());
+        localStorage.setItem("google_maps_api", $('#google_maps_api').val());
+
     }
 
     navigator.geolocation.getCurrentPosition(function success(position) {
