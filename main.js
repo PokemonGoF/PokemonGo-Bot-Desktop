@@ -17,17 +17,17 @@ var subpy = null;
 var mainAddr;
 var restarting = false;
 
-try {
-  autoUpdater.setFeedURL('https://pokemon-go-updater.mike.ai/update/'+platform+'/'+version);
-} catch (e) {console.log(e)}
+//try {
+//  autoUpdater.setFeedURL('https:///update/'+platform+'/'+version);
+//} catch (e) {console.log(e)}
 
-autoUpdater.on('update-downloaded', function(){
-  mainWindow.webContents.send('update-ready');
-});
+//autoUpdater.on('update-downloaded', function(){
+//  mainWindow.webContents.send('update-ready');
+//});
 
-try {
-  autoUpdater.checkForUpdates();
-} catch (e) {}
+//try {
+//  autoUpdater.checkForUpdates();
+//} catch (e) {}
 
 // Setup menu bar
 var template = [{
@@ -111,6 +111,7 @@ app.on('ready', function() {
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 
+  startPython()
   setupMainWindow();
 });
 
@@ -174,10 +175,9 @@ ipcMain.on('getServer', function(event) {
 ipcMain.on('installUpdate', function(event) {
   autoUpdater.quitAndInstall();
 });
+function startPython() {
 
-function startPython(auth, code, lat, long, opts) {
-
-  mainWindow.loadURL('file://' + __dirname + '/main.html');
+  //mainWindow.loadURL('file://' + __dirname + '/main.html');
   //mainWindow.openDevTools();
 
   // Find open port
@@ -188,36 +188,17 @@ function startPython(auth, code, lat, long, opts) {
 
     // Run python web server
     var cmdLine = [
-      './runserver.py',
-      '--cors',
-      '--auth-service',
-      auth,
-      '--location=' +
-        parseFloat(lat).toFixed(7) + ',' + parseFloat(long).toFixed(7),
-      '--port',
-      port
+      './pokecli.py'
     ];
 
-    if (auth == 'ptc' && opts.username) {
+    if (false) {
       cmdLine.push('--username');
       cmdLine.push(opts.username);
       cmdLine.push('--password');
       cmdLine.push(opts.password);
     }
 
-    if (auth == 'google' && code) {
-      cmdLine.push('--token');
-      cmdLine.push(code);
-    }
 
-    // Add options
-
-    cmdLine.push('--step-limit');
-    if (opts.radius && opts.radius != '') {
-      cmdLine.push(opts.radius);
-    } else {
-      cmdLine.push('7');
-    }
 
     // console.log(cmdLine);
     logData('Maps path: ' + path.join(__dirname, 'map'));
