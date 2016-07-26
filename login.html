@@ -22,8 +22,19 @@
                 <h3>Google Accounts</h3>
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
-                        <button class="btn btn-lg btn-block btn-primary login"
-                            onclick="doGoogleLogin()">Login with Google</button>
+                        <form id="ptc_form" onsubmit="doGoogleLogin()">
+                            <input id="google_username" class="form-control" type="text"
+                                placeholder="Username" required>
+                            <input id="google_password" class="form-control" type="password"
+                                placeholder="Password" required>
+                            <button class="btn btn-lg btn-block btn-primary login"
+                                onclick="doGoogleLogin()">Login with Google</button>
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="remember" checked="1"> Remember login info</label>
+                            </div>
+                        </form>
+                        <br>
+                        <span id="ptc_errors" style="color: #f00"></span>
                     </div>
                 </div>
                 <hr>
@@ -325,12 +336,15 @@
             return;
         }
         toggleLogin(true);
-        doLogin("https://accounts.google.com/o/oauth2/auth?" + jQuery.param( {
-            "response_type": "code",
-            "client_id": "848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com",
-            "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
-            "scope":"openid email https://www.googleapis.com/auth/userinfo.email"
-        } ), handleGoogleCallback);
+        var username = jQuery('#google_username').val(),
+            password = jQuery('#google_password').val();
+
+        // Reset cookie jar
+        ptcJar = request.jar();
+
+        completeLogin('google', '');
+
+        return false;
     }
 
     function doPTCLogin() {
@@ -478,8 +492,11 @@
             // filter_pokemon: $('#filter_type').val(),
             // pokemon_ids: $('#pokeids').val(),
             radius: $('#radius').val(),
-            username: $('#ptc_username').val(),
-            password: $('#ptc_password').val()
+            ptc_username: $('#ptc_username').val(),
+            ptc_password: $('#ptc_password').val(),
+            google_username: $('#google_username').val(),
+            google_password: $('#google_password').val(),
+            
         });
     }
 

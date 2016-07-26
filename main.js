@@ -5,6 +5,7 @@ const ipcMain = electron.ipcMain;
 const Menu = electron.Menu;
 const path = require('path');
 const os = require('os');
+const fs = require('fs')
 const autoUpdater = electron.autoUpdater;
 //electron.crashReporter.start();
 
@@ -30,6 +31,8 @@ var restarting = false;
 //} catch (e) {}
 
 // Setup menu bar
+
+
 var template = [{
     label: "Application",
     submenu: [{
@@ -183,7 +186,7 @@ ipcMain.on('getServer', function(event) {
 ipcMain.on('installUpdate', function(event) {
   autoUpdater.quitAndInstall();
 });
-function startPython() {
+function startPython(auth, code, lat, long, opts) {
 
   mainWindow.loadURL('file://' + __dirname + '/main.html');
   // mainWindow.openDevTools();
@@ -206,6 +209,7 @@ function startPython() {
       cmdLine.push(opts.password);
     }
 
+    // logData(opts.username);
 
 
     // console.log(cmdLine);
@@ -225,6 +229,43 @@ function startPython() {
 
     logData('Bot path: ' + path.join(__dirname, 'gofbot/web'));
     logData('python ' + serverCmdLine.join(' '));
+   
+
+    try {
+      //test to see if settings exist
+      var setting_path = 'gofbot/config.json'
+      fs.openSync(setting_path, 'r+');
+    } catch (err) {
+      fs.renameSync('gofbot/config.json.example',setting_path)
+    }
+
+    try {
+      //test to see if settings exist
+      var release_path = 'gofbot/release_config.json'
+      fs.openSync(setting_path, 'r+');
+    } catch (err) {
+      fs.renameSync('gofbot/release_config.json.example',release_path)
+    }
+
+    var data=fs.readFileSync('gofbot/config.json');
+
+    var settings = JSON.parse(data)
+
+    logData(opts.password)
+    logData(opts.username)
+    
+
+    settings.auth_service = auth
+    if (auth == 'google') {
+      settings.password = opts.google_password
+      settings.username = opts.google_username
+    } else {
+      settings.password = opts.ptc_password
+      settings.username = opts.ptc_username
+    }
+      
+
+    fs.writeFileSync('gofbot/config.json', JSON.stringify(settings) , 'utf-8');
 
 
     server = require('child_process').spawn(pythonCmd, serverCmdLine, {
@@ -241,7 +282,7 @@ function startPython() {
       mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
     });
 
-    
+
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
       cwd: path.join(__dirname, 'gofbot'),
       detached: true
