@@ -1,5 +1,6 @@
 # Pokemon GO Bot Desktop
 
+# Just getting start, help needed. Things broken.
 
 Getting Started
 ---------------
