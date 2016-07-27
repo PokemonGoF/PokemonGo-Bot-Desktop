@@ -277,7 +277,8 @@ function startPython(auth, code, location, opts) {
       settings.username = opts.ptc_username;
     }
 
-    settings.gmapkey = opts.google_maps_api
+    settings.gmapkey = opts.google_maps_api;
+    settings.max_steps = parseInt(opts.max_steps);
 
 
     var userdata_code = ['var users = ["' + settings.username + '"];',
