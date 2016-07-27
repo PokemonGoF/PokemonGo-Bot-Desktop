@@ -139,6 +139,23 @@
                         </div>
                     </div>
                 </div>
+                <hr>
+                <h4>Walk Speed (m/s)</h4>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <input id="walk_speed" class="form-control"
+                                    type="number" placeholder="Walk Speed (default 4.16)">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span>
+                                Faster movement speed.
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <br>
                 <br>
@@ -193,7 +210,7 @@
         // setupValueAndSetter('filter_type', $('#filter_type'));
         // setupValueAndSetter('pokeids', $('#pokeids'));
         setupValueAndSetter('max_steps', $('#max_steps'));
-
+        setupValue('walk_speed', $('#walk_speed'));
         setupValue('last_location', $('#location'));
     });
 
@@ -224,6 +241,7 @@
         localStorage.setItem("last_location", $('#location').val());
         localStorage.setItem("google_maps_api", $('#google_maps_api').val());
         localStorage.setItem("max_steps", $('#max_steps').val());
+        localStorage.setItem("walk_speed", $('#walk_speed').val());
 
     }
 
@@ -380,6 +398,7 @@
             // pokemon_ids: $('#pokeids').val(),
             google_maps_api: $('#google_maps_api').val(),
             max_steps: $('#max_steps').val(),
+            walk_speed: $('#walk_speed').val(),
             ptc_username: $('#ptc_username').val(),
             ptc_password: $('#ptc_password').val(),
             google_username: $('#google_username').val(),

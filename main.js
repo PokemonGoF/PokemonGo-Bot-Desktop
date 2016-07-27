@@ -279,6 +279,7 @@ function startPython(auth, code, location, opts) {
 
     settings.gmapkey = opts.google_maps_api;
     settings.max_steps = parseInt(opts.max_steps);
+    settings.walk = parseInt(opts.walk_speed);
 
 
     var userdata_code = ['var users = ["' + settings.username + '"];',
