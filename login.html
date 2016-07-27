@@ -127,6 +127,30 @@
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
                         <div class="row">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" class="form-control" name="mode" value="all" checked> All
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" class="form-control" name="mode" value="catch"> Catch
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" class="form-control" name="mode" value="farm"> Farm
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span>
+                                Choose bot mode.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h4>Max Steps</h4>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
                             <div class="col-xs-8 col-xs-offset-2">
                                 <input id="max_steps" class="form-control"
                                     type="number" placeholder="Max Steps (default 5)">
@@ -164,6 +188,7 @@
         </div>
     </body>
 
+    
   <script type="text/javascript">
 
     window.$ = window.jQuery = require('./jquery.js');
@@ -401,6 +426,7 @@
             walk_speed: $('#walk_speed').val(),
             ptc_username: $('#ptc_username').val(),
             ptc_password: $('#ptc_password').val(),
+            mode: $("input[name='mode']:checked").val(),
             google_username: $('#google_username').val(),
             google_password: $('#google_password').val(),
             
@@ -408,5 +434,6 @@
     }
 
   </script>
-
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
 </html>
