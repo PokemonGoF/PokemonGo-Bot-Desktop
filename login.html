@@ -62,15 +62,9 @@
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
                             <div class="row">
-                                <div class="col-xs-10 col-xs-offset-2">
-                                    <div class="col-xs-5">
-                                        <input id="lat" class="form-control"
-                                            type="text" placeholder="Latitude">
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <input id="lon" class="form-control"
-                                            type="text" placeholder="Longitude">
-                                    </div>
+                                <div class="col-xs-8 col-xs-offset-2">
+                                        <input id="location" class="form-control"
+                                            type="text" placeholder="Location">
                                 </div>
                             </div>
                             <div class="row">
@@ -80,39 +74,6 @@
                             </div>
                     </div>
                 </div>
-
-<!--                 <div class="row">
-                    <div class="col-xs-8 col-xs-offset-2">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="col-xs-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="showgym" checked="1">
-                                            Show Gyms
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="showstop" checked="1">
-                                            Show PokéStops
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="onlylure">
-                                            Only PokéStops with Lures
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
 <!--                 <hr>
 
@@ -202,8 +163,7 @@
         jar: ptcJar
     });
 
-    var geoLat = 34.0432108;
-    var geoLon = -118.2675059;
+    var geoLocation = "34.0432108, -118.2675059";
 
     $( document ).ready(function(){
         // Show version
@@ -232,8 +192,7 @@
         // setupValueAndSetter('pokeids', $('#pokeids'));
         setupValueAndSetter('radius', $('#radius'));
 
-        setupValue('last_lat', $('#lat'));
-        setupValue('last_lon', $('#lon'));
+        setupValue('last_location', $('#location'));
     });
 
     function setupValue(key, elem) {
@@ -260,8 +219,7 @@
             localStorage.setItem("google_username", $('#google_username').val());
             localStorage.setItem("google_password", $('#google_password').val());
         }
-        localStorage.setItem("last_lat", $('#lat').val());
-        localStorage.setItem("last_lon", $('#lon').val());
+        localStorage.setItem("last_location", $('#location').val());
         localStorage.setItem("google_maps_api", $('#google_maps_api').val());
 
     }
@@ -269,8 +227,7 @@
     navigator.geolocation.getCurrentPosition(function success(position) {
         geoLat = position.coords.latitude;
         geoLon = position.coords.longitude;
-        $('#lat').prop('placeholder', geoLat);
-        $('#lon').prop('placeholder', geoLon);
+        $('#location').prop('placeholder', ''+geoLat+', '+geoLon);
         console.log("Got location: " + geoLat + ", " + geoLon);
     }, function error(err) {
         console.log("Error getting location, trying second provider", err);
@@ -279,8 +236,7 @@
             var latLong = ipinfo.loc.split(",");
             geoLat = latLong[0];
             geoLon = latLong[1];
-            $('#lat').prop('placeholder', geoLat);
-            $('#lon').prop('placeholder', geoLon);
+            $('#location').prop('placeholder', ''+geoLat+', '+geoLon);
         });
     });
 
@@ -495,15 +451,12 @@
     }
 
     function completeLogin(auth, code) {
-        var userLat = $('#lat').val(),
-            userLon = $('#lon').val();
-        if (userLat != '') {
-            geoLat = userLat;
-        }
-        if (userLon != '') {
-            geoLon = userLon;
-        }
-        ipcRenderer.send('startPython', auth, code, geoLat, geoLon, {
+        var userLocation = $('#location').val();
+        if (userLocation != '') {
+            geoLocation = userLocation;
+        };
+
+        ipcRenderer.send('startPython', auth, code, geoLocation, {
             // show_gyms: checked('showgym'),
             // show_pokestops: checked('showstop'),
             // only_stops_with_lures: checked('onlylure'),

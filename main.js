@@ -156,7 +156,7 @@ function killProcess(pid) {
   }
 }
 
-ipcMain.on('logout', function(event, auth, code, lat, long, opts) {
+ipcMain.on('logout', function(event, auth, code, location, opts) {
   restarting = true;
   if (procStarted) {
     logData('Killing Python process...');
@@ -172,10 +172,10 @@ ipcMain.on('logout', function(event, auth, code, lat, long, opts) {
   setupMainWindow();
 });
 
-ipcMain.on('startPython', function(event, auth, code, lat, long, opts) {
+ipcMain.on('startPython', function(event, auth, code, location, opts) {
   if (!procStarted) {
     logData('Starting Python process...');
-    startPython(auth, code, lat, long, opts);
+    startPython(auth, code, location, opts);
   }
   procStarted = true;
 });
@@ -187,7 +187,7 @@ ipcMain.on('getServer', function(event) {
 ipcMain.on('installUpdate', function(event) {
   autoUpdater.quitAndInstall();
 });
-function startPython(auth, code, lat, long, opts) {
+function startPython(auth, code, location, opts) {
 
   mainWindow.loadURL('file://' + __dirname + '/main.html');
   // mainWindow.openDevTools();
@@ -299,7 +299,7 @@ function startPython(auth, code, lat, long, opts) {
         fs.writeFileSync(location_path,"{}");
     }
 
-    settings.location = "" + lat + "," + long;
+    settings.location = location;
 
     fs.writeFileSync(path.join(__dirname, 'gofbot/config.json'), JSON.stringify(settings) , 'utf-8');
 
@@ -310,14 +310,14 @@ function startPython(auth, code, lat, long, opts) {
       detached: true
     });
 
-    server.stdout.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    });
-    server.stderr.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    });
+    // server.stdout.on('data', (data) => {
+    //   console.log(`Python: ${data}`);
+    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    // });
+    // server.stderr.on('data', (data) => {
+    //   console.log(`Python: ${data}`);
+    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    // });
 
 
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
