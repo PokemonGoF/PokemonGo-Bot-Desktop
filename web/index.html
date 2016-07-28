@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    
+    <link rel="stylesheet" href="main.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" type="text/css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js" type="text/javascript" ></script>
+    <script>
+      $(document).ready(function() {
+          $('select').material_select();
+          $('.modal-trigger').leanModal();
+          $(".button-collapse").sideNav({
+            menuWidth: 300, // Default is 240
+            edge: 'right', // Choose the horizontal origin
+            closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+          });
+          $('.dropdown-button').dropdown({
+              inDuration: 300,
+              outDuration: 225,
+              constrain_width: false, // Does not change width of dropdown to that of the activator
+              hover: true, // Activate on hover
+              gutter: 0, // Spacing from edge
+              belowOrigin: false, // Displays dropdown below the button
+              alignment: 'left' // Displays dropdown with edge aligned to the left of button
+            });
+          $('#logout').click(function(){
+            console.log("Logout!")
+          });
+      });
+    </script>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div id="nav-bar" class="row">
+      <!-- Logo -->
+      <div id="nav-logo" class="col s2 valign-wrapper">
+        <img id="logo" src='logo.png'>
+        <p class="center-align valign">
+          <b>PikaBot</b>
+        </p>
+      </div>
+      <!-- Nav Menu -->
+      <div id="nav-menu" class="col s10">
+        <div class="row valign-wrapper">
+          <!-- Quick Info -->
+          <div id="quick-info" class="col s5 valign">
+            <div id="caught-div" class="col s3">
+              <p id="caught">Caught: ...</p>
+            </div>
+            <div class="col s3">
+              <p id="xp_earned">XP Earned: ...</p>
+            </div>
+            <div class="col s4">
+              <p id="distance_traveled">Distance Traveled: ...</p>
+            </div>
+          </div>
+          <!-- Options -->
+          <div id="nav-options" class="col s7 valign offset-s5">
+            <div class="row">
+              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tInfo">Info</a>
+              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tItems">Items</a>
+              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tPokemon">Pokemon</a>
+              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tPokedex">Pokedex</a>
+              <a class='dropdown-button btn' href='#' data-activates='options'>Options</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Options Dropdown -->
+    <ul id='options' class='dropdown-content'>
+      <li>
+        Pan 
+        <div class="switch">
+          <label>
+          Off
+          <input type="checkbox" id="switchPan">
+          <span class="lever"></span>
+          On
+          </label>
+        </div>
+        <br>
+      </li>
+      <li>
+        Zoom
+        <div class="switch">
+          <label>
+          Off
+          <input type="checkbox" id="switchZoom">
+          <span class="lever"></span>
+          On
+          </label>
+        </div>
+        <br>
+      </li>
+      <li>
+        Image Type
+        <div class="switch">
+          <label>
+          png
+          <input type="checkbox" id="imageType">
+          <span class="lever"></span>
+          gif
+          </label>
+        </div>
+        <br>
+      </li>
+    </ul>
+    <!-- Side Popup Nav -->
+    <ul id="slide-out" class="side-nav">
+      <h3>
+        <div id="subtitle"></div>
+      </h3>
+      <hr>
+      <div id="subcontent"></div>
+    </ul>
+    <!-- Content -->
+    <div id="content" class="row">
+      <div id="side-nav" class="col s2">
+        <div class="row valign-wrapper" id="account-option">
+          <div class="valign">
+            <p>Logged in as</p>
+            <p id="username">Loading...</p>
+          </div>
+        </div>
+        <div id="location-option" class="input-field col s12">
+          <input placeholder="Location" id="location" type="text" class="validate">
+          <label for="first_name">Select location</label>
+        </div>
+        <div class="row" id="walk-option">
+          <div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose walk speed</option>
+              <option value="5">5 m/s</option>
+              <option value="10">10 m/s</option>
+              <option value="15">15 m/s</option>
+            </select>
+            <label>Walk Speed</label>
+          </div>
+        </div>
+        <div id="steps-option" class="input-field col s12">
+          <input placeholder="5" id="max_steps" type="text" class="validate">
+          <label for="first_name">Max Steps</label>
+        </div>
+        <div id="mode-option" class="row">
+          <div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose bot mode</option>
+              <option value="all">All</option>
+              <option value="catch">Catch</option>
+              <option value="farm">Farm</option>
+            </select>
+            <label>Mode</label>
+          </div>
+        </div>
+        <a class="waves-effect waves-light btn s10 col offset-s1">Apply</a>
+        <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
+      </div>
+      <div id="map-container" class="col s10 white">
+        <div id="map"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../gofbot/web/userdata.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
