@@ -1,4 +1,4 @@
-# Pokemon GO Bot Desktop
+# Pokemon GO Bot Desktop for the [original](https://github.com/PokemonGoF/PokemonGo-Bot)
 
 # Just getting start, help needed. Things broken.
 

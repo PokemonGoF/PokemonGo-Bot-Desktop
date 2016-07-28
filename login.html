@@ -58,19 +58,13 @@
                 </div>
 
                 <hr>
-                <h4>Config Options</h4>
+                <h4>Location</h4>
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
                             <div class="row">
-                                <div class="col-xs-10 col-xs-offset-2">
-                                    <div class="col-xs-5">
-                                        <input id="lat" class="form-control"
-                                            type="text" placeholder="Latitude">
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <input id="lon" class="form-control"
-                                            type="text" placeholder="Longitude">
-                                    </div>
+                                <div class="col-xs-8 col-xs-offset-2">
+                                        <input id="location" class="form-control"
+                                            type="text" placeholder="Location">
                                 </div>
                             </div>
                             <div class="row">
@@ -80,39 +74,6 @@
                             </div>
                     </div>
                 </div>
-
-<!--                 <div class="row">
-                    <div class="col-xs-8 col-xs-offset-2">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="col-xs-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="showgym" checked="1">
-                                            Show Gyms
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="showstop" checked="1">
-                                            Show PokéStops
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-xs-4">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="onlylure">
-                                            Only PokéStops with Lures
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
 
 <!--                 <hr>
 
@@ -145,6 +106,7 @@
                     </div>
                 </div> -->
                 <hr>
+                <h4>Google Maps API</h4>
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
                         <div class="row">
@@ -161,17 +123,59 @@
                     </div>
                 </div>
                 <hr>
+                <h4>Max Steps</h4>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" class="form-control" name="mode" value="all" checked> All
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" class="form-control" name="mode" value="catch"> Catch
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" class="form-control" name="mode" value="farm"> Farm
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span>
+                                Choose bot mode.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h4>Max Steps</h4>
                 <div class="row">
                     <div class="col-xs-8 col-xs-offset-2">
                         <div class="row">
                             <div class="col-xs-8 col-xs-offset-2">
-                                <input id="radius" class="form-control"
-                                    type="number" placeholder="Radius (default 7)">
+                                <input id="max_steps" class="form-control"
+                                    type="number" placeholder="Max Steps (default 5)">
                             </div>
                         </div>
                         <div class="row">
                             <span>
                                 Larger numbers increase search area but updates are slower.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <h4>Walk Speed (m/s)</h4>
+                <div class="row">
+                    <div class="col-xs-8 col-xs-offset-2">
+                        <div class="row">
+                            <div class="col-xs-8 col-xs-offset-2">
+                                <input id="walk_speed" class="form-control"
+                                    type="number" placeholder="Walk Speed (default 4.16)">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span>
+                                Faster movement speed.
                             </span>
                         </div>
                     </div>
@@ -184,6 +188,7 @@
         </div>
     </body>
 
+    
   <script type="text/javascript">
 
     window.$ = window.jQuery = require('./jquery.js');
@@ -202,8 +207,7 @@
         jar: ptcJar
     });
 
-    var geoLat = 34.0432108;
-    var geoLon = -118.2675059;
+    var geoLocation = "34.0432108, -118.2675059";
 
     $( document ).ready(function(){
         // Show version
@@ -224,14 +228,15 @@
         if (checked('remember')) {
             setupValue('ptc_username', $('#ptc_username'));
             setupValue('ptc_password', $('#ptc_password'));
+            setupValue('google_username', $('#google_username'));
+            setupValue('google_password', $('#google_password'));
         }
-
+        setupValue('google_maps_api', $('#google_maps_api'));
         // setupValueAndSetter('filter_type', $('#filter_type'));
         // setupValueAndSetter('pokeids', $('#pokeids'));
-        setupValueAndSetter('radius', $('#radius'));
-
-        setupValue('last_lat', $('#lat'));
-        setupValue('last_lon', $('#lon'));
+        setupValueAndSetter('max_steps', $('#max_steps'));
+        setupValue('walk_speed', $('#walk_speed'));
+        setupValue('last_location', $('#location'));
     });
 
     function setupValue(key, elem) {
@@ -258,17 +263,17 @@
             localStorage.setItem("google_username", $('#google_username').val());
             localStorage.setItem("google_password", $('#google_password').val());
         }
-        localStorage.setItem("last_lat", $('#lat').val());
-        localStorage.setItem("last_lon", $('#lon').val());
+        localStorage.setItem("last_location", $('#location').val());
         localStorage.setItem("google_maps_api", $('#google_maps_api').val());
+        localStorage.setItem("max_steps", $('#max_steps').val());
+        localStorage.setItem("walk_speed", $('#walk_speed').val());
 
     }
 
     navigator.geolocation.getCurrentPosition(function success(position) {
         geoLat = position.coords.latitude;
         geoLon = position.coords.longitude;
-        $('#lat').prop('placeholder', geoLat);
-        $('#lon').prop('placeholder', geoLon);
+        $('#location').prop('placeholder', ''+geoLat+', '+geoLon);
         console.log("Got location: " + geoLat + ", " + geoLon);
     }, function error(err) {
         console.log("Error getting location, trying second provider", err);
@@ -277,8 +282,7 @@
             var latLong = ipinfo.loc.split(",");
             geoLat = latLong[0];
             geoLon = latLong[1];
-            $('#lat').prop('placeholder', geoLat);
-            $('#lon').prop('placeholder', geoLon);
+            $('#location').prop('placeholder', ''+geoLat+', '+geoLon);
         });
     });
 
@@ -299,33 +303,6 @@
         ipcRenderer.send('installUpdate');
     }
 
-    function doLogin(ssoUrl, callback) {
-      var authWindow = new BrowserWindow(
-        { width: 800, height: 600, show: false,
-            'node-integration': false, title: 'Login' });
-
-      authWindow.loadURL(ssoUrl);
-      authWindow.show();
-
-      authWindow.webContents.on('will-navigate', function (event, newUrl) {
-        callback(authWindow, newUrl);
-      });
-
-      authWindow.webContents.on('did-navigate', function (event, newUrl) {
-        callback(authWindow, newUrl);
-      });
-
-      authWindow.webContents.on('did-get-redirect-request', function (event, oldUrl, newUrl) {
-        callback(authWindow, newUrl);
-      });
-
-      // Reset the authWindow on close
-      authWindow.on('close', function() {
-          authWindow = null;
-          toggleLogin(false);
-      }, false);
-    }
-
     function toggleLogin(disabled) {
         saveState();
         jQuery('.login').prop("disabled", disabled);
@@ -338,9 +315,9 @@
         //         return false;
         //     }
         // }
-        if ($('#radius').val() != '') {
-            if (!$('#radius').val().match(/^[0-9]+$/)) {
-                alert('Invalid Radius. Only numbers allowed.');
+        if ($('#max_steps').val() != '') {
+            if (!$('#max_steps').val().match(/^[0-9]+$/)) {
+                alert('Invalid Max Steps. Only numbers allowed.');
                 return false;
             }
         }
@@ -432,85 +409,24 @@
 
     }
 
-    function handleGoogleCallback(authWindow, newUrl) {
-        var parsedUrl = url.parse(newUrl, true);
-
-        if (parsedUrl.hostname != 'accounts.google.com') {
-            return;
-        }
-
-        if (parsedUrl.pathname != '/o/oauth2/approval') {
-            return;
-        }
-
-        var winContents = authWindow.webContents;
-
-        winContents.on('dom-ready', function(){
-
-            winContents.executeJavaScript(
-                'document.getElementById("code").value',
-                true,
-                function(result) {
-                    var code = result;
-                    if (code) {
-                        // Close the browser if code found or error
-                        authWindow.destroy();
-                    }
-
-                    if (code) {
-                        getGoogleToken(code);
-                    } else {
-                        toggleLogin(false);
-                        alert('Oops! Something went wrong and we couldn\'t ' +
-                            'log you in. Please try again. Code 1.');
-                    }
-                });
-
-        });
-
-        function getGoogleToken(code) {
-            request.post(
-                'https://accounts.google.com/o/oauth2/token',
-                { form: {
-                    'client_id': '848232511240-73ri3t7plvk96pj4f85uj8otdat2alem.apps.googleusercontent.com',
-                    'redirect_uri': 'urn:ietf:wg:oauth:2.0:oob',
-                    'client_secret': 'NCjF1TLi2CcY6t5mt0ZveuL7',
-                    'grant_type': 'authorization_code',
-                    'code': code,
-                } },
-                function (error, response, body) {
-                    if (!error && response.statusCode == 200) {
-                        completeLogin('google', JSON.parse(body).id_token);
-                    } else {
-                        toggleLogin(false);
-                        alert('Oops! Something went wrong and we couldn\'t ' +
-                            'log you in. Please try again. Code 4.');
-                    }
-                }
-            );
-        }
-
-    }
-
     function completeLogin(auth, code) {
-        var userLat = $('#lat').val(),
-            userLon = $('#lon').val();
-        if (userLat != '') {
-            geoLat = userLat;
-        }
-        if (userLon != '') {
-            geoLon = userLon;
-        }
-        ipcRenderer.send('startPython', auth, code, geoLat, geoLon, {
+        var userLocation = $('#location').val();
+        if (userLocation != '') {
+            geoLocation = userLocation;
+        };
+
+        ipcRenderer.send('startPython', auth, code, geoLocation, {
             // show_gyms: checked('showgym'),
             // show_pokestops: checked('showstop'),
             // only_stops_with_lures: checked('onlylure'),
             // filter_pokemon: $('#filter_type').val(),
             // pokemon_ids: $('#pokeids').val(),
             google_maps_api: $('#google_maps_api').val(),
-            radius: $('#radius').val(),
+            max_steps: $('#max_steps').val(),
+            walk_speed: $('#walk_speed').val(),
             ptc_username: $('#ptc_username').val(),
             ptc_password: $('#ptc_password').val(),
+            mode: $("input[name='mode']:checked").val(),
             google_username: $('#google_username').val(),
             google_password: $('#google_password').val(),
             
@@ -518,5 +434,6 @@
     }
 
   </script>
-
+    <script src="jquery.js"></script>
+    <script src="bootstrap.js"></script>
 </html>

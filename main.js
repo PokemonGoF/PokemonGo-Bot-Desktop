@@ -156,7 +156,7 @@ function killProcess(pid) {
   }
 }
 
-ipcMain.on('logout', function(event, auth, code, lat, long, opts) {
+ipcMain.on('logout', function(event, auth, code, location, opts) {
   restarting = true;
   if (procStarted) {
     logData('Killing Python process...');
@@ -172,10 +172,10 @@ ipcMain.on('logout', function(event, auth, code, lat, long, opts) {
   setupMainWindow();
 });
 
-ipcMain.on('startPython', function(event, auth, code, lat, long, opts) {
+ipcMain.on('startPython', function(event, auth, code, location, opts) {
   if (!procStarted) {
     logData('Starting Python process...');
-    startPython(auth, code, lat, long, opts);
+    startPython(auth, code, location, opts);
   }
   procStarted = true;
 });
@@ -187,7 +187,7 @@ ipcMain.on('getServer', function(event) {
 ipcMain.on('installUpdate', function(event) {
   autoUpdater.quitAndInstall();
 });
-function startPython(auth, code, lat, long, opts) {
+function startPython(auth, code, location, opts) {
 
   mainWindow.loadURL('file://' + __dirname + '/main.html');
   // mainWindow.openDevTools();
@@ -235,35 +235,35 @@ function startPython(auth, code, lat, long, opts) {
       //rename config
       try {
         //test to see if settings exist
-        var setting_path = 'gofbot/config.json';
+        var setting_path = path.join(__dirname, 'gofbot/config.json');
         fs.openSync(setting_path, 'r+');
       } catch (err) {
-        fs.renameSync('gofbot/config.json.example',setting_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/config.json.example'),setting_path);
       }
 
       //rename release_config
       try {
         //test to see if settings exist
-        var release_path = 'gofbot/release_config.json';
+        var release_path = path.join(__dirname, 'gofbot/release_config.json');
         fs.openSync(release_path, 'r+');
       } catch (err) {
-        fs.renameSync('gofbot/release_config.json.example',release_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/release_config.json.example'),release_path);
       }
 
       //rename user file
       try {
         //test to see if settings exist
-        var user_path = 'gofbot/web/userdata.js';
+        var user_path = path.join(__dirname, 'gofbot/web/userdata.js');
         fs.openSync(user_path, 'r+');
       } catch (err) {
-        fs.renameSync('gofbot/web/userdata.js.example',user_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/web/userdata.js.example'),user_path);
       }
     };
 
     renameFiles()
 
     
-    var data=fs.readFileSync('gofbot/config.json');
+    var data=fs.readFileSync(path.join(__dirname, 'gofbot/config.json'));
 
     var settings = JSON.parse(data);
     
@@ -277,7 +277,10 @@ function startPython(auth, code, lat, long, opts) {
       settings.username = opts.ptc_username;
     }
 
-    settings.gmapkey = opts.google_maps_api
+    settings.gmapkey = opts.google_maps_api;
+    settings.max_steps = parseInt(opts.max_steps);
+    settings.walk = parseInt(opts.walk_speed);
+    settings.mode = opts.mode;
 
 
     var userdata_code = ['var users = ["' + settings.username + '"];',
@@ -288,20 +291,20 @@ function startPython(auth, code, lat, long, opts) {
     ]
                             
                             
-    fs.writeFileSync('gofbot/web/userdata.js', userdata_code.join('\n') , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n') , 'utf-8');
 
     //temporary fix for location bug in PokemonGo-Bot
     try {
         //test to see if settings exist
-        var location_path = 'gofbot/web/location-' + settings.username + '.json';
+        var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
         fs.openSync(location_path, 'r+');
       } catch (err) {
         fs.writeFileSync(location_path,"{}");
     }
 
-    settings.location = "" + lat + "," + long;
+    settings.location = location;
 
-    fs.writeFileSync('gofbot/config.json', JSON.stringify(settings) , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/config.json'), JSON.stringify(settings) , 'utf-8');
 
 
 
@@ -310,14 +313,14 @@ function startPython(auth, code, lat, long, opts) {
       detached: true
     });
 
-    server.stdout.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    });
-    server.stderr.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    });
+    // server.stdout.on('data', (data) => {
+    //   console.log(`Python: ${data}`);
+    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    // });
+    // server.stderr.on('data', (data) => {
+    //   console.log(`Python: ${data}`);
+    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    // });
 
 
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
