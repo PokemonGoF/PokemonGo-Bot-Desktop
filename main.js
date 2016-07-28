@@ -294,10 +294,17 @@ function startPython(auth, code, location, opts) {
                             
     fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
-    //temporary fix for location bug in PokemonGo-Bot
+    //temporary fix for location/catchable bug in PokemonGo-Bot
     try {
         //test to see if settings exist
         var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
+        fs.openSync(location_path, 'r+');
+      } catch (err) {
+        fs.writeFileSync(location_path,"{}");
+    }
+    try {
+        //test to see if settings exist
+        var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
         fs.openSync(location_path, 'r+');
       } catch (err) {
         fs.writeFileSync(location_path,"{}");
