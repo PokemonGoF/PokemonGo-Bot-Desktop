@@ -191,6 +191,7 @@ function startPython(auth, code, location, opts) {
 
   mainWindow.loadURL('file://' + __dirname + '/main.html');
   // mainWindow.openDevTools();
+    
 
   // Find open port
   var portfinder = require('portfinder');
@@ -291,7 +292,7 @@ function startPython(auth, code, location, opts) {
     ]
                             
                             
-    fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n') , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
     //temporary fix for location bug in PokemonGo-Bot
     try {
@@ -309,18 +310,18 @@ function startPython(auth, code, location, opts) {
 
 
     server = require('child_process').spawn(pythonCmd, serverCmdLine, {
-      cwd: path.join(__dirname, 'gofbot/web'),
+      cwd: path.join(__dirname, ''),
       detached: true
     });
 
-    // server.stdout.on('data', (data) => {
-    //   console.log(`Python: ${data}`);
-    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    // });
-    // server.stderr.on('data', (data) => {
-    //   console.log(`Python: ${data}`);
-    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    // });
+    server.stdout.on('data', (data) => {
+      console.log(`Python: ${data}`);
+      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    });
+    server.stderr.on('data', (data) => {
+      console.log(`Python: ${data}`);
+      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    });
 
 
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
@@ -340,7 +341,7 @@ function startPython(auth, code, location, opts) {
     
 
     var rq = require('request-promise');
-    mainAddr = 'http://localhost:' + port;
+    mainAddr = 'http://localhost:' + port + "/web";
 
     var openWindow = function(){
       mainWindow.webContents.send('server-up', mainAddr);

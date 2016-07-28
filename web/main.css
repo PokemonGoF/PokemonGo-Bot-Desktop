@@ -1,0 +1,152 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.items {
+    overflow-y: scroll;
+}
+.item_img {
+    width: 75px;
+    height: auto;
+}
+.gif_img {
+    width: 38px;
+    height: auto;
+}
+.png_img {
+    width: 96px;
+    height: auto;
+}
+#nav-bar {
+    margin: 0;
+    height: 9%;
+}
+#nav-logo {
+    height: 100%;
+    background: #3b5e7a;
+    padding: 0
+}
+#logo {
+    height: 40px;
+    padding-left: 10px;
+}
+#nav-logo > p {
+    color: white;
+    padding-left: 10px;
+    font-size: 20px;
+}
+#nav-menu {
+    padding: 0;
+    height: 100%;
+    background: #6a8b9f;
+}
+#nav-menu > div {
+    height: 70px;
+    margin: 0;
+}
+#quick-info {
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+}
+#quick-info > div {
+    margin: 0;
+    padding: 0;
+}
+#quick-info > div > p {
+    color: #cddde8;
+    font-size: 12px;
+    padding: 0px
+}
+#caught-div {
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+    width: 20%;
+}
+#nav-options {
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+}
+#nav-options > div {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    ;
+    margin-left: 50px;
+}
+#nav-options > div > a {
+    background: #feffff;
+    color: #6a8b9f;
+}
+#options {
+    padding: 10px;
+}
+#slide-out {
+    padding: 10px;
+}
+#content {
+    height: 91%;
+    margin: 0;
+}
+#side-nav {
+    height: 100%;
+    padding: 0;
+    background: #12232e;
+    position: relative;
+}
+#account-option {
+    background: #183446;
+    height: 70px;
+    padding: 10px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+#account-option > div > p:nth-child(1) {
+    font-size: 10px;
+    color: #7293a7;
+    margin: 0;
+}
+#username {
+    color: #c4dfef;
+    margin: 0
+}
+#location {
+    color: white;
+}
+#walk-option {
+    height: 90px;
+    padding: 0;
+    margin: 0;
+}
+#walk-option > div {
+    color: white;
+}
+#steps-option > input {
+    color: white;
+}
+#mode-option {
+    height: 90px;
+    padding: 0;
+    margin: 0;
+}
+#mode-option > div {
+    color: white;
+}
+#logout {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 8.333333333%;
+    margin-bottom: 20px;
+}
+#map-container {
+    height: 100%;
+    padding: 0
+}
+#map {
+    width: 100%;
+}
