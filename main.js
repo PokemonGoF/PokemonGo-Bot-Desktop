@@ -124,7 +124,7 @@ app.on('ready', function() {
 function setupMainWindow() {
   restarting = false;
 
-  mainWindow = new BrowserWindow({width: 800, height: 600, minWidth: 700, minHeight: 500});
+  mainWindow = new BrowserWindow({width: 2000, height: 1000, minWidth: 700, minHeight: 500});
   mainWindow.loadURL('file://' + __dirname + '/login.html');
 
   mainWindow.on('closed', function() {
