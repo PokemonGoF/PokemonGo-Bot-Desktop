@@ -1,7 +1,7 @@
 {
   "name"    : "PokemonGoBot",
   "description": "Your GoF Bot On Desktop",
-  "author": "Mike Christopher",
+  "author": "PokemonGo-Desktop-Team",
   "repository": "https://github.com/PokemonGoF/PokemonGo-Bot-Desktop",
   "license": "MIT",
   "version" : "0.1.1",
