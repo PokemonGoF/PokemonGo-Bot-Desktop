@@ -31,3 +31,5 @@ Licensing
 ---------
 
 This project is licensed under the MIT License.
+
+[![Analytics](https://ga-beacon.appspot.com/UA-81468120-1/desktop-welcome-page)](https://github.com/igrigorik/ga-beacon)
