@@ -7,7 +7,9 @@
         <title>PikaBot</title>
         <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet"> -->
 
-        <script src="jquery.js"></script>
+       <script type="text/javascript">
+            window.$ = window.jQuery = require('./jquery.js');
+        </script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js" type="text/javascript"></script>
         <style type="text/css">
@@ -236,7 +238,7 @@
     
   <script type="text/javascript">
 
-
+    
     var fs = require('fs');
     var url = require('url');
     var request = require('request');
