@@ -15,11 +15,16 @@
       $(document).ready(function() {
           $('select').material_select();
           $('.modal-trigger').leanModal();
-          $(".button-collapse").sideNav({
+          $(".side-info").sideNav({
             menuWidth: 300, // Default is 240
             edge: 'right', // Choose the horizontal origin
             closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
           });
+          // $(".side-menu").sideNav({
+          //   menuWidth: 300, // Default is 240
+          //   edge: 'left', // Choose the horizontal origin
+          //   closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+          // });
           $('.dropdown-button').dropdown({
               inDuration: 300,
               outDuration: 225,
@@ -62,22 +67,23 @@
       }
       #nav-logo {
           height: 100%;
-          background: #3b5e7a;
+          background: #383025;
           padding: 0
       }
       #logo {
-          height: 40px;
-          padding-left: 10px;
+          height: 30px;
+          padding-left: 15px;
       }
       #nav-logo > p {
-          color: white;
+          color: yellow;
+          font-family: Arial;
           padding-left: 10px;
           font-size: 20px;
       }
       #nav-menu {
           padding: 0;
           height: 100%;
-          background: #6a8b9f;
+          background: #50483c;
       }
       #nav-menu > div {
           height: 70px;
@@ -117,12 +123,12 @@
       }
       #nav-options > div > a {
           background: #feffff;
-          color: #6a8b9f;
+          color: #50483c;
       }
       #options {
           padding: 10px;
       }
-      #slide-out {
+      #slide-right {
           padding: 10px;
       }
       #content {
@@ -132,11 +138,11 @@
       #side-nav {
           height: 100%;
           padding: 0;
-          background: #12232e;
+          background: #efefef;
           position: relative;
       }
       #account-option {
-          background: #183446;
+          background: #241d14;
           height: 70px;
           padding: 10px;
           margin: 0;
@@ -144,15 +150,43 @@
       }
       #account-option > div > p:nth-child(1) {
           font-size: 10px;
-          color: #7293a7;
+          color: white;
           margin: 0;
       }
       #username {
-          color: #c4dfef;
+          color: yellow;
           margin: 0
       }
-      #location {
-          color: white;
+      /* label color */
+      .input-field label {
+        color: #000;
+      }
+      /* label focus color */
+      .input-field input[type=text]:focus + label {
+        color: #000;
+      }
+      /* label underline focus color */
+      .input-field input[type=text]:focus {
+        border-bottom: 1px solid #000;
+        box-shadow: 0 1px 0 0 #000;
+      }
+      /* valid color */
+      .input-field input[type=text].valid {
+        border-bottom: 1px solid #000;
+        box-shadow: 0 1px 0 0 #000;
+      }
+      /* invalid color */
+      .input-field input[type=text].invalid {
+        border-bottom: 1px solid #000;
+        box-shadow: 0 1px 0 0 #000;
+      }
+      /* icon prefix focus color */
+      .input-field .prefix.active {
+        color: #000;
+      }
+
+      #location, #location-option > label{
+          color: black;
       }
       #walk-option {
           height: 90px;
@@ -160,10 +194,16 @@
           margin: 0;
       }
       #walk-option > div {
-          color: white;
+          color: black;
+      }
+      #walk-option >div > label {
+          color: black;
       }
       #steps-option > input {
-          color: white;
+          color: black;
+      }
+      #steps-option > label {
+          color: black;
       }
       #mode-option {
           height: 90px;
@@ -171,14 +211,36 @@
           margin: 0;
       }
       #mode-option > div {
-          color: white;
+          color: black;
       }
+      #mode-option > div > label{
+          color: black;
+      }
+
+      #apply{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-right: 8.333333333%;
+        margin-bottom: 70px;
+        background:#f0de23;
+        color:black;
+        border-width: 1px;
+        border-color: #bdb021;
+        border-style: solid;
+      }
+
       #logout {
-          position: absolute;
-          bottom: 0;
-          right: 0;
-          margin-right: 8.333333333%;
-          margin-bottom: 20px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-right: 8.333333333%;
+        margin-bottom: 20px;
+        background:#efefef;
+        color:black;
+        border-width: 1px;
+        border-color: #bdb021;
+        border-style: solid;
       }
       #map-container {
           height: 100%;
@@ -197,7 +259,7 @@
       <div id="nav-logo" class="col s2 valign-wrapper">
         <img id="logo" src='logo.png'>
         <p class="center-align valign">
-          <b>PikaBot</b>
+          PikaBot
         </p>
       </div>
       <!-- Nav Menu -->
@@ -218,10 +280,10 @@
           <!-- Options -->
           <div id="nav-options" class="col s7 valign offset-s5">
             <div class="row">
-              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tInfo">Info</a>
-              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tItems">Items</a>
-              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tPokemon">Pokemon</a>
-              <a class="waves-effect waves-light btn button-collapse" href="#" data-activates="slide-out" id="tPokedex">Pokedex</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tInfo">Info</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tItems">Items</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tPokemon">Pokemon</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tPokedex">Pokedex</a>
               <a class='dropdown-button btn' href='#' data-activates='options'>Options</a>
             </div>
           </div>
@@ -268,7 +330,7 @@
       </li>
     </ul>
     <!-- Side Popup Nav -->
-    <ul id="slide-out" class="side-nav">
+    <ul id="slide-right" class="side-nav">
       <h3>
         <div id="subtitle"></div>
       </h3>
@@ -286,7 +348,7 @@
         </div>
         <div id="location-option" class="input-field col s12">
           <input placeholder="Location" id="location" type="text" class="validate">
-          <label for="first_name">Select location</label>
+          <label for="location">Select location</label>
         </div>
         <div class="row" id="walk-option">
           <div class="input-field col s12">
@@ -301,7 +363,7 @@
         </div>
         <div id="steps-option" class="input-field col s12">
           <input placeholder="5" id="max_steps" type="text" class="validate">
-          <label for="first_name">Max Steps</label>
+          <label for="max_steps">Max Steps</label>
         </div>
         <div id="mode-option" class="row">
           <div class="input-field col s12">
@@ -314,7 +376,7 @@
             <label>Mode</label>
           </div>
         </div>
-        <a class="waves-effect waves-light btn s10 col offset-s1">Apply</a>
+        <a class="waves-effect waves-light btn s10 col offset-s1" id="apply">Apply</a>
         <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
       </div>
       <div id="map-container" class="col s10 white">
