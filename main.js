@@ -224,8 +224,7 @@ function startPython(auth, code, location, opts) {
     }
 
     var serverCmdLine = [
-      '-m',
-      'SimpleHTTPServer',
+      'serveit.py',
       port
     ];
 
