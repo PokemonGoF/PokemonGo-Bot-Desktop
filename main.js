@@ -320,14 +320,14 @@ function startPython(auth, code, location, opts) {
       detached: true
     });
 
-    server.stdout.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    });
-    server.stderr.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    });
+    // server.stdout.on('data', (data) => {
+    //   console.log(`Python: ${data}`);
+    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    // });
+    // server.stderr.on('data', (data) => {
+    //   console.log(`Python: ${data}`);
+    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+    // });
 
 
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
