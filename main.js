@@ -311,7 +311,7 @@ function startPython(auth, code, location, opts) {
 
     settings.location = location;
 
-    fs.writeFileSync(path.join(__dirname, 'gofbot/config.json'), JSON.stringify(settings) , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
 
 
 
