@@ -1,6 +1,6 @@
 # Pokemon GO Bot Desktop for the [original](https://github.com/PokemonGoF/PokemonGo-Bot)
 
-# Just getting start, help needed. Things broken.
+# Just getting started, help needed. Things broken.
 
 ##Login Page
 ![login](https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot-Desktop/development/screenshots/Login.png)
