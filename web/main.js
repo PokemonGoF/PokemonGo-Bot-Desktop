@@ -417,7 +417,7 @@ function buildMenu() {
       out += '<table><tr><td><img src="image/items/' +
               bagItems[i].inventory_item_data.item.item_id +
               '.png" class="item_img"></td><td>Item: ' +
-              itemsArray[bagItems[i].inventory_item_data.item.pokemon_id] +
+              itemsArray[bagItems[i].inventory_item_data.item.item_id] +
               '<br>Count: ' +
               bagItems[i].inventory_item_data.item.count +
               '</td>';
