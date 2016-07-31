@@ -188,7 +188,7 @@ var errorFunc = function(xhr) {
 var invSuccess = function(data, user_index) {
   bagCandy = filter(data, 'pokemon_family');
   bagItems = filter(data, 'item');
-  bagPokemon = filter(data, 'pokemon_data');
+  bagPokemon = sortPokemonsByKey(filter(data, 'pokemon_data'), 'cp');
   pokedex = filter(data, 'pokedex_entry');
   stats = filter(data, 'player_stats');
 };
@@ -368,6 +368,13 @@ xhr.open('GET', path, true);
 xhr.send();
 }
 
+function sortPokemonsByKey(array, key) {
+    return array.sort(function(a, b) {
+        var x = a.inventory_item_data.pokemon_data[key]; var y = b.inventory_item_data.pokemon_data[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    }).reverse();
+}
+
 $(document).ready(function(){
   $('.tooltipped').tooltip({delay: 50});
 });
@@ -442,9 +449,10 @@ function buildMenu() {
         pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id;
         pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png';
         pkmnName = pokemonArray[pkmnNum-1].Name;
+        pkmCp = bagPokemon[i].inventory_item_data.pokemon_data.cp;
       }
       out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
-      '<br>Number: ' + pkmnNum + '</td></tr>';
+      '<br>Number: ' + pkmnNum + '<br>CP: ' + pkmCp + '</td></tr>';
     }
     out += '</table></div></div>';
     document.getElementById('subcontent').innerHTML = out;
