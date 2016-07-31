@@ -235,19 +235,10 @@ function startPython(auth, code, location, opts) {
       //rename config
       try {
         //test to see if settings exist
-        var setting_path = path.join(__dirname, 'gofbot/config.json');
+        var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
         fs.openSync(setting_path, 'r+');
       } catch (err) {
-        fs.renameSync(path.join(__dirname, 'gofbot/config.json.example'),setting_path);
-      }
-
-      //rename release_config
-      try {
-        //test to see if settings exist
-        var release_path = path.join(__dirname, 'gofbot/release_config.json');
-        fs.openSync(release_path, 'r+');
-      } catch (err) {
-        fs.renameSync(path.join(__dirname, 'gofbot/release_config.json.example'),release_path);
+        fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'),setting_path);
       }
 
       //rename user file
@@ -263,7 +254,7 @@ function startPython(auth, code, location, opts) {
     renameFiles()
 
     
-    var data=fs.readFileSync(path.join(__dirname, 'gofbot/config.json'));
+    var data=fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
 
     var settings = JSON.parse(data);
     
@@ -280,7 +271,6 @@ function startPython(auth, code, location, opts) {
     settings.gmapkey = opts.google_maps_api;
     settings.max_steps = parseInt(opts.max_steps);
     settings.walk = parseInt(opts.walk_speed);
-    settings.mode = 'all';
 
 
     var userdata_code = ['var users = ["' + settings.username + '"];',
@@ -311,7 +301,7 @@ function startPython(auth, code, location, opts) {
 
     settings.location = location;
 
-    fs.writeFileSync(path.join(__dirname, 'gofbot/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
+    fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
 
 
 
