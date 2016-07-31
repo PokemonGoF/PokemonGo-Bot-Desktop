@@ -2,7 +2,7 @@
 
 # Just getting started, help needed. Things broken.
 
-# Warning to Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventuall will
+# Warning to Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventually will
 
 ##Login Page
 ![login](https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot-Desktop/development/screenshots/Login.png)
