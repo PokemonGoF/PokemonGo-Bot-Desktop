@@ -18,7 +18,7 @@ git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
 brew install python node
 pip install virtualenv
 cd PokemonGo-Bot-Desktop
-npm install
+sudo npm install
 ```
 
 ###Run:
