@@ -1,8 +1,12 @@
 # Pokemon GO Bot Desktop for the [original](https://github.com/PokemonGoF/PokemonGo-Bot)
 
-# Just getting started, help needed. Things broken.
+#[v0.1-alpha Download] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/tag/v0.1-alpha)
 
-# Warning to Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventually will
+Currently no linux build. If someone with linux wants to work to try to package the application, that would be great
+
+## Just getting started, help needed. Things broken.
+
+### Warning to Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventually will
 
 ##Login Page
 ![login](https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot-Desktop/development/screenshots/Login.png)
