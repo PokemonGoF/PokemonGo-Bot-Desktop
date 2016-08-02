@@ -13,6 +13,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "cross-spawn": "*",
+    "electron-compile": "^3.3.5",
     "electron-prebuilt": "*",
     "localtunnel": "*",
     "lock": "^0.1.2",

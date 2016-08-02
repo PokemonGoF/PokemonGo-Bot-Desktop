@@ -1,66 +1,74 @@
 <!DOCTYPE html>
-    <html>
-    <head>
-            <meta charset="utf-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Pokémon GO - Live Map</title>
-            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-            <style>
-                html, body {
-                    height: 100%;
-                    width: 100%;
-                }
-                .container-fluid {
-                    margin: 0 auto;
-                    height: 100%;
-                    padding: 0;
-                }
-                .content {
-                    height: calc(100%);
-                    overflow: auto;
-                }
-                #top-nav {
-                    height: 50px;
-                }
-                #control {
-                    padding-top: 9px;
-                }
-                #control .row {
-                    padding-left: 10px;
-                    padding-right: 10px;
-                }
-                #not-sharing {
-                    color: #f00;
-                    display: none;
-                }
-                #sharing {
-                    color: #093;
-                }
-                .sharing-on, #api-status-down, #api-status-up {
-                    display: none;
-                }
-            </style>
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div class="content">
-                <webview id="mapview" autosize="on"
-                    src="about:blank"
-                    style="display:inline-flex; height: 100%; width: 100%;"></webview>
-            </div>
-        </div>
-        </div>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pokémon GO - Live Map</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
 
-    </body>
+        .container-fluid {
+            margin: 0 auto;
+            height: 100%;
+            padding: 0;
+        }
 
-  <script type="text/javascript">
+        .content {
+            height: calc(100%);
+            overflow: auto;
+        }
+
+        #top-nav {
+            height: 50px;
+        }
+
+        #control {
+            padding-top: 9px;
+        }
+
+        #control .row {
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+
+        #not-sharing {
+            color: #f00;
+            display: none;
+        }
+
+        #sharing {
+            color: #093;
+        }
+
+        .sharing-on, #api-status-down, #api-status-up {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="content">
+        <webview id="mapview" autosize="on"
+                 src="about:blank"
+                 style="display:inline-flex; height: 100%; width: 100%;"></webview>
+    </div>
+</div>
+</div>
+
+</body>
+
+<script type="text/javascript">
     window.$ = window.jQuery = require('./jquery');
-  </script>
-  <script src="./bootstrap.js"></script>
-  <script src="./qrcode.js"></script>
+</script>
+<script src="./bootstrap.js"></script>
+<script src="./qrcode.js"></script>
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
 
     var electron = require('electron').remote;
@@ -75,7 +83,6 @@
     var geoLat, geoLon, mobileTunnel;
 
 
-
     navigator.geolocation.getCurrentPosition(function success(position) {
         geoLat = position.coords.latitude;
         geoLon = position.coords.longitude;
@@ -84,8 +91,8 @@
         console.log("Got location: " + geoLat + ", " + geoLon);
     }, function error(err) {
         console.log("Error getting location, trying second provider", err);
-        $.getJSON("http://ipinfo.io", function(ipinfo){
-            console.log("Found location ["+ipinfo.loc+"] by ipinfo.io");
+        $.getJSON("http://ipinfo.io", function (ipinfo) {
+            console.log("Found location [" + ipinfo.loc + "] by ipinfo.io");
             var latLong = ipinfo.loc.split(",");
             geoLat = latLong[0];
             geoLon = latLong[1];
@@ -94,21 +101,21 @@
         });
     });
 
-    ipcRenderer.on('server-up', function(evt, url) {
+    ipcRenderer.on('server-up', function (evt, url) {
         console.log('server up');
         serverUp(url);
     });
 
-    ipcRenderer.on('update-ready', function(evt, url) {
+    ipcRenderer.on('update-ready', function (evt, url) {
         $('#update-notice').show();
     });
 
-    ipcRenderer.on('pythonLog', function(evt, data) {
+    ipcRenderer.on('pythonLog', function (evt, data) {
         console.log(data.msg);
         handleServerStatus(data.msg);
     });
 
-    ipcRenderer.on('appLog', function(evt, data) {
+    ipcRenderer.on('appLog', function (evt, data) {
         console.log(data.msg);
     });
 
@@ -134,14 +141,16 @@
         console.log(mapView.getURL())
         // mapView.openDevTools()
 
-        const logout = (e) => {
+        const logout = (e) =
+    >
+        {
             console.log(e.message)
             if (e.message == 'Logout!') {
                 ipcRenderer.send('logout');
             }
         }
         mapView.addEventListener('console-message', logout)
-        
+
     }
 
     // window.setInterval(function(){
@@ -163,7 +172,9 @@
             check_for_logout()
         } catch (e) {
             console.log(e)
-            setTimeout(function() {serverUp(url)}, 500);
+            setTimeout(function () {
+                serverUp(url)
+            }, 500);
         }
     }
 
@@ -174,13 +185,13 @@
         request.get(serverUrl + '/next_loc?lat=' + geoLat + '&lon=' + geoLon);
     }
 
-    $( document ).ready(function(){
+    $(document).ready(function () {
         ipcRenderer.send('getServer');
         $('#lat').val(geoLat);
         $('#lon').val(geoLon);
 
     });
 
-  </script>
+</script>
 
 </html>
