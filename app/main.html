@@ -101,10 +101,6 @@
         serverUp(url);
     });
 
-    ipcRenderer.on('update-ready', function (evt, url) {
-        $('#update-notice').show();
-    });
-
     ipcRenderer.on('pythonLog', function (evt, data) {
         var lines = data.msg.split("\n")
         for (var i = 0; i < lines.length; i++) {
@@ -117,10 +113,6 @@
     ipcRenderer.on('appLog', function (evt, data) {
         console.log(data.msg);
     });
-
-    function startUpdate() {
-        ipcRenderer.send('installUpdate');
-    }
 
     function logout() {
         ipcRenderer.send('logout');
@@ -140,16 +132,6 @@
         mapView.addEventListener('console-message', logout)
 
     }
-
-    // window.setInterval(function(){
-    //   console.log("Yay");
-    //   console.log(mapView.getURL())
-    // }, 100);
-
-    // window.onload = function() {
-    //     console.log("yay")
-    //     console.log(mapView.getURL())
-    // }
 
     function serverUp(url) {
         serverUrl = url;

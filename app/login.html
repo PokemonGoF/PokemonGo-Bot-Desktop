@@ -324,22 +324,13 @@
         });
     });
 
-    ipcRenderer.on('update-ready', function(evt, url) {
-        $('#update-notice').show();
-    });
-
     ipcRenderer.on('pythonLog', function(evt, data) {
         console.log(data.msg);
-        handleServerStatus(data.msg);
     });
 
     ipcRenderer.on('appLog', function(evt, data) {
         console.log(data.msg);
     });
-
-    function startUpdate() {
-        ipcRenderer.send('installUpdate');
-    }
 
     function toggleLogin(disabled) {
         saveState();
@@ -454,11 +445,6 @@
         };
 
         ipcRenderer.send('startPython', auth, code, geoLocation, {
-            // show_gyms: checked('showgym'),
-            // show_pokestops: checked('showstop'),
-            // only_stops_with_lures: checked('onlylure'),
-            // filter_pokemon: $('#filter_type').val(),
-            // pokemon_ids: $('#pokeids').val(),
             google_maps_api: $('#google_maps_api').val(),
             max_steps: $('#max_steps').val(),
             walk_speed: $('#walk_speed').val(),
