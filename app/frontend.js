@@ -77,7 +77,7 @@ function loadScript(src) {
 }
 
 function initMap() {
-  loadJSON('pokemondata.json', function(data, successData) {
+  loadJSON('../resources/data/pokemondata.json', function(data, successData) {
     console.log('Loaded pokemon data..');
     pokemonArray = data;
   }, errorFunc, 'pokemonData');
@@ -207,7 +207,7 @@ var trainerFunc = function(data, user_index) {
                 lat: parseFloat(fort.latitude),
                 lng: parseFloat(fort.longitude)
               },
-              icon: 'image/forts/img_pokestop.png'
+              icon: '../resources/image/forts/img_pokestop.png'
             });
           } else {
             forts[fort.id] = new google.maps.Marker({
@@ -216,7 +216,7 @@ var trainerFunc = function(data, user_index) {
                 lat: parseFloat(fort.latitude),
                 lng: parseFloat(fort.longitude)
               },
-              icon: 'image/forts/' + teams[fort.owned_by_team] + '.png'
+              icon: '../resources/image/forts/' + teams[fort.owned_by_team] + '.png'
             });
           }
           fortPoints = '';
@@ -249,7 +249,7 @@ var trainerFunc = function(data, user_index) {
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {lat: parseFloat(data.lat), lng: parseFloat(data.lng)},
-      icon: 'image/trainer/' + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + '.png',
+      icon: '../resources/image/trainer/' + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + '.png',
       zIndex: 2,
       label: users[user_index]
     });
@@ -290,7 +290,7 @@ var catchSuccess = function(data, user_index) {
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
-          icon: 'image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
+          icon: '../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
           zIndex: 4,
           optimized: false
         });
@@ -308,7 +308,7 @@ var catchSuccess = function(data, user_index) {
           lat: parseFloat(data.latitude),
           lng: parseFloat(data.longitude)
         });
-        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon('image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
+        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon('../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
       }
     }
   } else {
@@ -421,7 +421,7 @@ function buildMenu() {
     document.getElementById('subtitle').innerHTML = "Items in Bag";
     out = '<div class="row items"><div class="col s12"><h5>' + users[0] + '</h5>';
     for (i = 0; i < bagItems.length; i++) {
-      out += '<table><tr><td><img src="image/items/' +
+      out += '<table><tr><td><img src="../resources/image/items/' +
               bagItems[i].inventory_item_data.item.item_id +
               '.png" class="item_img"></td><td>Item: ' +
               itemsArray[bagItems[i].inventory_item_data.item.item_id] +
@@ -451,7 +451,7 @@ function buildMenu() {
         pkmnName = pokemonArray[pkmnNum-1].Name;
         pkmCp = bagPokemon[i].inventory_item_data.pokemon_data.cp;
       }
-      out += '<tr><td><img src="image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
+      out += '<tr><td><img src="../resources/image/pokemon/' + pkmnImage + '" class="png_img"></td><td class="left-align">Name: ' + pkmnName +
       '<br>Number: ' + pkmnNum + '<br>CP: ' + pkmCp + '</td></tr>';
     }
     out += '</table></div></div>';
@@ -465,7 +465,7 @@ function buildMenu() {
       pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokemon_id;
       pkmnImage = pad_with_zeroes(pkmnNum, 3) +'.png';
       pkmnName = pokemonArray[pkmnNum-1].Name;
-      out += '<tr><td><img src="image/pokemon/' +
+      out += '<tr><td><img src="../resources/image/pokemon/' +
               pkmnImage +
               '" class="png_img"></td><td class="left-align">Name: ' +
               pkmnName +
