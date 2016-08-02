@@ -9,10 +9,10 @@ Currently no linux build. If someone with linux wants to work to try to package 
 ### Warning to Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventually will
 
 ##Login Page
-![login](http://i.imgur.com/EZux4q5.png)
+![login](http://i.imgur.com/SLpFNLj.png)
 
 ##Main Page
-![main](http://i.imgur.com/oB8Zl86.png)
+![main](http://i.imgur.com/hUUZSwr.png)
 
 Getting Started
 ---------------
