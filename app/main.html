@@ -111,23 +111,17 @@
     });
 
     ipcRenderer.on('pythonLog', function (evt, data) {
+        var lines = data.msg.split("\n")
+        for (var i = 0; i < lines.length; i++) {
+            var line = lines[i].replace(/\[\d\d:\d\d:\d\d\] /, "")
+            mapView.executeJavaScript("$('#log').append('<p>"+line+"</p>');") 
+        }
         console.log(data.msg);
-        handleServerStatus(data.msg);
     });
 
     ipcRenderer.on('appLog', function (evt, data) {
         console.log(data.msg);
     });
-
-    function handleServerStatus(msg) {
-        if (msg.indexOf('Completed ') >= 0) {
-            $('#api-status-waiting,#api-status-down').hide();
-            $('#api-status-up').show();
-        } else if (msg.indexOf('retrying') >= 0) {
-            $('#api-status-waiting,#api-status-up').hide();
-            $('#api-status-down').show();
-        }
-    }
 
     function startUpdate() {
         ipcRenderer.send('installUpdate');
