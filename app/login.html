@@ -8,29 +8,23 @@
 
        <script type="text/javascript">
             window.$ = window.jQuery = require('../jquery.js');
+            window.Hammer = require('../hammer.min.js');
         </script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css" rel="stylesheet">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js" type="text/javascript"></script>
         <style type="text/css">
-            body {
-                background:#50483c;
+            h1 {
+                margin: 0;
             }
-            h1,h2,h3,h4,h5,h6,p {
+            h4 {
                 color: white;
             }
-            h5 {
-                color:#f0de23;
-            }
-            h6 {
-                color:#f0de23;
-            }
-
-            h1 {
-                margin-bottom: 10px
+            body {
+                background-color: #50483C;
             }
             p {
-                font-size:10px;
-                /*margin-bottom: 30px;*/
+                font-size: 0.7em;
+                opacity: 0.7;
             }
             #options > div {
                 min-height: 130px
@@ -41,7 +35,7 @@
             .btn {
                 background:#f0de23;
                 color:black;
-                min-width: 90%;
+                width: 100%;
                 font-size:1.2vw;
 
             }
@@ -51,38 +45,9 @@
                 padding-bottom:11px;
                 margin-bottom:0px;
             }
-            /* label color */
-              .input-field label {
-                color: #fff;
-              }
-              /* label focus color */
-              .input-field input[type=text]:focus + label {
-                color: #fff;
-              }
-              /* label underline focus color */
-              .input-field input[type=text]:focus {
-                border-bottom: 1px solid #fff;
-                box-shadow: 0 1px 0 0 #fff;
-              }
-              /* valid color */
-              .input-field input[type=text].valid {
-                border-bottom: 1px solid #fff;
-                box-shadow: 0 1px 0 0 #fff;
-              }
-              /* invalid color */
-              .input-field input[type=text].invalid {
-                border-bottom: 1px solid #fff;
-                box-shadow: 0 1px 0 0 #fff;
-              }
-              /* icon prefix focus color */
-              .input-field .prefix.active {
-                color: #fff;
-              }
+            
               .select-dropdown {
                 color: #d1d1d1;
-              }
-              form {
-                margin-bottom:30px;
               }
               #options > div > div, #options > div > div > div > input{
                 margin-bottom: 0px;
@@ -93,56 +58,98 @@
               .switch label input[type=checkbox]:checked+.lever:after {
                  background-color:#d7c60f;
               }
-              input {
-                color:white;
+              .switch {
+                  float: right;
+              }
+              .switch p {
+                  font-size: 12px;
+                  color: #fff;
+                  margin: 0;
+                  margin-bottom: -12px;
+                  line-height: 12px;
+              }
+     
+              .collapsible-body {
+                  background-color: #fff;
+                  padding: 1.2em;
+              }
+              .login-topbar {
+                  padding: 1em;
+                  color: white;
+              }
+              #options {
+                  padding: 0.7em;
+                  margin: 0;
               }
         </style>
         <script type="text/javascript">
         </script>
     </head>
     <body>
+        <div class="login-topbar center">
+            <h1>
+                <img id="logo" src="logo.png">
+                PikaBot
+            </h1>
+            <small id="version"></small>
+        </div>
         <div class="row">
-            <div class="col s10 offset-s1 center-align">
-                <h1>
-                    <img id="logo" src="logo.png">
-                    PikaBot
-                </h1>
-                <small id="version"></small>
+            <div class="col s10 offset-s1">
+
                 <br>
                 <div class="row">
                     <div class="col s4">
                         <h4>Login</h4>
-                        <hr>
-                        <h5>Google Account</h5>
-                        <form id="google_form" onsubmit="doGoogleLogin()">
-                            <input id="google_username" class="form-control" type="text"
-                                placeholder="Username" required>
-                            <input id="google_password" class="form-control" type="password"
-                                placeholder="Password" required>
-                            <button class="btn login"
-                                onclick="doGoogleLogin()">Login with Google</button>
-                        </form>
-                        <hr>
-                        <h5>PTC Account</h5>
-                        <form id="ptc_form" onsubmit="doPTCLogin()">
-                            <input id="ptc_username" class="form-control" type="text"
-                                placeholder="Username" required>
-                            <input id="ptc_password" class="form-control" type="password"
-                                placeholder="Password" required>
-                            <button class="btn login"
-                                onclick="doPTCLogin()">Login with PTC</button>
-                        </form>
+                        <ul class="collapsible" data-collapsible="accordion">
+                            <li>
+                            <div class="collapsible-header active">Google</div>
+                            <div class="collapsible-body">
+                                <form id="google_form" onsubmit="doGoogleLogin()">
+                                    <input id="google_username" class="form-control" type="text"
+                                        placeholder="Username" required>
+                                    <input id="google_password" class="form-control" type="password"
+                                        placeholder="Password" required>
+                                    <button class="btn login"
+                                        onclick="doGoogleLogin()">Login with Google</button>
+                                </form>
+                            </div>
+                            </li>
+                            <li>
+                            <div class="collapsible-header">PTC</div>
+                            <div class="collapsible-body">
+                                <form id="ptc_form" onsubmit="doPTCLogin()">
+                                    <input id="ptc_username" class="form-control" type="text"
+                                        placeholder="Username" required>
+                                    <input id="ptc_password" class="form-control" type="password"
+                                        placeholder="Password" required>
+                                    <button class="btn login"
+                                        onclick="doPTCLogin()">Login with PTC</button>
+                                </form>
+                            </div>
+                            </li>
+                        </ul>
+                        
                         <br>
                         <span id="ptc_errors" style="color: #f00"></span>
                         <br>
                     </div>
                     <div class="col s8">
                         <div class="row">
-                            <h4>Options</h4>
-                            <hr>
-                            <div id="options" class="col s12">
+                            <h4>Options
+                            <div class="switch">
+                                <p>Remember Info</p>
+                                <label>
+                                Off
+                                <input id="remember" checked type="checkbox">
+                                <span class="lever"></span>
+                                On
+                                </label>
+                                
+                            </div>
+                            </h4>
+                            <div id="options" class="card col s12">
                                 <div class="col s6">
-                                    <h6>Location *</h6>
+                                    <h6>Location</h6>
                                     <div class="row">
                                         <div class="">
                                                 <input id="location" class="form-control"
@@ -156,7 +163,7 @@
                                     </div>
                                 </div>
                                 <div class="col s6">
-                                    <h6>Google Maps API *</h6>
+                                    <h6>Google Maps API</h6>
                                     <div class="row">
                                         <div class="">
                                             <input id="google_maps_api" class="form-control"
@@ -215,24 +222,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="required" class="col s12">
-                                <h6>* Required</h6>
-                            </div>
                         </div>
-                    </div>
-                    <div class="row">
-                     <div class="switch col s12">
-                        <label>
-                          Off
-                          <input id="remember" checked type="checkbox">
-                          <span class="lever"></span>
-                          On
-                        </label>
-                        <p>Remember Info</p>
-                      </div>
-                    </div>
+                    </div>                    
                 </div>
-                <hr>
             </div>
         </div>
     </body>

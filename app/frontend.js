@@ -462,8 +462,8 @@ function buildMenu() {
     pkmnTotal = pokedex.length;
     out = '<div class="row items"><div class="col s12"><h5>' + users[0] + ' | ' + pkmnTotal + ' / 151</h5><table>';
     for (i = 0; i < pokedex.length; i++) {
-      pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number;
-      pkmnImage = pad_with_zeroes(pokedex[i].inventory_item_data.pokedex_entry.pokedex_entry_number, 3) +'.png';
+      pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokemon_id;
+      pkmnImage = pad_with_zeroes(pkmnNum, 3) +'.png';
       pkmnName = pokemonArray[pkmnNum-1].Name;
       out += '<tr><td><img src="image/pokemon/' +
               pkmnImage +
