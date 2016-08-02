@@ -5,7 +5,7 @@ const ipcMain = electron.ipcMain;
 const Menu = electron.Menu;
 const path = require('path');
 const os = require('os');
-const fs = require('fs')
+const fs = require('fs');
 const autoUpdater = electron.autoUpdater;
 //electron.crashReporter.start();
 

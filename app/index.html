@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PikaBot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
+    <!--Import Google Icon Font-->
+    <!-- <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css" type="text/css">
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js" type="text/javascript" ></script>
+    <script>
+      $(document).ready(function() {
+          $('select').material_select();
+          $('.modal-trigger').leanModal();
+          $(".side-info").sideNav({
+            menuWidth: 300, // Default is 240
+            edge: 'right', // Choose the horizontal origin
+            closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+          });
+          // $(".side-menu").sideNav({
+          //   menuWidth: 300, // Default is 240
+          //   edge: 'left', // Choose the horizontal origin
+          //   closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+          // });
+          $('.dropdown-button').dropdown({
+              inDuration: 300,
+              outDuration: 225,
+              constrain_width: false, // Does not change width of dropdown to that of the activator
+              hover: true, // Activate on hover
+              gutter: 0, // Spacing from edge
+              belowOrigin: false, // Displays dropdown below the button
+              alignment: 'left' // Displays dropdown with edge aligned to the left of button
+            });
+          $('#logout').click(function(){
+            console.log("Logout!")
+          });
+      });
+    </script>
+    <style type="text/css">
+      html,
+      body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+      }
+      .items {
+          overflow-y: scroll;
+      }
+      .item_img {
+          width: 75px;
+          height: auto;
+      }
+      .gif_img {
+          width: 38px;
+          height: auto;
+      }
+      .png_img {
+          width: 96px;
+          height: auto;
+      }
+      #nav-bar {
+          margin: 0;
+          height: 9%;
+      }
+      #nav-logo {
+          height: 100%;
+          background: #383025;
+          padding: 0
+      }
+      #logo {
+          height: 30px;
+          padding-left: 15px;
+      }
+      #nav-logo > p {
+          color: yellow;
+          font-family: Arial;
+          padding-left: 10px;
+          font-size: 20px;
+      }
+      #nav-menu {
+          padding: 0;
+          height: 100%;
+          background: #50483c;
+      }
+      #nav-menu > div {
+          height: 70px;
+          margin: 0;
+      }
+      #quick-info {
+          margin: 0;
+          margin-left: 10px;
+          padding: 0;
+      }
+      #quick-info > div {
+          margin: 0;
+          padding: 0;
+      }
+      #quick-info > div > p {
+          color: #cddde8;
+          font-size: 12px;
+          padding: 0px
+      }
+      #caught-div {
+          margin: 0;
+          margin-left: 10px;
+          padding: 0;
+          width: 20%;
+      }
+      #nav-options {
+          margin: 0;
+          margin-left: 10px;
+          padding: 0;
+      }
+      #nav-options > div {
+          margin: 0;
+          display: flex;
+          justify-content: space-between;
+          ;
+          margin-left: 50px;
+      }
+      #nav-options > div > a {
+          background: #feffff;
+          color: #50483c;
+      }
+      #options {
+          padding: 10px;
+      }
+      #slide-right {
+          padding: 10px;
+      }
+      #content {
+          height: 91%;
+          margin: 0;
+      }
+      #side-nav {
+          height: 100%;
+          padding: 0;
+          background: #efefef;
+          position: relative;
+      }
+      #account-option {
+          background: #241d14;
+          height: 70px;
+          padding: 10px;
+          margin: 0;
+          margin-bottom: 10px;
+      }
+      #account-option > div > p:nth-child(1) {
+          font-size: 10px;
+          color: white;
+          margin: 0;
+      }
+      #username {
+          color: yellow;
+          margin: 0
+      }
+      /* label color */
+      .input-field label {
+        color: #000;
+      }
+      /* label focus color */
+      .input-field input[type=text]:focus + label {
+        color: #000;
+      }
+      /* label underline focus color */
+      .input-field input[type=text]:focus {
+        border-bottom: 1px solid #000;
+        box-shadow: 0 1px 0 0 #000;
+      }
+      /* valid color */
+      .input-field input[type=text].valid {
+        border-bottom: 1px solid #000;
+        box-shadow: 0 1px 0 0 #000;
+      }
+      /* invalid color */
+      .input-field input[type=text].invalid {
+        border-bottom: 1px solid #000;
+        box-shadow: 0 1px 0 0 #000;
+      }
+      /* icon prefix focus color */
+      .input-field .prefix.active {
+        color: #000;
+      }
+
+      #location, #location-option > label{
+          color: black;
+      }
+      #walk-option {
+          height: 90px;
+          padding: 0;
+          margin: 0;
+      }
+      #walk-option > div {
+          color: black;
+      }
+      #walk-option >div > label {
+          color: black;
+      }
+      #steps-option > input {
+          color: black;
+      }
+      #steps-option > label {
+          color: black;
+      }
+      #mode-option {
+          height: 90px;
+          padding: 0;
+          margin: 0;
+      }
+      #mode-option > div {
+          color: black;
+      }
+      #mode-option > div > label{
+          color: black;
+      }
+
+      #apply{
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-right: 8.333333333%;
+        margin-bottom: 70px;
+        background:#f0de23;
+        color:black;
+        border-width: 1px;
+        border-color: #bdb021;
+        border-style: solid;
+      }
+
+      #logout {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin-right: 8.333333333%;
+        margin-bottom: 20px;
+        background:#efefef;
+        color:black;
+        border-width: 1px;
+        border-color: #bdb021;
+        border-style: solid;
+      }
+      #map-container {
+          height: 100%;
+          padding: 0
+      }
+      #map {
+          width: 100%;
+          height: 100%
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <div id="nav-bar" class="row">
+      <!-- Logo -->
+      <div id="nav-logo" class="col s2 valign-wrapper">
+        <img id="logo" src='../resources/icons/logo.png'>
+        <p class="center-align valign">
+          PikaBot
+        </p>
+      </div>
+      <!-- Nav Menu -->
+      <div id="nav-menu" class="col s10">
+        <div class="row valign-wrapper">
+          <!-- Quick Info -->
+          <div id="quick-info" class="col s5 valign">
+            <div id="caught-div" class="col s3">
+              <p id="caught">Caught: ...</p>
+            </div>
+            <div class="col s3">
+              <p id="xp_earned">XP Earned: ...</p>
+            </div>
+            <div class="col s4">
+              <p id="distance_traveled">Distance Traveled: ...</p>
+            </div>
+          </div>
+          <!-- Options -->
+          <div id="nav-options" class="col s7 valign offset-s5">
+            <div class="row">
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tInfo">Info</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tItems">Items</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tPokemon">Pokemon</a>
+              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tPokedex">Pokedex</a>
+              <a class='dropdown-button btn' href='#' data-activates='options'>Options</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Options Dropdown -->
+    <ul id='options' class='dropdown-content'>
+      <li>
+        Pan 
+        <div class="switch">
+          <label>
+          Off
+          <input type="checkbox" id="switchPan">
+          <span class="lever"></span>
+          On
+          </label>
+        </div>
+        <br>
+      </li>
+      <li>
+        Zoom
+        <div class="switch">
+          <label>
+          Off
+          <input type="checkbox" id="switchZoom">
+          <span class="lever"></span>
+          On
+          </label>
+        </div>
+        <br>
+      </li>
+      <li>
+        Image Type
+        <div class="switch">
+          <label>
+          png
+          <input type="checkbox" id="imageType">
+          <span class="lever"></span>
+          gif
+          </label>
+        </div>
+        <br>
+      </li>
+    </ul>
+    <!-- Side Popup Nav -->
+    <ul id="slide-right" class="side-nav">
+      <h3>
+        <div id="subtitle"></div>
+      </h3>
+      <hr>
+      <div id="subcontent"></div>
+    </ul>
+    <!-- Content -->
+    <div id="content" class="row">
+      <div id="side-nav" class="col s2">
+        <div class="row valign-wrapper" id="account-option">
+          <div class="valign">
+            <p>Logged in as</p>
+            <p id="username">Loading...</p>
+          </div>
+        </div>
+        <div id="location-option" class="input-field col s12">
+          <input placeholder="Location" id="location" type="text" class="validate">
+          <label for="location">Select location</label>
+        </div>
+        <div class="row" id="walk-option">
+          <div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose walk speed</option>
+              <option value="5">5 m/s</option>
+              <option value="10">10 m/s</option>
+              <option value="15">15 m/s</option>
+            </select>
+            <label>Walk Speed</label>
+          </div>
+        </div>
+        <div id="steps-option" class="input-field col s12">
+          <input placeholder="5" id="max_steps" type="text" class="validate">
+          <label for="max_steps">Max Steps</label>
+        </div>
+        <div id="mode-option" class="row">
+          <div class="input-field col s12">
+            <select>
+              <option value="" disabled selected>Choose bot mode</option>
+              <option value="all">All</option>
+              <option value="catch">Catch</option>
+              <option value="farm">Farm</option>
+            </select>
+            <label>Mode</label>
+          </div>
+        </div>
+        <a class="waves-effect waves-light btn s10 col offset-s1" id="apply">Apply</a>
+        <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
+      </div>
+      <div id="map-container" class="col s10 white">
+        <div id="map"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../gofbot/web/userdata.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
