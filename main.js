@@ -125,7 +125,7 @@ function setupMainWindow() {
   restarting = false;
 
   mainWindow = new BrowserWindow({width: 2000, height: 1000, minWidth: 700, minHeight: 500});
-  mainWindow.loadURL('file://' + __dirname + '/login.html');
+  mainWindow.loadURL('file://' + __dirname + '/app/login.html');
 
   mainWindow.on('closed', function() {
     mainWindow = null;
@@ -189,7 +189,7 @@ ipcMain.on('installUpdate', function(event) {
 });
 function startPython(auth, code, location, opts) {
 
-  mainWindow.loadURL('file://' + __dirname + '/main.html');
+  mainWindow.loadURL('file://' + __dirname + '/app/main.html');
   // mainWindow.openDevTools();
     
 
@@ -337,7 +337,7 @@ function startPython(auth, code, location, opts) {
     
 
     var rq = require('request-promise');
-    mainAddr = 'http://localhost:' + port + "/web";
+    mainAddr = 'http://localhost:' + port + "/app";
 
     var openWindow = function(){
       mainWindow.webContents.send('server-up', mainAddr);

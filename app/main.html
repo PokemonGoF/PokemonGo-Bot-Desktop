@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pokémon GO - Live Map</title>
+    <title>PikeBot</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <style>
         html, body {
@@ -63,7 +63,7 @@
 </body>
 
 <script type="text/javascript">
-    window.$ = window.jQuery = require('./jquery');
+    window.$ = window.jQuery = require('../jquery');
 </script>
 <script src="./bootstrap.js"></script>
 <script src="./qrcode.js"></script>
@@ -141,8 +141,7 @@
         console.log(mapView.getURL())
         // mapView.openDevTools()
 
-        const logout = (e) =
-    >
+        const logout = (e) =>
         {
             console.log(e.message)
             if (e.message == 'Logout!') {
