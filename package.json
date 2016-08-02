@@ -25,7 +25,6 @@
   "devDependencies": {
     "bower": "^1.7.9",
     "electron-packager": "*",
-    "gulp": "^3.9.1",
-    "gulp-sass": "^2.3.2"
+    "gulp": "^3.9.1"
   }
 }
