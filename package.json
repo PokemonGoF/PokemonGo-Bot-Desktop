@@ -15,7 +15,6 @@
     "cross-spawn": "*",
     "electron-compile": "^3.3.5",
     "electron-prebuilt": "*",
-    "localtunnel": "*",
     "lock": "^0.1.2",
     "node-uuid": "^1.4.3",
     "portfinder": "*",

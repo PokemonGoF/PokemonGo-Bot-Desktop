@@ -65,9 +65,6 @@
 <script type="text/javascript">
     window.$ = window.jQuery = require('../jquery');
 </script>
-<script src="./bootstrap.js"></script>
-<script src="./qrcode.js"></script>
-
 <script type="text/javascript">
 
 
@@ -76,8 +73,6 @@
     var ipcRenderer = require('electron').ipcRenderer;
     var url = require('url');
     var request = require('request');
-    var ngrok = require('./ngrok');
-    var localtunnel = require('localtunnel')
     var serverUrl = null;
     const mapView = document.getElementById('mapview');
     var geoLat, geoLon, mobileTunnel;

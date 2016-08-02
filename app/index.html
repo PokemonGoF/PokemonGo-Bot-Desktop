@@ -246,7 +246,7 @@
           height: 100%
       }
       #log {
-        font-size: 8px;
+        font-size: 12px;
       }
       #log-container {
         padding: 10px;
@@ -289,10 +289,10 @@
           <!-- Options -->
           <div id="nav-options" class="col s7 valign offset-s5">
             <div class="row">
-              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tInfo">Info</a>
-              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tItems">Items</a>
-              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tPokemon">Pokemon</a>
-              <a class="waves-effect waves-light btn side-info" href="#" data-activates="slide-right" id="tPokedex">Pokedex</a>
+              <a class="waves-effect waves-light btn side-info tInfo" href="#" data-activates="slide-right" id="tInfo">Info</a>
+              <a class="waves-effect waves-light btn side-info tItems" href="#" data-activates="slide-right" id="tItems">Items</a>
+              <a class="waves-effect waves-light btn side-info tPokemon" href="#" data-activates="slide-right" id="tPokemon">Pokemon</a>
+              <a class="waves-effect waves-light btn side-info tPokedex" href="#" data-activates="slide-right" id="tPokedex">Pokedex</a>
               <a class='dropdown-button btn' href='#' data-activates='options'>Options</a>
             </div>
           </div>
@@ -337,12 +337,27 @@
         </div>
         <br>
       </li>
+      <li>
+        Bot Path
+        <div class="switch">
+          <label>
+            Off
+            <input type="checkbox" id="strokeOn">
+            <span class="lever"></span>
+            On
+          </label>
+        </div>
+        <br>
+      </li>
+      <div class="row" id="trainers">
+      </div>
     </ul>
     <!-- Side Popup Nav -->
     <ul id="slide-right" class="side-nav">
       <h3>
         <div id="subtitle"></div>
       </h3>
+      <div id="sortButtons"></div>
       <hr>
       <div id="subcontent"></div>
     </ul>
