@@ -11,18 +11,21 @@
     "start": "electron main.js"
   },
   "dependencies": {
-    "request": "*",
-    "request-promise": "*",
-    "electron-prebuilt": "*",
-    "portfinder": "*",
     "async": "^0.9.0",
+    "cross-spawn": "*",
+    "electron-prebuilt": "*",
+    "localtunnel": "*",
     "lock": "^0.1.2",
     "node-uuid": "^1.4.3",
-    "xtend": "^4.0.1",
-    "cross-spawn": "*",
-    "localtunnel": "*"
+    "portfinder": "*",
+    "request": "*",
+    "request-promise": "*",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "electron-packager": "*"
+    "bower": "^1.7.9",
+    "electron-packager": "*",
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.2"
   }
 }

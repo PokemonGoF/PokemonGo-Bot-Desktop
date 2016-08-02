@@ -9,10 +9,10 @@ Currently no linux build. If someone with linux wants to work to try to package 
 ### Warning to Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventually will
 
 ##Login Page
-![login](https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot-Desktop/development/screenshots/Login.png)
+![login](http://i.imgur.com/EZux4q5.png)
 
 ##Main Page
-![main](https://raw.githubusercontent.com/PokemonGoF/PokemonGo-Bot-Desktop/development/screenshots/Main.png)
+![main](http://i.imgur.com/oB8Zl86.png)
 
 Getting Started
 ---------------
