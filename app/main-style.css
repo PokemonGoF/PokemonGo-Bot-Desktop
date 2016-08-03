@@ -1,0 +1,44 @@
+   html,
+   body {
+       height: 100%;
+       width: 100%;
+   }
+   
+   .container-fluid {
+       margin: 0 auto;
+       height: 100%;
+       padding: 0;
+   }
+   
+   .content {
+       height: 100vh;
+       overflow: hidden;
+   }
+   
+   #top-nav {
+       height: 50px;
+   }
+   
+   #control {
+       padding-top: 9px;
+   }
+   
+   #control .row {
+       padding-left: 10px;
+       padding-right: 10px;
+   }
+   
+   #not-sharing {
+       color: #f00;
+       display: none;
+   }
+   
+   #sharing {
+       color: #093;
+   }
+   
+   .sharing-on,
+   #api-status-down,
+   #api-status-up {
+       display: none;
+   }

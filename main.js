@@ -15,7 +15,6 @@ app.setVersion(require('./package.json').version);
 var mainWindow = null;
 var procStarted = false;
 var subpy = null;
-var server = null;
 var mainAddr;
 var restarting = false;
 
@@ -108,9 +107,6 @@ app.on('window-all-closed', function() {
   if (subpy && subpy.pid) {
     killProcess(subpy.pid);
   }
-  if (server && server.pid) {
-    killProcess(server.pid);
-  }
   app.quit();
 });
 
@@ -131,9 +127,6 @@ function setupMainWindow() {
     mainWindow = null;
     if (subpy && subpy.pid) {
       killProcess(subpy.pid);
-    }
-    if (server && server.pid) {
-      killProcess(server.pid);
     }
   });
 }
@@ -163,9 +156,6 @@ ipcMain.on('logout', function(event, auth, code, location, opts) {
     if (subpy && subpy.pid) {
       killProcess(subpy.pid);
     }
-    if (server && server.pid) {
-      killProcess(server.pid);
-    }
   }
   procStarted = false;
   mainWindow.close();
@@ -180,26 +170,15 @@ ipcMain.on('startPython', function(event, auth, code, location, opts) {
   procStarted = true;
 });
 
-ipcMain.on('getServer', function(event) {
-  event.sender.send('server-up', mainAddr);
-});
 
 ipcMain.on('installUpdate', function(event) {
   autoUpdater.quitAndInstall();
 });
 function startPython(auth, code, location, opts) {
 
-  mainWindow.loadURL('file://' + __dirname + '/app/main.html');
+  mainWindow.loadURL('file://' + __dirname + '/app/index.html');
   // mainWindow.openDevTools();
-    
 
-  // Find open port
-  var portfinder = require('portfinder');
-  portfinder.getPort(function (err, port) {
-
-    logData('Got open port: ' + port);
-
-    // Run python web server
     var cmdLine = [
       './pokecli.py',
     ];
@@ -223,13 +202,7 @@ function startPython(auth, code, location, opts) {
       pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
     }
 
-    var serverCmdLine = [
-      'serveit.py',
-      port
-    ];
 
-    logData('Bot path: ' + path.join(__dirname, 'gofbot/web'));
-    logData('python ' + serverCmdLine.join(' '));
     
     var renameFiles = function(){
       //rename config
@@ -310,19 +283,6 @@ function startPython(auth, code, location, opts) {
 
 
 
-    server = require('child_process').spawn(pythonCmd, serverCmdLine, {
-      cwd: path.join(__dirname, ''),
-      detached: true
-    });
-
-    // server.stdout.on('data', (data) => {
-    //   console.log(`Python: ${data}`);
-    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    // });
-    // server.stderr.on('data', (data) => {
-    //   console.log(`Python: ${data}`);
-    //   mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
-    // });
 
 
     subpy = require('child_process').spawn(pythonCmd, cmdLine, {
@@ -332,48 +292,26 @@ function startPython(auth, code, location, opts) {
 
     subpy.stdout.on('data', (data) => {
       console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+      mainWindow.send('pythonLog', {'msg': `${data}`});
     });
     subpy.stderr.on('data', (data) => {
       console.log(`Python: ${data}`);
-      mainWindow.webContents.send('pythonLog', {'msg': `${data}`});
+      mainWindow.send('pythonLog', {'msg': `${data}`});
     });
-
     
 
-    var rq = require('request-promise');
-    mainAddr = 'http://localhost:' + port + "/app";
+  
 
-    var openWindow = function(){
-      mainWindow.webContents.send('server-up', mainAddr);
-      mainWindow.webContents.executeJavaScript(
-        'serverUp("'+mainAddr+'")');
+   
       mainWindow.on('closed', function() {
         mainWindow = null;
         if (subpy && subpy.pid) {
           killProcess(subpy.pid);
         }
-        if (server && server.pid) {
-          killProcess(server.pid);
-        }
         procStarted = false;
       });
-    };
 
-    var startUp = function(){
-      rq(mainAddr)
-        .then(function(htmlString){
-          logData('server started!');
-          openWindow();
-        })
-        .catch(function(err){
-          //console.log('waiting for the server start...');
-          startUp();
-        });
-    };
 
-    startUp();
 
-  });
 
 };

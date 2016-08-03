@@ -68,6 +68,40 @@ var itemsArray = {
 
 $(document).ready(function() {
   loadScript("https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey + "&libraries=drawing&callback=initMap");
+
+  $('select').material_select();
+  $('.modal-trigger').leanModal();
+  $(".side-info").sideNav({
+    menuWidth: 300, // Default is 240
+    edge: 'right', // Choose the horizontal origin
+    closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+  });
+  // $(".side-menu").sideNav({
+  //   menuWidth: 300, // Default is 240
+  //   edge: 'left', // Choose the horizontal origin
+  //   closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
+  // });
+  $('.dropdown-button').dropdown({
+    inDuration: 300,
+    outDuration: 225,
+    constrain_width: false, // Does not change width of dropdown to that of the activator
+    hover: true, // Activate on hover
+    gutter: 0, // Spacing from edge
+    belowOrigin: false, // Displays dropdown below the button
+    alignment: 'left' // Displays dropdown with edge aligned to the left of button
+  });
+  var ipcRenderer = require('electron').ipcRenderer;
+  $('#logout').click(function() {
+    ipcRenderer.send('logout');
+  });
+  ipcRenderer.on('pythonLog', function(evt, data) {
+    var lines = data.msg.split("\n")
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].replace(/\[\d\d:\d\d:\d\d\] /, "")
+      $('#log').append('<p>' + line + '</p>');
+    }
+    console.log(data.msg);
+  });
 });
 
 function loadScript(src) {

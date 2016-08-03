@@ -6,34 +6,10 @@
     <meta charset="utf-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css" rel="stylesheet">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-      $(document).ready(function() {
-          $('select').material_select();
-          $('.modal-trigger').leanModal();
-          $(".side-info").sideNav({
-            menuWidth: 300, // Default is 240
-            edge: 'right', // Choose the horizontal origin
-            closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-          });
-          // $(".side-menu").sideNav({
-          //   menuWidth: 300, // Default is 240
-          //   edge: 'left', // Choose the horizontal origin
-          //   closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-          // });
-          $('.dropdown-button').dropdown({
-              inDuration: 300,
-              outDuration: 225,
-              constrain_width: false, // Does not change width of dropdown to that of the activator
-              hover: true, // Activate on hover
-              gutter: 0, // Spacing from edge
-              belowOrigin: false, // Displays dropdown below the button
-              alignment: 'left' // Displays dropdown with edge aligned to the left of button
-            });
-          $('#logout').click(function(){
-            console.log("Logout!")
-          });
-      });
+        window.$ = window.jQuery = window.jquery = require('../resources/javascript/jquery.js');
+        window.Hammer = require('../resources/javascript/hammer.min.js');
+        window.Materialize = require('../resources/javascript/materialize.min.js');
     </script>
     <style type="text/css">
       html,
@@ -380,6 +356,7 @@
         <div id="map"></div>
       </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="../gofbot/web/userdata.js"></script>
     <script type="text/javascript" src="frontend.js"></script>
   </body>
