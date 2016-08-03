@@ -102,7 +102,7 @@
                         <h4>Login</h4>
                         <ul class="collapsible" data-collapsible="accordion">
                             <li>
-                            <div class="collapsible-header active">Google</div>
+                            <div class="collapsible-header">Google</div>
                             <div class="collapsible-body">
                                 <form id="google_form" onsubmit="doGoogleLogin()">
                                     <input id="google_username" class="form-control" type="text"
@@ -270,6 +270,12 @@
             setupValue('ptc_password', $('#ptc_password'));
             setupValue('google_username', $('#google_username'));
             setupValue('google_password', $('#google_password'));
+            //Open login section if we have saved username
+            if (localStorage.getItem('ptc_username')) {
+                $('.collapsible li:eq(1) .collapsible-header').click();
+            }else if(localStorage.getItem('google_username')) {
+                $('.collapsible li:eq(0) .collapsible-header').click();
+            }
         }
         setupValue('google_maps_api', $('#google_maps_api'));
         setupValueAndSetter('max_steps', $('#max_steps'));
