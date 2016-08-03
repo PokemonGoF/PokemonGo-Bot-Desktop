@@ -33,8 +33,8 @@ solderzzc
 ProjectBarks  
 JacerOmni  
 ariestiyansyah  
-GodLesZ
-sniok
+GodLesZ  
+sniok  
 
 *Don't forget to add yourself when doing PR*
 
