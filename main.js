@@ -10,7 +10,7 @@ const autoUpdater = electron.autoUpdater;
 //electron.crashReporter.start();
 
 var platform = os.platform() + '_' + os.arch();
-var version = app.getVersion();
+app.setVersion(require('./package.json').version);
 
 var mainWindow = null;
 var procStarted = false;
