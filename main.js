@@ -219,9 +219,6 @@ function startPython(auth, code, location, opts) {
     logData('python ' + cmdLine.join(' '));
 
     var pythonCmd = 'python';
-    if (os.platform() == 'win32') {
-      pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
-    }
 
     var serverCmdLine = [
       'serveit.py',
