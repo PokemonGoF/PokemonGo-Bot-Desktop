@@ -423,9 +423,9 @@ function buildMenu() {
     for (i = 0; i < bagItems.length; i++) {
       out += '<div class="col s12 m4 l3 center" style="height: 150px;"><img src="../resources/image/items/' +
               bagItems[i].inventory_item_data.item.item_id +
-              '.png" class="item_img"><br>Item: ' +
+              '.png" class="item_img"><br><b>' +
               itemsArray[bagItems[i].inventory_item_data.item.item_id] +
-              '<br>Count: ' +
+              '</b><br>Count: ' +
               (bagItems[i].inventory_item_data.item.count || "0") +
               '</div>';
     }
