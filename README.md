@@ -1,4 +1,4 @@
-![screenshot](http://i.imgur.com/dKCIfVq.png)
+![screenshot](http://i.imgur.com/tzMaWv4.png)
 # Pokemon GO Bot Desktop
 Desktop Pokemon GO Bot based on [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot)  
 Join us at #desktop-porting channel at [our slack chat](https://pokemongo-bot.herokuapp.com/)
