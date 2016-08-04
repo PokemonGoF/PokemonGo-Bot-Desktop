@@ -124,13 +124,11 @@ function initMap() {
   setTimeout(function(){
     placeTrainer();
     addCatchable();
-    for (menu = 1; menu < 5; menu++) {
-      buildMenu();
-    }
     setTimeout(function(){
       setInterval(updateTrainer, 1000);
       setInterval(updateData, 1000);
       setInterval(addCatchable, 1000);
+      addInventory();
     }, 100);
   }, 1000);
 }
@@ -159,55 +157,14 @@ $('#imageType').change(function(){
     }
 });
 
-$('#tInfo').click(function(){
-    if (menu == undefined || menu == 1) {
-      $('#submenu').toggle();
-    }
-    if (menu != 1 && $('#submenu').is(':hidden')) {
-      $('#submenu').toggle();
-    }
-    menu = 1;
-    buildMenu();
-});
 
-$('#tItems').click(function(){
-    if (menu == undefined || menu == 2) {
-      $('#submenu').toggle();
-    }
-    if (menu != 2 && $('#submenu').is(':hidden')) {
-      $('#submenu').toggle();
-    }
-    menu = 2;
-    buildMenu();
-});
-
-$('#tPokemon').click(function(){
-    if (menu == undefined || menu == 3) {
-      $('#submenu').toggle();
-    }
-    if (menu != 3 && $('#submenu').is(':hidden')) {
-      $('#submenu').toggle();
-    }
-    menu = 3;
-    buildMenu();
-});
-
-$('#tPokedex').click(function(){
-    if (menu == undefined || menu == 4) {
-      $('#submenu').toggle();
-    }
-    if (menu != 4 && $('#submenu').is(':hidden')) {
-      $('#submenu').toggle();
-    }
-    menu = 4;
-    buildMenu();
+$('#btn-info').click(function(){
+    fillInventory();
 });
 
 var updateData = function() {
   document.getElementById('username').innerHTML = users[0];
-  document.getElementById('caught').innerHTML = "Caught: "+stats[0].inventory_item_data.player_stats.pokemons_captured;
-  document.getElementById('xp_earned').innerHTML = "XP Earned: "+stats[0].inventory_item_data.player_stats.experience;
-  document.getElementById('distance_traveled').innerHTML = "Distance Traveled: "+parseFloat(stats[0].inventory_item_data.player_stats.km_walked).toFixed(2)+"km";
+  document.getElementById('level').innerHTML = "Level "+stats[0].inventory_item_data.player_stats.level;
 }
 
 var errorFunc = function(xhr) {
@@ -408,105 +365,131 @@ $(document).ready(function(){
   $('.tooltipped').tooltip({delay: 50});
 });
 
-function buildMenu() {
+
+function fillInventory(){
   addInventory();
-  if (menu == 1) {
-    document.getElementById('subtitle').innerHTML = 'Trainer Info';
-    out = '';
-    for (var i = 0; i < stats.length; i++) {
-      out += '<div class="row"><div class="col s12"><img src="'+user_data[users[0]].marker.icon+'"><h5>' +
-              users[0] +
+            var current_user_stats = stats[0].inventory_item_data.player_stats;
+            var text = '<div class="col s12">\
+      <ul class="tabs">\
+        <li class="tab col s3"><a class="active" href="#info">Info</a></li>\
+        <li class="tab col s3"><a href="#items">Items</a></li>\
+        <li class="tab col s3"><a href="#pokemon">Pokemon</a></li>\
+        <li class="tab col s3"><a href="#pokedex">Pokedex</a></li>\
+      </ul>\
+    </div>\
+    <div class="modal-content">\
+        <div class="row">\
+    <div id="info" class="col s12">\
+    <h5>' +
+              users[0]+
               '</h5><br>Level: ' +
-              stats[i].inventory_item_data.player_stats.level +
+              current_user_stats.level +
               '<br>Exp: ' +
-              stats[i].inventory_item_data.player_stats.experience +
+              current_user_stats.experience +
               '<br>Exp to Lvl ' +
-              ( parseInt(stats[i].inventory_item_data.player_stats.level, 10) + 1 ) +
+              ( parseInt(current_user_stats.level, 10) + 1 ) +
               ': ' +
-              (parseInt(stats[i].inventory_item_data.player_stats.next_level_xp, 10) - stats[i].inventory_item_data.player_stats.experience) +
+              (parseInt(current_user_stats.next_level_xp, 10) - current_user_stats.experience) +
               '<br>Pokemon Encountered: ' +
-              stats[i].inventory_item_data.player_stats.pokemons_encountered +
+              (current_user_stats.pokemons_encountered || 0) +
               '<br>Pokeballs Thrown: ' +
-              stats[i].inventory_item_data.player_stats.pokeballs_thrown +
+              (current_user_stats.pokeballs_thrown || 0) +
               '<br>Pokemon Caught: ' +
-              stats[i].inventory_item_data.player_stats.pokemons_captured +
+              (current_user_stats.pokemons_captured || 0) +
               '<br>Small Ratata Caught: ' +
-              stats[i].inventory_item_data.player_stats.small_rattata_caught +
+              (current_user_stats.small_rattata_caught || 0) +
               '<br>Pokemon Evolved: ' +
-              stats[i].inventory_item_data.player_stats.evolutions +
+              (current_user_stats.evolutions || 0) +
               '<br>Eggs Hatched: ' +
-              stats[i].inventory_item_data.player_stats.eggs_hatched +
+              (current_user_stats.eggs_hatched || 0) +
               '<br>Unique Pokedex Entries: ' +
-              stats[i].inventory_item_data.player_stats.unique_pokedex_entries +
+              (current_user_stats.unique_pokedex_entries || 0) +
               '<br>PokeStops Visited: ' +
-              stats[i].inventory_item_data.player_stats.poke_stop_visits +
+              (current_user_stats.poke_stop_visits || 0) +
               '<br>Kilometers Walked: ' +
-              parseFloat(stats[i].inventory_item_data.player_stats.km_walked).toFixed(2) +
-              '</div></div>';
-    }
-    document.getElementById('subcontent').innerHTML = out;
-  }
-  if (menu == 2) {
-    document.getElementById('subtitle').innerHTML = "Items in Bag";
-    out = '<div class="row items">';
-    for (i = 0; i < bagItems.length; i++) {
-      out += '<div class="col s12 m4 l3 center" style="height: 150px;"><img src="../resources/image/items/' +
-              bagItems[i].inventory_item_data.item.item_id +
+              (parseFloat(current_user_stats.km_walked).toFixed(2) || 0) +
+              '\
+    </div>\
+    ';
+  //items 
+  var current_user_bag_items = bagItems;
+  text += '<div id="items" class="col s12"><div class="row items">';
+    for (i = 0; i < current_user_bag_items.length; i++) {
+      text += '<div class="col s12 m4 l3 center" style="float: left"><img src="../resources/image/items/' +
+              current_user_bag_items[i].inventory_item_data.item.item_id +
               '.png" class="item_img"><br><b>' +
-              itemsArray[bagItems[i].inventory_item_data.item.item_id] +
+              itemsArray[current_user_bag_items[i].inventory_item_data.item.item_id] +
               '</b><br>Count: ' +
-              (bagItems[i].inventory_item_data.item.count || "0") +
+              (current_user_bag_items[i].inventory_item_data.item.count || 0) +
               '</div>';
     }
-    out += '</div>';
-    document.getElementById('subcontent').innerHTML = out;
-  }
-  if (menu == 3) {
-    document.getElementById('subtitle').innerHTML = "Pokemon in Bag";
-    pkmnTotal = bagPokemon.length;
-    out = '<div class="row items"><h5>' +
-          users[0] +
-          ' | ' +
-          pkmnTotal +
-          ' Pokemon</h5>';
+  text += '</div></div>';
+  //pokemon
+  pkmnTotal = bagPokemon[0].length;
+    
+    text += '<div id="pokemon" class="col s12"><div class="row items">';
+    bagPokemon.sort(function(a, b){return b.inventory_item_data.pokemon_data.cp - a.inventory_item_data.pokemon_data.cp;});
     for (i = 0; i < bagPokemon.length; i++) {
-      if (bagPokemon[i].inventory_item_data.pokemon_data.is_egg) {
-        pkmnNum = "???";
-        pkmnImage = "Egg.png";
-        pkmnName = "Egg";
+      var current_pokemon_data = bagPokemon[i].inventory_item_data.pokemon_data;
+      if (current_pokemon_data.is_egg) {
+        continue;
       } else {
-        pkmnNum = bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id;
-        pkmnImage = pad_with_zeroes(bagPokemon[i].inventory_item_data.pokemon_data.pokemon_id, 3) + '.png';
+        pkmnNum = current_pokemon_data.pokemon_id;
+        pkmnImage = pad_with_zeroes(current_pokemon_data.pokemon_id, 3) + '.png';
         pkmnName = pokemonArray[pkmnNum-1].Name;
-        pkmCp = bagPokemon[i].inventory_item_data.pokemon_data.cp;
+        pkmnCP = "CP "+current_pokemon_data.cp;
+        pkmnIVA = current_pokemon_data.individual_attack || 0;
+        pkmnIVD = current_pokemon_data.individual_defense || 0;
+        pkmnIVS = current_pokemon_data.individual_stamina || 0;
+        pkmnIV = ((pkmnIVA + pkmnIVD + pkmnIVS) / 45.0).toFixed(2);
       }
-      out += '<div class="col s12 m4 l3 center" style="height: 170px;"><img src="../resources/image/pokemon/' + pkmnImage + '" class="png_img"><br><b>' + pkmnName +
-      '</b><br>Number: ' + pkmnNum + '<br>CP: ' + pkmCp + '</div>';
+      text += '<div class="col s12 m4 l3 center" style="float: left;"><img src="../resources/image/pokemon/' + pkmnImage + '" class="png_img"><br><b>' + pkmnName +
+      '</b><br>' + pkmnCP + '<br>IV '+pkmnIV+'</div>';
     }
-    out += '</div>';
-    document.getElementById('subcontent').innerHTML = out;
+    text += '</div></div>';
+
+  //pokemon
+  var sortedPokedex = [];
+  for (i = 0; i < pokedex.length; i++) {
+    pkmID = pokedex[i].inventory_item_data.pokedex_entry.pokemon_id;
+    pkmnName = pokemonArray[pkmID-1].Name;
+    pkmEnc = pokedex[i].inventory_item_data.pokedex_entry.times_encountered;
+    pkmCap = pokedex[i].inventory_item_data.pokedex_entry.times_captured;
+    sortedPokedex.push({
+      "name": pkmnName,
+      "id": pkmID,
+      "cap": (pkmEnc || 0),
+      "enc": (pkmCap || 0)
+    });
   }
-  if (menu == 4) {
-    document.getElementById('subtitle').innerHTML = "Pokedex";
-    pkmnTotal = pokedex.length;
-    out = '<div class="row items"><h5>' + users[0] + ' | ' + pkmnTotal + ' / 151</h5>';
-    for (i = 0; i < pokedex.length; i++) {
-      pkmnNum = pokedex[i].inventory_item_data.pokedex_entry.pokemon_id;
-      pkmnImage = pad_with_zeroes(pkmnNum, 3) +'.png';
-      pkmnName = pokemonArray[pkmnNum-1].Name;
-      out += '<div class="col s12 m4 l4 center" style="height: 220px;"><img src="../resources/image/pokemon/' +
-              pkmnImage +
-              '" class="png_img"><br><b> ' +
-              pkmnName +
-              '</b><br>Number: ' +
-              pkmnNum +
-              '<br>Times Encountered: ' +
-              (pokedex[i].inventory_item_data.pokedex_entry.times_encountered || "0") + 
-              '<br>Times Caught: ' +
-              (pokedex[i].inventory_item_data.pokedex_entry.times_captured || "0") +
-              '</div>';
-    }
-    out += '</div>';
-    document.getElementById('subcontent').innerHTML = out;
+  text += '<div id="pokedex" class="col s12">';
+  for (var i = 0; i < sortedPokedex.length; i++) {
+    pkmnNum = sortedPokedex[i].id;
+    pkmnImage = pad_with_zeroes(pkmnNum, 3) +'.png';
+    pkmnName = pokemonArray[pkmnNum-1].Name;
+    pkmnName = pokemonArray[pkmnNum-1].Name;
+    pkmnEnc = sortedPokedex[i].enc
+    pkmnCap = sortedPokedex[i].cap
+    text += '<div class="col s12 m6 l3 center"><img src="../resources/image/pokemon/' +
+            pkmnImage +
+            '" class="png_img"><br><b> ' +
+            pad_with_zeroes(pkmnNum, 3) +
+            ' ' +
+            pkmnName +
+            '</b><br>Times Seen: ' +
+            pkmnEnc + 
+            '<br>Times Caught: ' +
+            pkmnCap +
+            '<br>Candy: ' +
+            pkmnCap +
+            '</div>';
   }
+  text += '</div>';
+  //pokedex
+  text += '</div></div>\
+        <div class="modal-footer">\
+            <a href="#!" class="info-close modal-action modal-close waves-effect waves-green btn-flat">Close</a>\
+        </div>';
+            $('#modal-info').html(text);
+            setTimeout(function(){$('.tabs').tabs();},1);
 }
