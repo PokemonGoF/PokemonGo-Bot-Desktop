@@ -27,7 +27,7 @@ npm install
 npm start
 ```
 ## Waffie Channel
-We sync the status in [Waffie](https://waffle.io/PokemonGoF/PokemonGo-Bot-Desktop)
+We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Desktop)
 
 ## Contributors
 JVenberg  
