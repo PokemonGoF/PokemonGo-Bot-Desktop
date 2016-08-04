@@ -236,12 +236,18 @@
       #log {
         font-size: 12px;
       }
-      #log-container {
-        padding: 15px;
-        overflow-y: scroll;
-        height: calc(100% - 260px);
+      #log-container {  
+        padding: 15px; 
+        height: calc(100% - 280px);
+        margin-bottom: 40px
       }
-      #log-container::-webkit-scrollbar {
+      #log-text {
+        padding-bottom: 15px;      
+        overflow-y: scroll;
+        width: 100%;
+        height: 100%;
+      }
+      #log-text::-webkit-scrollbar {
         display: none;
       }
       #side-nav > h5 {
@@ -259,6 +265,8 @@
       #username {
         color: white;
         font-weight: bold;
+        width:100%;
+        font-size: .8vw;
       }
       #level {
         margin: 0;
@@ -387,7 +395,9 @@
         </a>
         <div id="log-container">
           <h6><i class="material-icons" style="float: left; line-height: 14px; padding-right: 15px; color: #FFF">list</i>Logs</h6>
-          <p id="log"></p>
+          <div id="log-text">
+            <p id="log"></p>
+          </div>
         </div>
         <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
       </div>
