@@ -7,7 +7,6 @@ const path = require('path');
 const os = require('os');
 const fs = require('fs');
 const autoUpdater = electron.autoUpdater;
-//electron.crashReporter.start();
 
 var platform = os.platform() + '_' + os.arch();
 app.setVersion(require('./package.json').version);
@@ -17,20 +16,6 @@ var procStarted = false;
 var subpy = null;
 var mainAddr;
 var restarting = false;
-
-//try {
-//  autoUpdater.setFeedURL('https:///update/'+platform+'/'+version);
-//} catch (e) {console.log(e)}
-
-//autoUpdater.on('update-downloaded', function(){
-//  mainWindow.webContents.send('update-ready');
-//});
-
-//try {
-//  autoUpdater.checkForUpdates();
-//} catch (e) {}
-
-// Setup menu bar
 
 
 var template = [{
@@ -98,7 +83,6 @@ var template = [{
     ]
 }
 ];
-
 
 app.on('window-all-closed', function() {
   if (restarting) {
@@ -170,148 +154,114 @@ ipcMain.on('startPython', function(event, auth, code, location, opts) {
   procStarted = true;
 });
 
-
-ipcMain.on('installUpdate', function(event) {
-  autoUpdater.quitAndInstall();
-});
 function startPython(auth, code, location, opts) {
 
   mainWindow.loadURL('file://' + __dirname + '/app/index.html');
-  // mainWindow.openDevTools();
 
-    var cmdLine = [
-      './pokecli.py',
-    ];
+  var cmdLine = [
+    './pokecli.py',
+  ];
 
-    if (false) {
-      cmdLine.push('--username');
-      cmdLine.push(opts.username);
-      cmdLine.push('--password');
-      cmdLine.push(opts.password);
-    }
+  logData('Bot path: ' + path.join(__dirname, 'gofbot'));
+  logData('python ' + cmdLine.join(' '));
 
-    // logData(opts.username);
+  var pythonCmd = 'python';
+  if (os.platform() == 'win32') {
+    pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
+  }
 
+  try {
+    //test to see if settings exist
+    var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
+    fs.openSync(setting_path, 'r+');
+  } catch (err) {
+    fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'),setting_path);
+  }
 
-    // console.log(cmdLine);
-    logData('Bot path: ' + path.join(__dirname, 'gofbot'));
-    logData('python ' + cmdLine.join(' '));
-
-    var pythonCmd = 'python';
-    if (os.platform() == 'win32') {
-      pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
-    }
-
-
-    
-    var renameFiles = function(){
-      //rename config
-      try {
-        //test to see if settings exist
-        var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
-        fs.openSync(setting_path, 'r+');
-      } catch (err) {
-        fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'),setting_path);
-      }
-
-      //rename user file
-      try {
-        //test to see if settings exist
-        var user_path = path.join(__dirname, 'gofbot/web/userdata.js');
-        fs.openSync(user_path, 'r+');
-      } catch (err) {
-        fs.renameSync(path.join(__dirname, 'gofbot/web/userdata.js.example'),user_path);
-      }
-    };
-
-    renameFiles()
-
-    
-    var data=fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
-
-    var settings = JSON.parse(data);
-    
-
-    settings.auth_service = auth
-    if (auth == 'google') {
-      settings.password = opts.google_password;
-      settings.username = opts.google_username;
-    } else {
-      settings.password = opts.ptc_password;
-      settings.username = opts.ptc_username;
-    }
-
-    settings.gmapkey = opts.google_maps_api;
-    
-    if (opts.max_steps != '') {
-      settings.max_steps = parseInt(opts.max_steps);
-    }
-    if (opts.walk_speed != '') {
-      settings.walk = parseInt(opts.walk_speed);
-    }
-
-
-    var userdata_code = ['var users = ["' + settings.username + '"];',
-                            'var userZoom = true;',
-                            'var userFollow = true;',
-                            'var imageExt = ".png";',
-                            'var gMapsAPIKey = "' + settings.gmapkey + '";',
-    ]
-                            
-                            
-    fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n'), 'utf-8');
-
-    //temporary fix for location/catchable bug in PokemonGo-Bot
-    try {
-        //test to see if settings exist
-        var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
-        fs.openSync(location_path, 'r+');
-      } catch (err) {
-        fs.writeFileSync(location_path,"{}");
-    }
-    try {
-        //test to see if settings exist
-        var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
-        fs.openSync(location_path, 'r+');
-      } catch (err) {
-        fs.writeFileSync(location_path,"{}");
-    }
-
-    settings.location = location;
-
-    fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
-
-
-
-
-
-    subpy = require('child_process').spawn(pythonCmd, cmdLine, {
-      cwd: path.join(__dirname, 'gofbot'),
-      detached: true
-    });
-
-    subpy.stdout.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.send('pythonLog', {'msg': `${data}`});
-    });
-    subpy.stderr.on('data', (data) => {
-      console.log(`Python: ${data}`);
-      mainWindow.send('pythonLog', {'msg': `${data}`});
-    });
-    
+  //rename user file
+  try {
+    //test to see if settings exist
+    var user_path = path.join(__dirname, 'gofbot/web/userdata.js');
+    fs.openSync(user_path, 'r+');
+  } catch (err) {
+    fs.renameSync(path.join(__dirname, 'gofbot/web/userdata.js.example'),user_path);
+  }
 
   
+  var data = fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
+  var settings = JSON.parse(data);
+  
 
-   
-      mainWindow.on('closed', function() {
-        mainWindow = null;
-        if (subpy && subpy.pid) {
-          killProcess(subpy.pid);
-        }
-        procStarted = false;
-      });
+  settings.auth_service = auth
+  if (auth == 'google') {
+    settings.password = opts.google_password;
+    settings.username = opts.google_username;
+  } else {
+    settings.password = opts.ptc_password;
+    settings.username = opts.ptc_username;
+  }
+
+  settings.gmapkey = opts.google_maps_api;
+  
+  if (opts.max_steps != '') {
+    settings.max_steps = parseInt(opts.max_steps);
+  }
+  if (opts.walk_speed != '') {
+    settings.walk = parseInt(opts.walk_speed);
+  }
+
+  settings.location = location;
 
 
+  var userdata_code = ['var users = ["' + settings.username + '"];',
+                          'var userZoom = true;',
+                          'var userFollow = true;',
+                          'var imageExt = ".png";',
+                          'var gMapsAPIKey = "' + settings.gmapkey + '";',
+  ]
+                          
+                          
+  fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n'), 'utf-8');
+
+  //temporary fix for location/catchable bug in PokemonGo-Bot
+  try {
+      //test to see if settings exist
+      var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
+      fs.openSync(location_path, 'r+');
+    } catch (err) {
+      fs.writeFileSync(location_path,"{}");
+  }
+  try {
+      //test to see if settings exist
+      var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
+      fs.openSync(location_path, 'r+');
+    } catch (err) {
+      fs.writeFileSync(location_path,"{}");
+  }
 
 
+  fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
+
+
+  subpy = require('child_process').spawn(pythonCmd, cmdLine, {
+    cwd: path.join(__dirname, 'gofbot'),
+    detached: true
+  });
+
+  subpy.stdout.on('data', (data) => {
+    console.log(`Python: ${data}`);
+    mainWindow.send('pythonLog', {'msg': `${data}`});
+  });
+  subpy.stderr.on('data', (data) => {
+    console.log(`Python: ${data}`);
+    mainWindow.send('pythonLog', {'msg': `${data}`});
+  });
+  
+  mainWindow.on('closed', function() {
+    mainWindow = null;
+    if (subpy && subpy.pid) {
+      killProcess(subpy.pid);
+    }
+    procStarted = false;
+  });
 };
