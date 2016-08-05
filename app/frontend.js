@@ -82,7 +82,7 @@ $(document).ready(function() {
     constrain_width: false, // Does not change width of dropdown to that of the activator
     hover: true, // Activate on hover
     gutter: 0, // Spacing from edge
-    belowOrigin: false, // Displays dropdown below the button
+    belowOrigin: true, // Displays dropdown below the button
     alignment: 'left' // Displays dropdown with edge aligned to the left of button
   });
   var ipcRenderer = require('electron').ipcRenderer;
@@ -230,7 +230,6 @@ var trainerFunc = function(data, user_index) {
     }
   }
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
-    Materialize.toast('New Marker: Trainer - ' + data.lat + ', ' + data.lng + users[user_index], 3000, 'rounded');
     randomSex = Math.floor(Math.random() * 1);
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
@@ -272,7 +271,6 @@ var catchSuccess = function(data, user_index) {
     if (data.latitude !== undefined) {
       if (user_data[users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
         poke_name = pokemonArray[data.pokemon_id-1].Name;
-        Materialize.toast(poke_name + ' appeared near trainer: ' + users[user_index], 3000, 'rounded');
         user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {lat: parseFloat(data.latitude), lng: parseFloat(data.longitude)},
@@ -299,7 +297,6 @@ var catchSuccess = function(data, user_index) {
     }
   } else {
     if (user_data[users[user_index]].catchables !== undefined && Object.keys(user_data[users[user_index]].catchables).length > 0) {
-      Materialize.toast('The Pokemon has been caught or fled' + users[user_index], 3000, 'rounded');
       for (var key in user_data[users[user_index]].catchables) {
         user_data[users[user_index]].catchables[key].setMap(null);
       }
