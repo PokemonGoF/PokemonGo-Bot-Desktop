@@ -368,10 +368,10 @@ function fillInventory(){
             var current_user_stats = stats[0].inventory_item_data.player_stats;
             var text = '<div class="col s12">\
       <ul class="tabs">\
-        <li class="tab col s3"><a class="active" href="#info">Info</a></li>\
-        <li class="tab col s3"><a href="#items">Items</a></li>\
-        <li class="tab col s3"><a href="#pokemon">Pokemon</a></li>\
-        <li class="tab col s3"><a href="#pokedex">Pokedex</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info">Info</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown" href="#items">Items</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon">Pokemon</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex">Pokedex</a></li>\
       </ul>\
     </div>\
     <div class="modal-content">\
@@ -485,7 +485,7 @@ function fillInventory(){
   //pokedex
   text += '</div></div>\
         <div class="modal-footer">\
-            <a href="#!" class="info-close modal-action modal-close waves-effect waves-green btn-flat">Close</a>\
+            <a href="#!" class="info-close modal-action modal-close waves-effect waves-brown btn-flat">Close</a>\
         </div>';
             $('#modal-info').html(text);
             setTimeout(function(){$('.tabs').tabs();},1);

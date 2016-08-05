@@ -307,6 +307,13 @@
       .switch label input[type=checkbox]:checked+.lever:after {
         background-color:#d7c60f;
       }
+      .tabs .tab a:hover {
+          background-color: rgba(0,0,0,0.1);
+          color: #5D4037;
+      }
+      .waves-effect.waves-brown .waves-ripple {
+        background-color: rgba(121, 85, 72, 0.5);
+      }
     </style>
   </head>
   <body>
@@ -367,23 +374,8 @@
 
     <!-- Modal -->
     <div id="modal-info" class="modal modal-fixed-footer">
-      <div class="modal-content">
-      </div>
-      <div class="modal-footer">
-        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Close</a>
-      </div>
     </div>
     
-    <!-- Side Popup Nav -->
-    <ul id="slide-right" class="side-nav">
-    	<div class="row">
-	      <h3 class="col s11">
-	        <div id="subtitle"></div>
-	      </h3>
-	      <a class="col s1"><i class="material-icons" id='close'>close</i></a>
-	    </div>
-      <div id="sortButtons"></div>
-      <div id="subcontent"></div>
     </ul>
     <!-- Content -->
     <div id="content">
@@ -394,10 +386,10 @@
             PikaBot
           </p>
         </div>
-        <a class='dropdown-button btn-settings' href='#' data-activates='options'>
+        <a class='dropdown-button btn-settings waves-effect waves-light' href='#' data-activates='options'>
           <i class="material-icons" style="float: left;color: #FFF; padding-right: 15px; line-height: 24px;">settings</i>Settings
         </a>
-        <a class="modal-trigger side-account" href="#modal-info" id="btn-info">
+        <a class="modal-trigger side-account waves-effect waves-light" href="#modal-info" id="btn-info">
           <i class="material-icons" style="float: left; line-height: 34px; padding-right: 15px; color: #FFF">person</i>
           <p id="username">Loading...</p>
           <p id="level">...</p>
