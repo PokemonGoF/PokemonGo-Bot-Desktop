@@ -15,9 +15,8 @@ var mainWindow = null;
 var procStarted = false;
 var subpy = null;
 var mainAddr;
-var restarting = false;
 
-
+// Menu Template
 var template = [{
     label: "Application",
     submenu: [{
@@ -84,27 +83,50 @@ var template = [{
 }
 ];
 
+// Launch app
+app.on('ready', function() {
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+  setupMainWindow();
+});
+
+// Handle app closing
 app.on('window-all-closed', function() {
-  if (restarting) {
-    return;
-  }
   if (subpy && subpy.pid) {
+    // Kill python bot
     killProcess(subpy.pid);
   }
   app.quit();
 });
 
-app.on('ready', function() {
-
-  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
-
+// ipc listeners
+// Handle logout
+ipcMain.on('logout', function(event, auth, code, location, opts) {
+  if (procStarted) {
+    logData('Killing Python process...');
+    if (subpy && subpy.pid) {
+      killProcess(subpy.pid);
+    }
+  }
+  procStarted = false;
   setupMainWindow();
 });
 
-function setupMainWindow() {
-  restarting = false;
+// Start python bot
+ipcMain.on('startPython', function(event, auth, code, location, opts) {
+  if (!procStarted) {
+    logData('Starting Python process...');
+    startPython(auth, code, location, opts);
+  }
+  procStarted = true;
+});
 
-  mainWindow = new BrowserWindow({width: 2000, height: 1000, minWidth: 700, minHeight: 500});
+// Creates main window and load Login page
+function setupMainWindow() {
+
+  if(!mainWindow)
+  {
+    mainWindow = new BrowserWindow({width: 1280, height: 720, minWidth: 700, minHeight: 500});
+  }
   mainWindow.loadURL('file://' + __dirname + '/app/login.html');
 
   mainWindow.on('closed', function() {
@@ -115,6 +137,7 @@ function setupMainWindow() {
   });
 }
 
+// Sends log to web page
 function logData(str){
   console.log(str);
   if (mainWindow){
@@ -133,29 +156,11 @@ function killProcess(pid) {
   }
 }
 
-ipcMain.on('logout', function(event, auth, code, location, opts) {
-  restarting = true;
-  if (procStarted) {
-    logData('Killing Python process...');
-    if (subpy && subpy.pid) {
-      killProcess(subpy.pid);
-    }
-  }
-  procStarted = false;
-  mainWindow.close();
-  setupMainWindow();
-});
 
-ipcMain.on('startPython', function(event, auth, code, location, opts) {
-  if (!procStarted) {
-    logData('Starting Python process...');
-    startPython(auth, code, location, opts);
-  }
-  procStarted = true;
-});
-
+// Starts python bot
 function startPython(auth, code, location, opts) {
 
+  // Load Index page
   mainWindow.loadURL('file://' + __dirname + '/app/index.html');
 
   var cmdLine = [
@@ -170,6 +175,7 @@ function startPython(auth, code, location, opts) {
     pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
   }
 
+  // Rename config.json if needed
   try {
     //test to see if settings exist
     var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
@@ -178,7 +184,7 @@ function startPython(auth, code, location, opts) {
     fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'),setting_path);
   }
 
-  //rename user file
+  // Rename userdata.js if needed
   try {
     //test to see if settings exist
     var user_path = path.join(__dirname, 'gofbot/web/userdata.js');
@@ -186,12 +192,12 @@ function startPython(auth, code, location, opts) {
   } catch (err) {
     fs.renameSync(path.join(__dirname, 'gofbot/web/userdata.js.example'),user_path);
   }
-
   
+  // Load user config
   var data = fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
   var settings = JSON.parse(data);
   
-
+  // Load settings
   settings.auth_service = auth
   if (auth == 'google') {
     settings.password = opts.google_password;
@@ -200,16 +206,13 @@ function startPython(auth, code, location, opts) {
     settings.password = opts.ptc_password;
     settings.username = opts.ptc_username;
   }
-
   settings.gmapkey = opts.google_maps_api;
-  
   if (opts.max_steps != '') {
     settings.max_steps = parseInt(opts.max_steps);
   }
   if (opts.walk_speed != '') {
     settings.walk = parseInt(opts.walk_speed);
   }
-
   settings.location = location;
 
 
@@ -220,7 +223,7 @@ function startPython(auth, code, location, opts) {
                           'var gMapsAPIKey = "' + settings.gmapkey + '";',
   ]
                           
-                          
+  // Write userdata for map                
   fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
   //temporary fix for location/catchable bug in PokemonGo-Bot
@@ -239,15 +242,16 @@ function startPython(auth, code, location, opts) {
       fs.writeFileSync(location_path,"{}");
   }
 
-
+  // Save user config
   fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
 
-
+  // Create python bot process
   subpy = require('child_process').spawn(pythonCmd, cmdLine, {
     cwd: path.join(__dirname, 'gofbot'),
     detached: true
   });
 
+  // Send bot log to web page
   subpy.stdout.on('data', (data) => {
     console.log(`Python: ${data}`);
     mainWindow.send('pythonLog', {'msg': `${data}`});
@@ -257,11 +261,4 @@ function startPython(auth, code, location, opts) {
     mainWindow.send('pythonLog', {'msg': `${data}`});
   });
   
-  mainWindow.on('closed', function() {
-    mainWindow = null;
-    if (subpy && subpy.pid) {
-      killProcess(subpy.pid);
-    }
-    procStarted = false;
-  });
 };
