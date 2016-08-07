@@ -187,10 +187,10 @@ function startPython(auth, code, location, opts) {
   // Rename userdata.js if needed
   try {
     //test to see if settings exist
-    var user_path = path.join(__dirname, 'gofbot/web/userdata.js');
+    var user_path = path.join(__dirname, 'gofbot/web/config/userdata.js');
     fs.openSync(user_path, 'r+');
   } catch (err) {
-    fs.renameSync(path.join(__dirname, 'gofbot/web/userdata.js.example'),user_path);
+    fs.renameSync(path.join(__dirname, 'gofbot/web/config/userdata.js.example'),user_path);
   }
   
   // Load user config
@@ -221,7 +221,7 @@ function startPython(auth, code, location, opts) {
   ]
                           
   // Write userdata for map                
-  fs.writeFileSync(path.join(__dirname, 'gofbot/web/userdata.js'), userdata_code.join('\n'), 'utf-8');
+  fs.writeFileSync(path.join(__dirname, 'gofbot/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
   //temporary fix for location/catchable bug in PokemonGo-Bot
   try {
