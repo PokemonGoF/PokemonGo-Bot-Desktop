@@ -44,7 +44,6 @@
             }
         }
         setupValue('google_maps_api', $('#google_maps_api'));
-        setupValueAndSetter('max_steps', $('#max_steps'));
         setupValue('walk_speed', $('#walk_speed'));
         setupValue('last_location', $('#location'));
     });
@@ -75,7 +74,6 @@
         }
         localStorage.setItem("last_location", $('#location').val());
         localStorage.setItem("google_maps_api", $('#google_maps_api').val());
-        localStorage.setItem("max_steps", $('#max_steps').val());
         localStorage.setItem("walk_speed", $('#walk_speed').val());
 
     }
@@ -109,20 +107,8 @@
         jQuery('.login').prop("disabled", disabled);
     }
 
-    function checkParams() {
-        if ($('#max_steps').val() != '') {
-            if (!$('#max_steps').val().match(/^[0-9]+$/)) {
-                alert('Invalid Max Steps. Only numbers allowed.');
-                return false;
-            }
-        }
-        return true;
-    }
 
     function doGoogleLogin() {
-        if (!checkParams()){
-            return;
-        }
         toggleLogin(true);
         var username = jQuery('#google_username').val(),
             password = jQuery('#google_password').val();
@@ -136,9 +122,6 @@
     }
 
     function doPTCLogin() {
-        if (!checkParams()){
-            return;
-        }
         toggleLogin(true);
         jQuery('#ptc_errors').html('');
         var username = jQuery('#ptc_username').val(),
@@ -212,7 +195,6 @@
 
         ipcRenderer.send('startPython', auth, code, geoLocation, {
             google_maps_api: $('#google_maps_api').val(),
-            max_steps: $('#max_steps').val(),
             walk_speed: $('#walk_speed').val(),
             ptc_username: $('#ptc_username').val(),
             ptc_password: $('#ptc_password').val(),

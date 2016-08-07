@@ -412,7 +412,7 @@ function fillInventory(){
   var current_user_bag_items = bagItems;
   text += '<div id="items" class="col s12"><div class="row items">';
     for (i = 0; i < current_user_bag_items.length; i++) {
-      text += '<div class="col s12 m4 l3 center" style="float: left"><img src="../resources/image/items/' +
+      text += '<div class="col s12 m4 l3 center" style="float: left; height: 144px;"><img src="../resources/image/items/' +
               current_user_bag_items[i].inventory_item_data.item.item_id +
               '.png" class="item_img"><br><b>' +
               itemsArray[current_user_bag_items[i].inventory_item_data.item.item_id] +

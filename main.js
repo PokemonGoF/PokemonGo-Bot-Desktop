@@ -207,9 +207,6 @@ function startPython(auth, code, location, opts) {
     settings.username = opts.ptc_username;
   }
   settings.gmapkey = opts.google_maps_api;
-  if (opts.max_steps != '') {
-    settings.max_steps = parseInt(opts.max_steps);
-  }
   if (opts.walk_speed != '') {
     settings.walk = parseInt(opts.walk_speed);
   }
