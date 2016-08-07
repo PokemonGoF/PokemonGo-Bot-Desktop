@@ -93,8 +93,7 @@ $(document).ready(function() {
   ipcRenderer.on('pythonLog', function(evt, data) {
     var lines = data.msg.split("\n")
     for (var i = 0; i < lines.length; i++) {
-      var line = lines[i].replace(/\[\d\d:\d\d:\d\d\] /, "")
-      $('#log').append('<p>' + line + '</p>');
+        log(lines[i]);
     }
     console.log(data.msg);
   });
@@ -518,4 +517,58 @@ function fillInventory(){
         </div>';
             $('#modal-info').html(text);
             setTimeout(function(){$('.tabs').tabs();},1);
+}
+
+function log(message){
+  if(message.length < 1)
+  {
+    return;
+  }
+  var log = {};
+
+  var bracket_data = message.match(/\[(.*?)\]/g);
+  if(!bracket_data)
+  {
+    console.log("Error while parsing message: "+message);
+    return;
+  }
+  log.worker = bracket_data[0].replace(/[\[\]]/g,"");
+  log.type = bracket_data[1].replace(/[\[\]]/g,"");
+  log.action = bracket_data[2].replace(/[\[\]]/g,"");
+  log.message = message.split("["+log.action+"] ")[1];
+  log.images = [];
+
+  // Check for item words
+  for (var key in itemsArray) {
+    var item_name = itemsArray[key];
+    if(log.message.indexOf(item_name)>-1)
+    {
+      log.images.push('<img src="../resources/image/items/'+key+'.png" class="log-img">')
+    }
+  }
+
+  // Check for pokemon words
+  for(var i = 0; i < pokemonArray.length; i++)
+  {
+    if(log.message.indexOf(pokemonArray[i].Name)>-1)
+    {
+      log.images.push('<img src="../resources/image/pokemon/'+pad_with_zeroes(i+1,3)+'.png" class="log-img log-pokemon">')
+    }
+  }
+  log.date = new Date();
+  var log_item = "";
+  if(log.images.length>0){
+    log_item = '<div class="log-item">\
+                   <span class="log-date">'+ log.date.toTimeString().split(" ")[0] +"</span>\
+                   <p class='log-message log-message-narrow'>"+ log.message +"</p>\
+                   <div class='log-image-container'>" +log.images.join("")+"</div>\
+                </div>";
+  }else {
+    log_item = '<div class="log-item">\
+                   <span class="log-date">'+ log.date.toTimeString().split(" ")[0] +"</span>\
+                   <p class='log-message'>"+ log.message +"</p>\
+                </div>";
+  }
+  $('#log').append(log_item);
+  $('#log-text').animate({scrollTop: $('#log-text')[0].scrollHeight}, 100);
 }
