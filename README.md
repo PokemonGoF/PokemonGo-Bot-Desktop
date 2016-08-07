@@ -48,7 +48,7 @@ We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Deskto
 JVenberg  
 solderzzc  
 ProjectBarks  
-JacerOmni  
+JacerOmri  
 ariestiyansyah  
 GodLesZ  
 sniok  
