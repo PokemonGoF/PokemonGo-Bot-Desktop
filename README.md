@@ -1,10 +1,9 @@
 ![screenshot](http://i.imgur.com/tzMaWv4.png)
 # Pokemon GO Bot Desktop
+**Bot is working**  
 Desktop Pokemon GO Bot based on [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot)  
 Join us at #desktop-porting channel at [our slack chat](https://pokemongo-bot.herokuapp.com/)
 
-## Download
-[PokemonGo Bot Desktop v0.1-alpha] (https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/tag/v0.1-alpha)
 
 ## Warning
  - Just getting started, many things are not stable. Help is much appreciated
@@ -22,11 +21,27 @@ cd PokemonGo-Bot-Desktop
 npm install
 ```
 
-###Run:
+###Run
 ```
 npm start
 ```
-## Waffie Channel
+
+###Update
+```
+git pull
+git submodule update
+npm install
+```
+
+###Get encrypt.so
+Create a new separate folder somwhere  
+Run  
+```
+wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make
+```
+Then copy libencrypt.so to the gofbot/encrypt.so
+
+## Waffle Channel
 We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Desktop)
 
 ## Contributors
