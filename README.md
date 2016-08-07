@@ -39,7 +39,7 @@ Run
 ```
 wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make
 ```
-Then copy libencrypt.so to the gofbot/encrypt.so
+Then copy libencrypt.so to the gofbot folder and rename to encrypt.so
 
 ## Waffle Channel
 We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Desktop)
