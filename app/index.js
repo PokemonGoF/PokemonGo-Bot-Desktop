@@ -24,6 +24,7 @@ var trainerSex = [
   'f'
 ];
 
+var pathcoords = {};
 var bagCandy = {};
 var bagItems = {};
 var bagPokemon = {};
@@ -112,6 +113,7 @@ function initMap() {
   }, errorFunc, 'pokemonData');
   for (var i = 0; i < users.length; i++) {
     user_data[users[i]] = {};
+    pathcoords[users[i]] = [];
   }
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 37.0902, lng: -95.7129},
@@ -121,6 +123,7 @@ function initMap() {
   document.getElementById('switchPan').checked = userFollow;
   document.getElementById('switchZoom').checked = userZoom;
   document.getElementById('imageType').checked = (imageExt != '.png');
+  document.getElementById('strokeOn').checked = true;
   setTimeout(function(){
     placeTrainer();
     addCatchable();
@@ -154,6 +157,12 @@ $('#imageType').change(function(){
       imageExt = '.gif';
     } else {
       imageExt = '.png';
+    }
+});
+
+$('#strokeOn').change(function(){
+    for (var i = 0; i < users.length; i++) {
+        user_data[users[i]].trainerPath.setOptions({strokeOpacity: this.checked ? 1.0 : 0.0})
     }
 });
 
@@ -229,6 +238,14 @@ var trainerFunc = function(data, user_index) {
       }
     }
   }
+  if (pathcoords[users[user_index]][pathcoords[users[user_index]].length] > 1) {
+    var tempcoords = [{lat: parseFloat(data.lat), lng: parseFloat(data.lng)}];
+    if (tempcoords.lat != pathcoords[users[user_index]][pathcoords[users[user_index]].length-1].lat && tempcoords.lng != pathcoords[users[user_index]][pathcoords[users[user_index]].length-1].lng || pathcoords[users[user_index]].length === 1) {
+      pathcoords[users[user_index]].push({lat: parseFloat(data.lat), lng: parseFloat(data.lng)})
+    }
+  } else {
+    pathcoords[users[user_index]].push({lat: parseFloat(data.lat), lng: parseFloat(data.lng)})
+  }  
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
     randomSex = Math.floor(Math.random() * 1);
     user_data[users[user_index]].marker = new google.maps.Marker({
@@ -240,6 +257,18 @@ var trainerFunc = function(data, user_index) {
     });
   } else {
     user_data[users[user_index]].marker.setPosition({lat: parseFloat(data.lat), lng: parseFloat(data.lng)});
+    if (pathcoords[users[user_index]].length === 2) {
+      user_data[users[user_index]].trainerPath = new google.maps.Polyline({
+        map: map,
+        path: pathcoords[users[user_index]],
+        geodisc: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 0.7,
+        strokeWeight: 2
+      });
+    } else {
+      user_data[users[user_index]].trainerPath.setPath(pathcoords[users[user_index]]);
+    }
   }
   if (users.length === 1 && userZoom === true) {
     map.setZoom(16);
