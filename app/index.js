@@ -398,7 +398,7 @@ function fillInventory(){
       <ul class="tabs">\
         <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info">Info</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#items">Items</a></li>\
-        <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon">Pokemon</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon">Pokemon (' + bagPokemon.length + ')</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex">Pokedex</a></li>\
       </ul>\
     </div>\
