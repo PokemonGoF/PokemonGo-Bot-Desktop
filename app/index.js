@@ -408,9 +408,7 @@ function fillInventory(){
     <img src="'+user_data[users[0]].marker.icon+'"><h5>' +
               users[0]+
               '</h5>Level ' +
-              current_user_stats.level +
-              '</div><br><div class="col s3 center"><b>Experience</b><br> ' +
-              current_user_stats.experience +
+              current_user_stats.level + '<br>' +current_user_stats.experience +" / "+ parseInt(current_user_stats.next_level_xp, 10) + "<br>"+
               '</div><div class="col s3 center"><b>Exp to level ' +
               ( parseInt(current_user_stats.level, 10) + 1 ) +
               '</b><br> ' +
