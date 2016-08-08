@@ -1,3 +1,4 @@
+*Issue without proper information won't be answered*
 ### Expected Behavior
 
 ### Actual Behavior
@@ -6,5 +7,5 @@
 
 ### Information
  - OS
- - Git commit
+ - Git commit ( to get git commit run `git log -1 --format="%H"`)
  - App's logs
