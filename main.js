@@ -257,5 +257,10 @@ function startPython(auth, code, location, opts) {
     console.log(`Python: ${data}`);
     mainWindow.send('pythonLog', {'msg': `${data}`});
   });
+
+  subpy.on('exit', () => {
+    console.log(`Bot exited unexpectedly. Restarting in 5 secs`);
+    setTimeout(() => startPython(auth, code, location, opts), 5000);
+  });
   
 };
