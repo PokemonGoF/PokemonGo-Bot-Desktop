@@ -397,48 +397,48 @@ function fillInventory(){
             var text = '<div class="col s12">\
       <ul class="tabs">\
         <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info">Info</a></li>\
-        <li class="tab col s3"><a class="waves-effect waves-brown" href="#items">Items</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown" href="#items">Items ('+bagItems.length+')</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon">Pokemon (' + bagPokemon.length + ')</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex">Pokedex</a></li>\
       </ul>\
     </div>\
     <div class="modal-content">\
-        <div class="row">\
-    <div id="info" class="col s12">\
-    <h5>' +
+        <div id="info" class="row">\
+    <div class="col s12 center" style="margin-bottom: 25px;">\
+    <img src="'+user_data[users[0]].marker.icon+'"><h5>' +
               users[0]+
-              '</h5><br>Level: ' +
+              '</h5>Level ' +
               current_user_stats.level +
-              '<br>Exp: ' +
+              '</div><br><div class="col s3 center"><b>Experience</b><br> ' +
               current_user_stats.experience +
-              '<br>Exp to Lvl ' +
+              '</div><div class="col s3 center"><b>Exp to level ' +
               ( parseInt(current_user_stats.level, 10) + 1 ) +
-              ': ' +
+              '</b><br> ' +
               (parseInt(current_user_stats.next_level_xp, 10) - current_user_stats.experience) +
-              '<br>Pokemon Encountered: ' +
+              '</div><div class="col s3 center"><b>Pokemon Encountered</b><br>' +
               (current_user_stats.pokemons_encountered || 0) +
-              '<br>Pokeballs Thrown: ' +
+              '</div><div class="col s3 center"><b>Pokeballs Thrown</b><br>' +
               (current_user_stats.pokeballs_thrown || 0) +
-              '<br>Pokemon Caught: ' +
+              '</div><div class="col s3 center"><b>Pokemon Caught</b><br>' +
               (current_user_stats.pokemons_captured || 0) +
-              '<br>Small Ratata Caught: ' +
+              '</div><div class="col s3 center"><b>Small Ratata Caught</b><br>' +
               (current_user_stats.small_rattata_caught || 0) +
-              '<br>Pokemon Evolved: ' +
+              '</div><div class="col s3 center"><b>Pokemon Evolved</b><br>' +
               (current_user_stats.evolutions || 0) +
-              '<br>Eggs Hatched: ' +
+              '</div><div class="col s3 center"><b>Eggs Hatched</b><br>' +
               (current_user_stats.eggs_hatched || 0) +
-              '<br>Unique Pokedex Entries: ' +
+              '</div><div class="col s3 center"><b>Unique Pokedex Entries</b><br>' +
               (current_user_stats.unique_pokedex_entries || 0) +
-              '<br>PokeStops Visited: ' +
+              '</div><div class="col s3 center"><b>PokeStops Visited</b><br>' +
               (current_user_stats.poke_stop_visits || 0) +
-              '<br>Kilometers Walked: ' +
+              '</div><div class="col s3 center"><b>Kilometers Walked</b><br>' +
               (parseFloat(current_user_stats.km_walked).toFixed(2) || 0) +
-              '\
+              '</div>\
     </div>\
     ';
   //items 
   var current_user_bag_items = bagItems;
-  text += '<div id="items" class="col s12"><div class="row items">';
+  text += '<div id="items" class="row"><div class="row items">';
     for (i = 0; i < current_user_bag_items.length; i++) {
       text += '<div class="col s12 m4 l3 center" style="float: left; height: 144px;"><img src="../resources/image/items/' +
               current_user_bag_items[i].inventory_item_data.item.item_id +
@@ -452,7 +452,7 @@ function fillInventory(){
   //pokemon
   pkmnTotal = bagPokemon[0].length;
     
-    text += '<div id="pokemon" class="col s12"><div class="row item-filter"><input type="text" placeholder="Search Pokemons" /></div><div class="row items">';
+    text += '<div id="pokemon" class="row"><div class="row item-filter"><input type="text" placeholder="Search Pokemons" /></div><div class="row items">';
     bagPokemon.sort(function(a, b){return b.inventory_item_data.pokemon_data.cp - a.inventory_item_data.pokemon_data.cp;});
     for (i = 0; i < bagPokemon.length; i++) {
       var current_pokemon_data = bagPokemon[i].inventory_item_data.pokemon_data;
@@ -473,7 +473,7 @@ function fillInventory(){
     }
     text += '</div></div>';
 
-  //pokemon
+  //pokedex
   var sortedPokedex = [];
   for (i = 0; i < pokedex.length; i++) {
     pkmID = pokedex[i].inventory_item_data.pokedex_entry.pokemon_id;
@@ -487,7 +487,7 @@ function fillInventory(){
       "enc": (pkmCap || 0)
     });
   }
-  text += '<div id="pokedex" class="col s12">';
+  text += '<div id="pokedex" class="row">';
   for (var i = 0; i < sortedPokedex.length; i++) {
     pkmnNum = sortedPokedex[i].id;
     pkmnImage = pad_with_zeroes(pkmnNum, 3) +'.png';
@@ -495,7 +495,7 @@ function fillInventory(){
     pkmnName = pokemonArray[pkmnNum-1].Name;
     pkmnEnc = sortedPokedex[i].enc
     pkmnCap = sortedPokedex[i].cap
-    text += '<div class="col s12 m6 l3 center"><img src="../resources/image/pokemon/' +
+    text += '<div class="col s6 m6 l3 center"><img src="../resources/image/pokemon/' +
             pkmnImage +
             '" class="png_img"><br><b> ' +
             pad_with_zeroes(pkmnNum, 3) +
@@ -510,7 +510,6 @@ function fillInventory(){
             '</div>';
   }
   text += '</div>';
-  //pokedex
   text += '</div></div>\
         <div class="modal-footer">\
             <a href="#!" class="info-close modal-action modal-close waves-effect waves-brown btn-flat">Close</a>\
