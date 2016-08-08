@@ -360,6 +360,25 @@
         padding: 5px;
         min-height: 100px;
       }
+      #bot-indicator {
+        z-index: 1;
+        height: 93px;
+        width: 300px;
+        position: absolute;
+        right: 48px;
+        bottom: 24px;
+        background: #FFF;
+        font-size: 12px;
+        padding: 12px;
+      }
+      #indicator {
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        background-color: #eee;
+        display: inline-block;
+        margin-right: 5px;
+      }
     </style>
   </head>
   <body>
@@ -420,6 +439,12 @@
 
     <!-- Modal -->
     <div id="modal-info" class="modal modal-fixed-footer">
+    </div>
+
+    <!-- Bot indicator -->
+    <div id="bot-indicator" class="z-depth-1">
+      <b>Bot status</b>
+      <p>Loading</p>
     </div>
     
     </ul>

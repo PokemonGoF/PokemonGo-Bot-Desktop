@@ -553,6 +553,12 @@ function log(message){
     }
   }
   log.date = new Date();
+  if(log.worker == "MoveToFort")
+  {
+    $("#bot-indicator").html("<b><div id='indicator'></div>Bot Status</b><br>"+log.message);
+    pingIndicator();
+    return;
+  }
   var log_item = "";
   if(log.images.length>0){
     log_item = '<div class="log-item">\
@@ -568,6 +574,12 @@ function log(message){
   }
   $('#log').append(log_item);
   $('#log-text').animate({scrollTop: $('#log-text')[0].scrollHeight}, 100);
+}
+
+function pingIndicator() {
+  $("#indicator").css("background-color","#0a0");
+  setTimeout(function(){$("#indicator").css("background-color","#eee");},250);
+}
 
   //filter pokemons 
   function fuzzy_match(str,pattern){
@@ -593,4 +605,3 @@ function log(message){
       });
     }
   });
-}

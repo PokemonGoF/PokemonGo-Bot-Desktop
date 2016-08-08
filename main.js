@@ -1,4 +1,5 @@
 const electron = require('electron');
+const dialog = require('electron').dialog;
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const ipcMain = electron.ipcMain;
@@ -108,7 +109,6 @@ ipcMain.on('logout', function(event, auth, code, location, opts) {
     }
   }
   procStarted = false;
-  setupMainWindow();
 });
 
 // Start python bot
@@ -256,11 +256,16 @@ function startPython(auth, code, location, opts) {
   subpy.stderr.on('data', (data) => {
     console.log(`Python: ${data}`);
     mainWindow.send('pythonLog', {'msg': `${data}`});
+    if(data.indexOf("ERROR")>-1)
+    {
+      dialog.showMessageBox({type:"error",title:"Whoops",message:"Error in python bot",detail:""+data,buttons:["Yes I read carefully error message"]});
+    }
   });
 
   subpy.on('exit', () => {
-    console.log(`Bot exited unexpectedly. Restarting in 5 secs`);
-    setTimeout(() => startPython(auth, code, location, opts), 5000);
+    console.log(`Bot exited`);
+    procStarted = false;
+    setupMainWindow();
   });
   
 };
