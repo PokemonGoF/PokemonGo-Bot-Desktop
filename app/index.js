@@ -67,6 +67,8 @@ var itemsArray = {
   '1002': 'Item Storage Upgrade'
 };
 
+var stats_at_start = {};
+
 $(document).ready(function() {
   loadScript("https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey + "&libraries=drawing&callback=initMap");
 
@@ -126,11 +128,12 @@ function initMap() {
   setTimeout(function(){
     placeTrainer();
     addCatchable();
+    addInventory();
     setTimeout(function(){
       setInterval(updateTrainer, 1000);
       setInterval(updateData, 1000);
       setInterval(addCatchable, 1000);
-      addInventory();
+      setInterval(addInventory,1000);
     }, 100);
   }, 1000);
 }
@@ -185,6 +188,15 @@ var invSuccess = function(data, user_index) {
   bagPokemon = sortPokemonsByKey(filter(data, 'pokemon_data'), 'cp');
   pokedex = filter(data, 'pokedex_entry');
   stats = filter(data, 'player_stats');
+  if(!stats_at_start.saved)
+  {
+      stats_at_start.bagCandy = filter(data, 'pokemon_family');
+      stats_at_start.bagItems = filter(data, 'item');
+      stats_at_start.bagPokemon = sortPokemonsByKey(filter(data, 'pokemon_data'), 'cp');
+      stats_at_start.pokedex = filter(data, 'pokedex_entry');
+      stats_at_start.stats = filter(data, 'player_stats');
+      stats_at_start.saved = true;
+  }
 };
 
 var trainerFunc = function(data, user_index) {
@@ -397,6 +409,7 @@ function fillInventory(){
             var text = '<div class="col s12">\
       <ul class="tabs">\
         <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info">Info</a></li>\
+        <li class="tab col s3"><a class="waves-effect waves-brown" href="#session">Session</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#items">Items ('+bagItems.length+')</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon">Pokemon (' + bagPokemon.length + ')</a></li>\
         <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex">Pokedex</a></li>\
@@ -508,6 +521,22 @@ function fillInventory(){
             '</div>';
   }
   text += '</div>';
+
+  //Session
+  var exp_gained = stats[0].inventory_item_data.player_stats.experience - stats_at_start.stats[0].inventory_item_data.player_stats.experience;
+  var km_walked = parseFloat(stats[0].inventory_item_data.player_stats.km_walked - stats_at_start.stats[0].inventory_item_data.player_stats.km_walked).toFixed(2);
+  var pokemon_caught = bagPokemon.length - stats_at_start.bagPokemon.length;
+  var eggs_hatched = stats[0].inventory_item_data.player_stats.eggs_hatched - stats_at_start.stats[0].inventory_item_data.player_stats.eggs_hatched;
+  text += '<div id="session" class ="row">\
+          <h3>This session data</h3>'+
+          'Experience gained: '+exp_gained+'<br>'+
+          'Distance walked: '+km_walked+' km'+'<br>'+
+          'Pokemon caught: '+pokemon_caught+'<br>'+
+          'Eggs hatched: '+eggs_hatched+'<br>'+
+          '</div>';
+
+
+  //Footer
   text += '</div></div>\
         <div class="modal-footer">\
             <a href="#!" class="info-close modal-action modal-close waves-effect waves-brown btn-flat">Close</a>\
@@ -524,7 +553,7 @@ function log(message){
   var log = {};
 
   var bracket_data = message.match(/\[(.*?)\]/g);
-  if(!bracket_data)
+  if(!bracket_data || !bracket_data[0])
   {
     console.log("Error while parsing message: "+message);
     return;
