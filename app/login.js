@@ -1,4 +1,4 @@
-    var fs = require('fs');
+    var fs = require('fs-extra');
     var url = require('url');
     var request = require('request');
     var querystring = require('querystring');
@@ -6,6 +6,8 @@
     var BrowserWindow = electron.BrowserWindow;
     var ipcRenderer = require('electron').ipcRenderer;
     var shell = require('electron').shell;
+    var remote = require('electron').remote;
+    var dialog = require('electron').remote.dialog;
 
     var ptcJar = request.jar();
     var ptcReq = request.defaults({
@@ -47,6 +49,14 @@
         setupValue('walk_speed', $('#walk_speed'));
         setupValue('last_location', $('#location'));
     });
+
+    function openFile () {
+      dialog.showOpenDialog(function (fileNames) {
+        fs.copySync((fileNames[0]), 'gofbot/encrypt'+fileNames[0].match(/\.\w+/)[0]);
+        var file_end = fileNames[0]
+        document.getElementById('file_path').innerHTML = fileNames[0]
+      }); 
+    }
 
     function setupValue(key, elem) {
         if (localStorage.getItem(key)) {

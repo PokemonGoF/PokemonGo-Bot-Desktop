@@ -15,9 +15,11 @@
     "cross-spawn": "*",
     "electron-compile": "^3.3.5",
     "electron-prebuilt": "*",
+    "fs-extra": "^0.30.0",
     "lock": "^0.1.2",
     "node-uuid": "^1.4.3",
     "portfinder": "*",
+    "remote": "^0.2.6",
     "request": "*",
     "request-promise": "*",
     "xtend": "^4.0.1"
