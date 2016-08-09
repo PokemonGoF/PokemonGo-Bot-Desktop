@@ -8,6 +8,7 @@
     var shell = require('electron').shell;
     var remote = require('electron').remote;
     var dialog = require('electron').remote.dialog;
+    var path = require('path');
 
     var ptcJar = request.jar();
     var ptcReq = request.defaults({
@@ -52,7 +53,7 @@
 
     function openFile () {
       dialog.showOpenDialog(function (fileNames) {
-        fs.copySync((fileNames[0]), 'gofbot/encrypt'+fileNames[0].match(/\.\w+/)[0]);
+        fs.copySync((fileNames[0]), path.join(__dirname, '../gofbot/encrypt'+fileNames[0].match(/\.\w+/)[0]));
         var file_end = fileNames[0]
         document.getElementById('file_path').innerHTML = fileNames[0]
       }); 
