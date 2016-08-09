@@ -32,6 +32,7 @@ var inventory = {};
 var playerInfo = {};
 var pokedex = {};
 var pokemonArray = {};
+var pokemoncandyArray = {};
 var stats = {};
 var user_data = {};
 var itemsArray = {
@@ -112,6 +113,12 @@ function initMap() {
     console.log('Loaded pokemon data..');
     pokemonArray = data;
   }, errorFunc, 'pokemonData');
+
+  // Load candies map.
+  loadJSON('../resources/data/pokemoncandy.json', function(data, successData) {
+    pokemoncandyArray = data;
+  }, errorFunc, 'pokemonCandy');
+
   for (var i = 0; i < users.length; i++) {
     user_data[users[i]] = {};
     pathcoords[users[i]] = [];
@@ -176,18 +183,29 @@ $('#btn-info').click(function(){
 var updateData = function() {
   document.getElementById('username').innerHTML = users[0];
   document.getElementById('level').innerHTML = "Level "+stats[0].inventory_item_data.player_stats.level;
-}
+};
 
 var errorFunc = function(xhr) {
   console.error(xhr);
 };
 
+var getCandy = function(p_num) {
+  for (var i = 0; i < user_data.bagCandy.length; i++) {
+    var checkCandy = user_data.bagCandy[i].inventory_item_data.candy.family_id;
+    if (pokemoncandyArray[p_num] === checkCandy) {
+      return (user_data.bagCandy[i].inventory_item_data.candy.candy || 0);
+    }
+  }
+};
+
 var invSuccess = function(data, user_index) {
-  bagCandy = filter(data, 'pokemon_family');
+  bagCandy = filter(data, 'candy');
   bagItems = filter(data, 'item');
   bagPokemon = sortPokemonsByKey(filter(data, 'pokemon_data'), 'cp');
   pokedex = filter(data, 'pokedex_entry');
   stats = filter(data, 'player_stats');
+  user_data.bagCandy = bagCandy;
+
   if(!stats_at_start.saved)
   {
       stats_at_start.bagCandy = filter(data, 'pokemon_family');
@@ -473,14 +491,20 @@ function fillInventory(){
         pkmnNum = current_pokemon_data.pokemon_id;
         pkmnImage = pad_with_zeroes(current_pokemon_data.pokemon_id, 3) + '.png';
         pkmnName = pokemonArray[pkmnNum-1].Name;
-        pkmnCP = "CP "+current_pokemon_data.cp;
+        pkmnCP = current_pokemon_data.cp;
         pkmnIVA = current_pokemon_data.individual_attack || 0;
         pkmnIVD = current_pokemon_data.individual_defense || 0;
         pkmnIVS = current_pokemon_data.individual_stamina || 0;
         pkmnIV = ((pkmnIVA + pkmnIVD + pkmnIVS) / 45.0).toFixed(2);
+        pkmCandy = getCandy(pkmnNum);
       }
-      text += '<div class="col s12 m4 l3 center pokemon-list-item" style="float: left;"><img src="../resources/image/pokemon/' + pkmnImage + '" class="png_img"><br><b><span class="pokemon-name">' + pkmnName +
-      '</span></b><br>' + pkmnCP + '<br>IV '+pkmnIV+'</div>';
+      text += '<div class="col s12 m4 l3 center pokemon-list-item" style="float: left;">' +
+                '<img src="../resources/image/pokemon/' + pkmnImage + '" class="png_img">' +
+                '<br><b><span class="pokemon-name">' + pkmnName + '</span></b>' +
+                '<br><b>CP: </b>' + pkmnCP + ' | <b>IV:</b> ' + pkmnIV +
+                '<br><b>A/D/S: </b>' + pkmnIVA + '/' + pkmnIVD + '/' + pkmnIVS +
+                '<br><b>Candies: </b>' + pkmCandy +
+              '</div>';
     }
     text += '</div></div>';
 
@@ -504,8 +528,10 @@ function fillInventory(){
     pkmnImage = pad_with_zeroes(pkmnNum, 3) +'.png';
     pkmnName = pokemonArray[pkmnNum-1].Name;
     pkmnName = pokemonArray[pkmnNum-1].Name;
-    pkmnEnc = sortedPokedex[i].enc
-    pkmnCap = sortedPokedex[i].cap
+    pkmnEnc = sortedPokedex[i].enc;
+    pkmnCap = sortedPokedex[i].cap;
+    pkmnCandy = getCandy(pkmnNum);
+
     text += '<div class="col s6 m6 l3 center"><img src="../resources/image/pokemon/' +
             pkmnImage +
             '" class="png_img"><br><b> ' +
@@ -517,7 +543,7 @@ function fillInventory(){
             '<br>Times Caught: ' +
             pkmnCap +
             '<br>Candy: ' +
-            pkmnCap +
+            pkmnCandy +
             '</div>';
   }
   text += '</div>';
