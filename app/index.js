@@ -543,7 +543,7 @@ function fillInventory(){
             '<br>Times Caught: ' +
             pkmnCap +
             '<br>Candy: ' +
-            pkmnCandy +
+            (pkmnCandy ||0)+
             '</div>';
   }
   text += '</div>';
