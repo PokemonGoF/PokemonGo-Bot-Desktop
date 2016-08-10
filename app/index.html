@@ -258,12 +258,12 @@
         width: 600px;
       }
       #close {
-      	font-size:40px;
+      	font-size: 40px;
       }
       #username {
         color: white;
         font-weight: bold;
-        width:100%;
+        width: 100%;
         font-size: .8em;
       }
       #level {
@@ -293,7 +293,7 @@
       #log-container h6 {
         padding: 15px;
       }
-      .tabs .indicator {
+      .tabs .indicator .stats {
           background-color: #5D4037;
       }
       .tabs > .tab > a {
@@ -372,7 +372,21 @@
         padding: 12px;
         overflow: hidden;
       }
-      #indicator {
+
+      #bot-stats {
+        z-index: 1;
+        height: 93px;
+        width: 300px;
+        position: absolute;
+        right: 350px;
+        bottom: 24px;
+        background: #FFF;
+        font-size: 12px;
+        padding: 12px;
+        overflow: hidden;
+      }
+
+      #indicator #stats {
         height: 10px;
         width: 10px;
         border-radius: 50%;
@@ -447,7 +461,13 @@
       <b>Bot status</b>
       <p>Loading</p>
     </div>
-    
+
+    <!-- Bot Stats -->
+    <div id="bot-stats" class="z-depth-1">
+      <b>Running Stats</b>
+      <p>Loading</p>
+    </div>
+
     </ul>
     <!-- Content -->
     <div id="content">
