@@ -1,78 +1,76 @@
-var i;
-var map;
-var menu;
-var out1;
-var out;
-var user_index;
-
-var emptyDex = [];
-var forts = [];
-var info_windows = [];
-var outArray = [];
-var numTrainers = [
-  177,
-  109
-];
-var teams = [
-  'TeamLess',
-  'Mystic',
-  'Valor',
-  'Instinct'
-];
-var trainerSex = [
-  'm',
-  'f'
-];
-
-var pathcoords = {};
-var bagCandy = {};
-var bagItems = {};
-var bagPokemon = {};
-var inventory = {};
-var playerInfo = {};
-var pokedex = {};
-var pokemonArray = {};
-var pokemoncandyArray = {};
-var stats = {};
-var user_data = {};
-var itemsArray = {
-  '0': 'Unknown',
-  '1': 'Pokeball',
-  '2': 'Greatball',
-  '3': 'Ultraball',
-  '4': 'Masterball',
-  '101': 'Potion',
-  '102': 'Super Potion',
-  '103': 'Hyper Potion',
-  '104': 'Max Potion',
-  '201': 'Revive',
-  '202': 'Max Revive',
-  '301': 'Lucky Egg',
-  '401': 'Incense',
-  '402': 'Spicy Incense',
-  '403': 'Cool Incense',
-  '404': 'Floral Incense',
-  '501': 'Troy Disk',
-  '602': 'X Attack',
-  '603': 'X Defense',
-  '604': 'X Miracle',
-  '701': 'Razz Berry',
-  '702': 'Bluk Berry',
-  '703': 'Nanab Berry',
-  '704': 'Wepar Berry',
-  '705': 'Pinap Berry',
-  '801': 'Special Camera',
-  '901': 'Incubator (Unlimited)',
-  '902': 'Incubator',
-  '1001': 'Pokemon Storage Upgrade',
-  '1002': 'Item Storage Upgrade'
-};
-
-var stats_at_start = {};
+let i;
+  map,
+  menu,
+  out1,
+  out,
+  user_index,
+  emptyDex = [],
+  forts = [],
+  info_windows = [],
+  outArray = [],
+  numTrainers = [
+    177,
+    109
+  ],
+  teams = [
+    'TeamLess',
+    'Mystic',
+    'Valor',
+    'Instinct'
+  ],
+  trainerSex = [
+    'm',
+    'f'
+  ],
+  pathcoords = {},
+  bagCandy = {},
+  bagItems = {},
+  bagPokemon = {},
+  inventory = {},
+  playerInfo = {},
+  pokedex = {},
+  pokemonArray = {},
+  pokemoncandyArray = {},
+  stats = {},
+  user_data = {},
+  itemsArray = {
+    '0': 'Unknown',
+    '1': 'Pokeball',
+    '2': 'Greatball',
+    '3': 'Ultraball',
+    '4': 'Masterball',
+    '101': 'Potion',
+    '102': 'Super Potion',
+    '103': 'Hyper Potion',
+    '104': 'Max Potion',
+    '201': 'Revive',
+    '202': 'Max Revive',
+    '301': 'Lucky Egg',
+    '401': 'Incense',
+    '402': 'Spicy Incense',
+    '403': 'Cool Incense',
+    '404': 'Floral Incense',
+    '501': 'Troy Disk',
+    '602': 'X Attack',
+    '603': 'X Defense',
+    '604': 'X Miracle',
+    '701': 'Razz Berry',
+    '702': 'Bluk Berry',
+    '703': 'Nanab Berry',
+    '704': 'Wepar Berry',
+    '705': 'Pinap Berry',
+    '801': 'Special Camera',
+    '901': 'Incubator (Unlimited)',
+    '902': 'Incubator',
+    '1001': 'Pokemon Storage Upgrade',
+    '1002': 'Item Storage Upgrade'
+  },
+  stats_at_start = {};
 
 $(document).ready(function() {
-  loadScript("https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey + "&libraries=drawing&callback=initMap");
+  let ipcRenderer = require('electron').ipcRenderer;
 
+  loadScript("https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey + "&libraries=drawing&callback=initMap");
   $('select').material_select();
   $('.modal-trigger').leanModal();
   $(".side-info").sideNav({
@@ -89,13 +87,12 @@ $(document).ready(function() {
     belowOrigin: true, // Displays dropdown below the button
     alignment: 'left' // Displays dropdown with edge aligned to the left of button
   });
-  var ipcRenderer = require('electron').ipcRenderer;
   $('#logout').click(function() {
     ipcRenderer.send('logout');
   });
   ipcRenderer.on('pythonLog', function(evt, data) {
-    var lines = data.msg.split("\n")
-    for (var i = 0; i < lines.length; i++) {
+    let lines = data.msg.split("\n")
+    for (let i = 0; i < lines.length; i++) {
       log(lines[i]);
     }
     console.log(data.msg);
@@ -103,12 +100,13 @@ $(document).ready(function() {
 });
 
 function loadScript(src) {
-  var element = document.createElement("script");
+  let element = document.createElement("script");
   element.src = src;
   document.body.appendChild(element);
 }
 
 function initMap() {
+  let map;
   loadJSON('../resources/data/pokemondata.json', function(data, successData) {
     console.log('Loaded pokemon data..');
     pokemonArray = data;
@@ -119,7 +117,7 @@ function initMap() {
     pokemoncandyArray = data;
   }, errorFunc, 'pokemonCandy');
 
-  for (var i = 0; i < users.length; i++) {
+  for (let i = 0; i < users.length; i++) {
     user_data[users[i]] = {};
     pathcoords[users[i]] = [];
   }
@@ -173,7 +171,7 @@ $('#imageType').change(function() {
 });
 
 $('#strokeOn').change(function() {
-  for (var i = 0; i < users.length; i++) {
+  for (let i = 0; i < users.length; i++) {
     user_data[users[i]].trainerPath.setOptions({
       strokeOpacity: this.checked ? 1.0 : 0.0
     })
@@ -195,8 +193,8 @@ var errorFunc = function(xhr) {
 };
 
 var getCandy = function(p_num) {
-  for (var i = 0; i < user_data.bagCandy.length; i++) {
-    var checkCandy = user_data.bagCandy[i].inventory_item_data.candy.family_id;
+  for (let i = 0; i < user_data.bagCandy.length; i++) {
+    let checkCandy = user_data.bagCandy[i].inventory_item_data.candy.family_id;
     if (pokemoncandyArray[p_num] === checkCandy) {
       return (user_data.bagCandy[i].inventory_item_data.candy.candy || 0);
     }
@@ -222,11 +220,11 @@ var invSuccess = function(data, user_index) {
 };
 
 var trainerFunc = function(data, user_index) {
-  for (var i = 0; i < data.cells.length; i++) {
-    cell = data.cells[i];
+  for (let i = 0; i < data.cells.length; i++) {
+    let cell = data.cells[i];
     if (data.cells[i].forts != undefined) {
-      for (var x = 0; x < data.cells[i].forts.length; x++) {
-        var fort = cell.forts[x];
+      for (let x = 0; x < data.cells[i].forts.length; x++) {
+        let fort = cell.forts[x];
         if (!forts[fort.id]) {
           if (fort.type === 1) {
             forts[fort.id] = new google.maps.Marker({
@@ -247,17 +245,18 @@ var trainerFunc = function(data, user_index) {
               icon: '../resources/image/forts/' + teams[fort.owned_by_team] + '.png'
             });
           }
-          fortPoints = '';
-          fortTeam = '';
-          fortType = 'PokeStop';
-          pokemonGuard = '';
+          let fortPoints = '',
+              fortTeam = '',
+              fortType = 'PokeStop',
+              pokemonGuard = '',
+              contentString;
           if (fort.guard_pokemon_id != undefined) {
             fortPoints = 'Points: ' + fort.gym_points;
             fortTeam = 'Team: ' + teams[fort.owned_by_team] + '<br>';
             fortType = 'Gym';
             pokemonGuard = 'Guard Pokemon: ' + pokemonArray[fort.guard_pokemon_id - 1].Name + '<br>';
           }
-          var contentString = 'Id: ' + fort.id + '<br>Type: ' + fortType + '<br>' + pokemonGuard + fortPoints;
+          contentString = 'Id: ' + fort.id + '<br>Type: ' + fortType + '<br>' + pokemonGuard + fortPoints;
           info_windows[fort.id] = new google.maps.InfoWindow({
             content: contentString
           });

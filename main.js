@@ -1,83 +1,83 @@
-const electron = require('electron');
-const dialog = require('electron').dialog;
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipcMain = electron.ipcMain;
-const Menu = electron.Menu;
-const path = require('path');
-const os = require('os');
-const fs = require('fs');
-const autoUpdater = electron.autoUpdater;
+const electron = require('electron'),
+      dialog = require('electron').dialog,
+      app = electron.app,
+      BrowserWindow = electron.BrowserWindow,
+      ipcMain = electron.ipcMain,
+      Menu = electron.Menu,
+      path = require('path'),
+      os = require('os'),
+      fs = require('fs'),
+      autoUpdater = electron.autoUpdater;
 
-var platform = os.platform() + '_' + os.arch();
-app.setVersion(require('./package.json').version);
-
-var mainWindow = null;
-var procStarted = false;
-var subpy = null;
-var mainAddr;
+let platform = os.platform() + '_' + os.arch(),
+    mainWindow = null,
+    procStarted = false,
+    subpy = null,
+    mainAddr,
 
 // Menu Template
-var template = [{
-  label: "Application",
-  submenu: [{
-    label: "About Application",
-    selector: "orderFrontStandardAboutPanel:"
-  }, {
-    type: "separator"
-  }, {
-    label: "Quit",
-    accelerator: "Command+Q",
-    click: function() {
-      app.quit();
-    }
-  }]
-}, {
-  label: "Edit",
-  submenu: [{
-    label: "Undo",
-    accelerator: "CmdOrCtrl+Z",
-    selector: "undo:"
-  }, {
-    label: "Redo",
-    accelerator: "Shift+CmdOrCtrl+Z",
-    selector: "redo:"
-  }, {
-    type: "separator"
-  }, {
-    label: "Cut",
-    accelerator: "CmdOrCtrl+X",
-    selector: "cut:"
-  }, {
-    label: "Copy",
-    accelerator: "CmdOrCtrl+C",
-    selector: "copy:"
-  }, {
-    label: "Paste",
-    accelerator: "CmdOrCtrl+V",
-    selector: "paste:"
-  }, {
-    label: "Select All",
-    accelerator: "CmdOrCtrl+A",
-    selector: "selectAll:"
-  }]
-}, {
-  label: "Tools",
-  submenu: [{
-    label: "Refresh",
-    accelerator: "CmdOrCtrl+R",
-    click(item, focusedWindow) {
-      if (focusedWindow) focusedWindow.reload();
-    }
-  }, {
-    label: 'Toggle Developer Tools',
-    accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-    click(item, focusedWindow) {
-      if (focusedWindow)
-        focusedWindow.webContents.toggleDevTools();
-    }
-  }]
-}];
+    template = [{
+      label: "Application",
+      submenu: [{
+        label: "About Application",
+        selector: "orderFrontStandardAboutPanel:"
+      }, {
+        type: "separator"
+      }, {
+        label: "Quit",
+        accelerator: "Command+Q",
+        click: function() {
+          app.quit();
+        }
+      }]
+    }, {
+      label: "Edit",
+      submenu: [{
+        label: "Undo",
+        accelerator: "CmdOrCtrl+Z",
+        selector: "undo:"
+      }, {
+        label: "Redo",
+        accelerator: "Shift+CmdOrCtrl+Z",
+        selector: "redo:"
+      }, {
+        type: "separator"
+      }, {
+        label: "Cut",
+        accelerator: "CmdOrCtrl+X",
+        selector: "cut:"
+      }, {
+        label: "Copy",
+        accelerator: "CmdOrCtrl+C",
+        selector: "copy:"
+      }, {
+        label: "Paste",
+        accelerator: "CmdOrCtrl+V",
+        selector: "paste:"
+      }, {
+        label: "Select All",
+        accelerator: "CmdOrCtrl+A",
+        selector: "selectAll:"
+      }]
+    }, {
+      label: "Tools",
+      submenu: [{
+        label: "Refresh",
+        accelerator: "CmdOrCtrl+R",
+        click(item, focusedWindow) {
+          if (focusedWindow) focusedWindow.reload();
+        }
+      }, {
+        label: 'Toggle Developer Tools',
+        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+        click(item, focusedWindow) {
+          if (focusedWindow)
+            focusedWindow.webContents.toggleDevTools();
+        }
+      }]
+    }];
+
+app.setVersion(require('./package.json').version);
 
 // Launch app
 app.on('ready', function() {
@@ -160,18 +160,27 @@ function killProcess(pid) {
 
 // Starts python bot
 function startPython(auth, code, location, opts) {
+    let cmdLine,
+        pythonCmd,
+        setting_path,
+        user_path,
+        data,
+        settings,
+        titleWorker,
+        userdata_code,
+        location_path;
 
   // Load Index page
   mainWindow.loadURL('file://' + __dirname + '/app/index.html');
 
-  var cmdLine = [
+  cmdLine = [
     './pokecli.py',
   ];
 
   logData('Bot path: ' + path.join(__dirname, 'gofbot'));
   logData('python ' + cmdLine.join(' '));
 
-  var pythonCmd = 'python';
+  pythonCmd = 'python';
   if (os.platform() == 'win32') {
     pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
   }
@@ -179,7 +188,7 @@ function startPython(auth, code, location, opts) {
   // Rename config.json if needed
   try {
     //test to see if settings exist
-    var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
+    setting_path = path.join(__dirname, 'gofbot/configs/config.json');
     fs.openSync(setting_path, 'r+');
   } catch (err) {
     fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'), setting_path);
@@ -188,18 +197,18 @@ function startPython(auth, code, location, opts) {
   // Rename userdata.js if needed
   try {
     //test to see if settings exist
-    var user_path = path.join(__dirname, 'gofbot/web/config/userdata.js');
+    user_path = path.join(__dirname, 'gofbot/web/config/userdata.js');
     fs.openSync(user_path, 'r+');
   } catch (err) {
     fs.renameSync(path.join(__dirname, 'gofbot/web/config/userdata.js.example'), user_path);
   }
 
   // Load user config
-  var data = fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
-  var settings = JSON.parse(data);
+  data = fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
+  settings = JSON.parse(data);
 
   // Load settings
-  settings.auth_service = auth
+  settings.auth_service = auth;
   if (auth == 'google') {
     settings.password = opts.google_password;
     settings.username = opts.google_username;
@@ -213,8 +222,8 @@ function startPython(auth, code, location, opts) {
   }
   settings.location = location;
 
-  var titleWorker = false;
-  for(var i = 0 ; i < settings.tasks.length; i ++){
+  titleWorker = false;
+  for(let i = 0 ; i < settings.tasks.length; i ++){
     if(settings.tasks[i].type == "UpdateTitleStats") {
       titleWorker = true;
     }
@@ -238,7 +247,7 @@ function startPython(auth, code, location, opts) {
         });
   }
 
-  let userdata_code = [
+  userdata_code = [
       'var userInfo = {',
       'users : ["' + settings.username + '"],',
       'userZoom : true,',
@@ -248,20 +257,20 @@ function startPython(auth, code, location, opts) {
       '};'
   ];
 
-  // Write userdata for map                
+  // Write userdata for map
   fs.writeFileSync(path.join(__dirname, 'gofbot/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
   //temporary fix for location/catchable bug in PokemonGo-Bot
   try {
     //test to see if settings exist
-    var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
+    location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
     fs.openSync(location_path, 'r+');
   } catch (err) {
     fs.writeFileSync(location_path, "{}");
   }
   try {
     //test to see if settings exist
-    var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
+    location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
     fs.openSync(location_path, 'r+');
   } catch (err) {
     fs.writeFileSync(location_path, "{}");
@@ -305,4 +314,4 @@ function startPython(auth, code, location, opts) {
     setupMainWindow();
   });
 
-};
+}
