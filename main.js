@@ -126,7 +126,7 @@ function setupMainWindow() {
       minHeight: 500
     });
   }
-  mainWindow.loadURL('file://' + __dirname + '/app/login.html');
+  mainWindow.loadURL('file://' + __dirname + '/app/index.html');
 
   mainWindow.on('closed', function() {
     mainWindow = null;
@@ -156,7 +156,6 @@ function killProcess(pid) {
     } catch (e) {}
   }
 }
-
 
 // Starts python bot
 function startPython(auth, code, location, opts) {
