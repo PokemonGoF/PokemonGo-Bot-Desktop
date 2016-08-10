@@ -289,7 +289,7 @@ var trainerFunc = function(data, user_index) {
     })
   }
   if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
-    randomSex = Math.floor(Math.random() * 1);
+    randomSex = Math.round(Math.random());
     user_data[users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {
