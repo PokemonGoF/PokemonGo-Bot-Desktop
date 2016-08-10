@@ -1,23 +1,22 @@
-    var fs = require('fs-extra');
-    var url = require('url');
-    var request = require('request');
-    var querystring = require('querystring');
-    var electron = require('electron').remote;
-    var BrowserWindow = electron.BrowserWindow;
-    var ipcRenderer = require('electron').ipcRenderer;
-    var shell = require('electron').shell;
-    var remote = require('electron').remote;
-    var dialog = require('electron').remote.dialog;
-    var path = require('path');
-    var os = require('os');
+    const fs = require('fs-extra'),
+          url = require('url'),
+          request = require('request'),
+          querystring = require('querystring'),
+          electron = require('electron').remote,
+          BrowserWindow = electron.BrowserWindow,
+          ipcRenderer = require('electron').ipcRenderer,
+          shell = require('electron').shell,
+          remote = require('electron').remote,
+          dialog = require('electron').remote.dialog,
+          path = require('path'),
+          os = require('os');
 
-    var ptcJar = request.jar();
-    var ptcReq = request.defaults({
-        headers: {'User-Agent': 'niantic'},
-        jar: ptcJar
-    });
-
-    var geoLocation = "34.0432108, -118.2675059";
+    let ptcJar = request.jar(),
+        ptcReq = request.defaults({
+            headers: {'User-Agent': 'niantic'},
+            jar: ptcJar
+        }),
+        geoLocation = "34.0432108, -118.2675059";
 
     $(document).ready(function() {
         // Show version
@@ -72,7 +71,7 @@
     function openFile() {
         dialog.showOpenDialog(function(fileNames) {
             fs.copySync((fileNames[0]), path.join(__dirname, '../gofbot/encrypt' + fileNames[0].match(/\.\w+/)[0]));
-            var file_end = fileNames[0]
+            let file_end = fileNames[0];
             document.getElementById('file_path').innerHTML = fileNames[0];
             checkForEncryptionFile();
         });
@@ -117,7 +116,7 @@
         console.log("Error getting location, trying second provider", err);
         $.getJSON("http://ipinfo.io", function(ipinfo) {
             console.log("Found location [" + ipinfo.loc + "] by ipinfo.io");
-            var latLong = ipinfo.loc.split(",");
+            let latLong = ipinfo.loc.split(",");
             geoLat = latLong[0];
             geoLon = latLong[1];
             $('#location').prop('placeholder', '' + geoLat + ', ' + geoLon);
@@ -140,7 +139,7 @@
 
     function doGoogleLogin() {
         toggleLogin(true);
-        var username = jQuery('#google_username').val(),
+        let username = jQuery('#google_username').val(),
             password = jQuery('#google_password').val();
 
         // Reset cookie jar
@@ -154,7 +153,7 @@
     function doPTCLogin() {
         toggleLogin(true);
         jQuery('#ptc_errors').html('');
-        var username = jQuery('#ptc_username').val(),
+        let username = jQuery('#ptc_username').val(),
             password = jQuery('#ptc_password').val();
 
         // Reset cookie jar
@@ -177,7 +176,7 @@
     }
 
     function doPTCLoginStep2(user, pass, session) {
-        var loginData = {
+        let loginData = {
             'lt': session.lt,
             'execution': session.execution,
             '_eventId': 'submit',
@@ -191,11 +190,11 @@
             },
             function(error, response, body) {
                 if (!error && response.statusCode == 302) {
-                    var rawRedirect = response.headers.location;
+                    let rawRedirect = response.headers.location;
                     handlePokemonCallback(rawRedirect);
                 } else {
                     toggleLogin(false);
-                    var errors = null;
+                    let errors = null;
                     try {
                         errors = JSON.parse(body).errors;
                         errors = errors.join(' ');
@@ -219,7 +218,7 @@
     }
 
     function completeLogin(auth, code) {
-        var userLocation = $('#location').val();
+        let userLocation = $('#location').val();
         if (userLocation != '') {
             geoLocation = userLocation;
         };

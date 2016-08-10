@@ -37,3 +37,9 @@ jspm_packages
 
 # Optional REPL history
 .node_repl_history
+/pip-selfcheck.json
+/Lib/
+/Scripts/
+/Include/
+/tcl/
+/pywin/
