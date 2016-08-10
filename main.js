@@ -239,12 +239,12 @@ function startPython(auth, code, location, opts) {
   }
 
   let userdata_code = [
-      'var userInfo = {',
-      'users = ["' + settings.username + '"],',
-      'userZoom = true,',
-      'userFollow = true,',
-      'imageExt = ".png",',
-      'gMapsAPIKey = "' + settings.gmapkey + '"',
+      'var userInfo : {',
+      'users : ["' + settings.username + '"],',
+      'userZoom : true,',
+      'userFollow : true,',
+      'imageExt : ".png",',
+      'gMapsAPIKey : "' + settings.gmapkey + '"',
       '}'
   ];
 
