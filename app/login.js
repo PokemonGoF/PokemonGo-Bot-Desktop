@@ -9,6 +9,7 @@
     var remote = require('electron').remote;
     var dialog = require('electron').remote.dialog;
     var path = require('path');
+    var os = require('os');
 
     var ptcJar = request.jar();
     var ptcReq = request.defaults({
@@ -47,13 +48,33 @@
         setupValue('google_maps_api', $('#google_maps_api'));
         setupValue('walk_speed', $('#walk_speed'));
         setupValue('last_location', $('#location'));
+
+        checkForEncryptionFile();
     });
+
+    function checkForEncryptionFile() {
+        let platform = os.platform(),
+            fileName = platform == 'win32' ? 'encrypt.dll' : 'encrypt.so';
+        fs.access(path.join(__dirname, '../gofbot/' + fileName), fs.constants.R_OK, (err) => {
+            if (err === null) {
+                //No error, file exists and is readable.
+                $('#selectEncryptionFileDiv').hide();
+                $('#encryptionFileExistsDiv').show();
+            }
+            else {
+                //File doesn't exists, let the user select it.
+                $('#selectEncryptionFileDiv').show();
+                $('#encryptionFileExistsDiv').hide();
+            }
+        });
+    }
 
     function openFile() {
         dialog.showOpenDialog(function(fileNames) {
             fs.copySync((fileNames[0]), path.join(__dirname, '../gofbot/encrypt' + fileNames[0].match(/\.\w+/)[0]));
             var file_end = fileNames[0]
-            document.getElementById('file_path').innerHTML = fileNames[0]
+            document.getElementById('file_path').innerHTML = fileNames[0];
+            checkForEncryptionFile();
         });
     }
 
