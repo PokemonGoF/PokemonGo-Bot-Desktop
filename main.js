@@ -126,7 +126,7 @@ function setupMainWindow() {
       minHeight: 500
     });
   }
-  mainWindow.loadURL('file://' + __dirname + '/app/index.html');
+  mainWindow.loadURL('file://' + __dirname + '/app/login.html');
 
   mainWindow.on('closed', function() {
     mainWindow = null;
