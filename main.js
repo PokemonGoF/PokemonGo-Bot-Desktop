@@ -213,7 +213,31 @@ function startPython(auth, code, location, opts) {
   }
   settings.location = location;
 
-
+  var titleWorker = false;
+  for(var i = 0 ; i < settings.tasks.length; i ++){
+    if(settings.tasks[i].type == "UpdateTitleStats") {
+      titleWorker = true;
+    }
+  }
+  if(!titleWorker) {
+  settings.tasks.unshift({
+            "type": "UpdateTitleStats",
+            "config": {
+                "min_interval": 1,
+                "stats": [
+                    "login",
+                    "uptime",
+                    "km_walked",
+                    "level_stats",
+                    "xp_earned",
+                    "xp_per_hour"
+                ],
+                "terminal_log": true,
+                "terminal_title": false
+            }
+        });
+  }
+  
   var userdata_code = ['var users = ["' + settings.username + '"];',
     'var userZoom = true;',
     'var userFollow = true;',
