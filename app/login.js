@@ -18,13 +18,11 @@
 
     var geoLocation = "34.0432108, -118.2675059";
 
-    $( document ).ready(function(){
+    $(document).ready(function() {
         // Show version
         $('#version').html('Version ' + electron.app.getVersion());
         // Get checkbox state
-        [
-            'remember'
-        ].forEach(function(elem){
+        ['remember'].forEach(function(elem) {
             if (localStorage.getItem(elem)) {
                 document.getElementById(elem).checked = (
                     localStorage.getItem(elem) == "true");
@@ -42,7 +40,7 @@
             //Open login section if we have saved username
             if (localStorage.getItem('ptc_username')) {
                 $('.collapsible li:eq(1) .collapsible-header').click();
-            }else if(localStorage.getItem('google_username')) {
+            } else if (localStorage.getItem('google_username')) {
                 $('.collapsible li:eq(0) .collapsible-header').click();
             }
         }
@@ -51,12 +49,12 @@
         setupValue('last_location', $('#location'));
     });
 
-    function openFile () {
-      dialog.showOpenDialog(function (fileNames) {
-        fs.copySync((fileNames[0]), path.join(__dirname, '../gofbot/encrypt'+fileNames[0].match(/\.\w+/)[0]));
-        var file_end = fileNames[0]
-        document.getElementById('file_path').innerHTML = fileNames[0]
-      }); 
+    function openFile() {
+        dialog.showOpenDialog(function(fileNames) {
+            fs.copySync((fileNames[0]), path.join(__dirname, '../gofbot/encrypt' + fileNames[0].match(/\.\w+/)[0]));
+            var file_end = fileNames[0]
+            document.getElementById('file_path').innerHTML = fileNames[0]
+        });
     }
 
     function setupValue(key, elem) {
@@ -92,16 +90,16 @@
     navigator.geolocation.getCurrentPosition(function success(position) {
         geoLat = position.coords.latitude;
         geoLon = position.coords.longitude;
-        $('#location').prop('placeholder', ''+geoLat+', '+geoLon);
+        $('#location').prop('placeholder', '' + geoLat + ', ' + geoLon);
         console.log("Got location: " + geoLat + ", " + geoLon);
     }, function error(err) {
         console.log("Error getting location, trying second provider", err);
-        $.getJSON("http://ipinfo.io", function(ipinfo){
-            console.log("Found location ["+ipinfo.loc+"] by ipinfo.io");
+        $.getJSON("http://ipinfo.io", function(ipinfo) {
+            console.log("Found location [" + ipinfo.loc + "] by ipinfo.io");
             var latLong = ipinfo.loc.split(",");
             geoLat = latLong[0];
             geoLon = latLong[1];
-            $('#location').prop('placeholder', ''+geoLat+', '+geoLon);
+            $('#location').prop('placeholder', '' + geoLat + ', ' + geoLon);
         });
     });
 
@@ -143,16 +141,16 @@
 
         // Get Login session from SSO servers
         ptcReq.get('https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize',
-        function(error, response, body) {
-            if (!error && response.statusCode == 200) {
-                doPTCLoginStep2(username, password, JSON.parse(body));
-            } else {
-                console.log(error);
-                toggleLogin(false);
-                alert('Oops! Something went wrong and we couldn\'t ' +
-                    'log you in. Please try again. Code 6.');
-            }
-        });
+            function(error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    doPTCLoginStep2(username, password, JSON.parse(body));
+                } else {
+                    console.log(error);
+                    toggleLogin(false);
+                    alert('Oops! Something went wrong and we couldn\'t ' +
+                        'log you in. Please try again. Code 6.');
+                }
+            });
 
         return false;
     }
@@ -167,34 +165,35 @@
         };
 
         ptcReq.post(
-                'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize',
-                {form: loginData},
-                function (error, response, body) {
-                    if (!error && response.statusCode == 302) {
-                        var rawRedirect = response.headers.location;
-                        handlePokemonCallback(rawRedirect);
+            'https://sso.pokemon.com/sso/login?service=https%3A%2F%2Fsso.pokemon.com%2Fsso%2Foauth2.0%2FcallbackAuthorize', {
+                form: loginData
+            },
+            function(error, response, body) {
+                if (!error && response.statusCode == 302) {
+                    var rawRedirect = response.headers.location;
+                    handlePokemonCallback(rawRedirect);
+                } else {
+                    toggleLogin(false);
+                    var errors = null;
+                    try {
+                        errors = JSON.parse(body).errors;
+                        errors = errors.join(' ');
+                    } catch (e) {}
+                    if (errors) {
+                        jQuery('#ptc_errors').html(errors);
                     } else {
-                        toggleLogin(false);
-                        var errors = null;
-                        try {
-                            errors = JSON.parse(body).errors;
-                            errors = errors.join(' ');
-                        } catch(e) {}
-                        if (errors) {
-                            jQuery('#ptc_errors').html(errors);
-                        } else {
-                            alert('Oops! Something went wrong and we couldn\'t ' +
-                                'log you in. Please try again. Code 7.');
-                        }
+                        alert('Oops! Something went wrong and we couldn\'t ' +
+                            'log you in. Please try again. Code 7.');
                     }
                 }
-            );
+            }
+        );
     }
 
     function handlePokemonCallback(newUrl) {
 
-      // Login by passing in password to prevent timeouts
-      completeLogin('ptc', '');
+        // Login by passing in password to prevent timeouts
+        completeLogin('ptc', '');
 
     }
 

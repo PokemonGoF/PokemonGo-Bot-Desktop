@@ -19,70 +19,65 @@ var mainAddr;
 
 // Menu Template
 var template = [{
-    label: "Application",
-    submenu: [{
-        label: "About Application",
-        selector: "orderFrontStandardAboutPanel:"
-    }, {
-        type: "separator"
-    }, {
-        label: "Quit",
-        accelerator: "Command+Q",
-        click: function() {
-            app.quit();
-        }
-    }]
+  label: "Application",
+  submenu: [{
+    label: "About Application",
+    selector: "orderFrontStandardAboutPanel:"
+  }, {
+    type: "separator"
+  }, {
+    label: "Quit",
+    accelerator: "Command+Q",
+    click: function() {
+      app.quit();
+    }
+  }]
 }, {
-    label: "Edit",
-    submenu: [{
-        label: "Undo",
-        accelerator: "CmdOrCtrl+Z",
-        selector: "undo:"
-    }, {
-        label: "Redo",
-        accelerator: "Shift+CmdOrCtrl+Z",
-        selector: "redo:"
-    }, {
-        type: "separator"
-    }, {
-        label: "Cut",
-        accelerator: "CmdOrCtrl+X",
-        selector: "cut:"
-    }, {
-        label: "Copy",
-        accelerator: "CmdOrCtrl+C",
-        selector: "copy:"
-    }, {
-        label: "Paste",
-        accelerator: "CmdOrCtrl+V",
-        selector: "paste:"
-    }, {
-        label: "Select All",
-        accelerator: "CmdOrCtrl+A",
-        selector: "selectAll:"
-    }]
-},
-{
-    label: "Tools",
-    submenu: [
-      {
-        label: "Refresh",
-        accelerator: "CmdOrCtrl+R",
-        click(item, focusedWindow) {
-          if (focusedWindow) focusedWindow.reload();
-        }
-      },
-      {
-        label: 'Toggle Developer Tools',
-        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-        click(item, focusedWindow) {
-          if (focusedWindow)
-            focusedWindow.webContents.toggleDevTools();
-        }
-      }
-    ]
-}
-];
+  label: "Edit",
+  submenu: [{
+    label: "Undo",
+    accelerator: "CmdOrCtrl+Z",
+    selector: "undo:"
+  }, {
+    label: "Redo",
+    accelerator: "Shift+CmdOrCtrl+Z",
+    selector: "redo:"
+  }, {
+    type: "separator"
+  }, {
+    label: "Cut",
+    accelerator: "CmdOrCtrl+X",
+    selector: "cut:"
+  }, {
+    label: "Copy",
+    accelerator: "CmdOrCtrl+C",
+    selector: "copy:"
+  }, {
+    label: "Paste",
+    accelerator: "CmdOrCtrl+V",
+    selector: "paste:"
+  }, {
+    label: "Select All",
+    accelerator: "CmdOrCtrl+A",
+    selector: "selectAll:"
+  }]
+}, {
+  label: "Tools",
+  submenu: [{
+    label: "Refresh",
+    accelerator: "CmdOrCtrl+R",
+    click(item, focusedWindow) {
+      if (focusedWindow) focusedWindow.reload();
+    }
+  }, {
+    label: 'Toggle Developer Tools',
+    accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+    click(item, focusedWindow) {
+      if (focusedWindow)
+        focusedWindow.webContents.toggleDevTools();
+    }
+  }]
+}];
 
 // Launch app
 app.on('ready', function() {
@@ -123,9 +118,13 @@ ipcMain.on('startPython', function(event, auth, code, location, opts) {
 // Creates main window and load Login page
 function setupMainWindow() {
 
-  if(!mainWindow)
-  {
-    mainWindow = new BrowserWindow({width: 1280, height: 720, minWidth: 700, minHeight: 500});
+  if (!mainWindow) {
+    mainWindow = new BrowserWindow({
+      width: 1280,
+      height: 720,
+      minWidth: 700,
+      minHeight: 500
+    });
   }
   mainWindow.loadURL('file://' + __dirname + '/app/login.html');
 
@@ -138,10 +137,12 @@ function setupMainWindow() {
 }
 
 // Sends log to web page
-function logData(str){
+function logData(str) {
   console.log(str);
-  if (mainWindow){
-    mainWindow.webContents.send('appLog', {'msg': `${str}`});
+  if (mainWindow) {
+    mainWindow.webContents.send('appLog', {
+      'msg': `${str}`
+    });
   }
 }
 
@@ -181,7 +182,7 @@ function startPython(auth, code, location, opts) {
     var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
     fs.openSync(setting_path, 'r+');
   } catch (err) {
-    fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'),setting_path);
+    fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'), setting_path);
   }
 
   // Rename userdata.js if needed
@@ -190,13 +191,13 @@ function startPython(auth, code, location, opts) {
     var user_path = path.join(__dirname, 'gofbot/web/config/userdata.js');
     fs.openSync(user_path, 'r+');
   } catch (err) {
-    fs.renameSync(path.join(__dirname, 'gofbot/web/config/userdata.js.example'),user_path);
+    fs.renameSync(path.join(__dirname, 'gofbot/web/config/userdata.js.example'), user_path);
   }
-  
+
   // Load user config
   var data = fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
   var settings = JSON.parse(data);
-  
+
   // Load settings
   settings.auth_service = auth
   if (auth == 'google') {
@@ -214,33 +215,33 @@ function startPython(auth, code, location, opts) {
 
 
   var userdata_code = ['var users = ["' + settings.username + '"];',
-                          'var userZoom = true;',
-                          'var userFollow = true;',
-                          'var imageExt = ".png";',
-                          'var gMapsAPIKey = "' + settings.gmapkey + '";',
+    'var userZoom = true;',
+    'var userFollow = true;',
+    'var imageExt = ".png";',
+    'var gMapsAPIKey = "' + settings.gmapkey + '";',
   ]
-                          
+
   // Write userdata for map                
   fs.writeFileSync(path.join(__dirname, 'gofbot/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
   //temporary fix for location/catchable bug in PokemonGo-Bot
   try {
-      //test to see if settings exist
-      var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
-      fs.openSync(location_path, 'r+');
-    } catch (err) {
-      fs.writeFileSync(location_path,"{}");
+    //test to see if settings exist
+    var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
+    fs.openSync(location_path, 'r+');
+  } catch (err) {
+    fs.writeFileSync(location_path, "{}");
   }
   try {
-      //test to see if settings exist
-      var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
-      fs.openSync(location_path, 'r+');
-    } catch (err) {
-      fs.writeFileSync(location_path,"{}");
+    //test to see if settings exist
+    var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
+    fs.openSync(location_path, 'r+');
+  } catch (err) {
+    fs.writeFileSync(location_path, "{}");
   }
 
   // Save user config
-  fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4) , 'utf-8');
+  fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4), 'utf-8');
 
   // Create python bot process
   subpy = require('child_process').spawn(pythonCmd, cmdLine, {
@@ -251,14 +252,23 @@ function startPython(auth, code, location, opts) {
   // Send bot log to web page
   subpy.stdout.on('data', (data) => {
     console.log(`Python: ${data}`);
-    mainWindow.send('pythonLog', {'msg': `${data}`});
+    mainWindow.send('pythonLog', {
+      'msg': `${data}`
+    });
   });
   subpy.stderr.on('data', (data) => {
     console.log(`Python: ${data}`);
-    mainWindow.send('pythonLog', {'msg': `${data}`});
-    if(data.indexOf("ERROR")>-1)
-    {
-      dialog.showMessageBox({type:"error",title:"Whoops",message:"Error in python bot",detail:""+data,buttons:["Yes I read carefully error message"]});
+    mainWindow.send('pythonLog', {
+      'msg': `${data}`
+    });
+    if (data.indexOf("ERROR") > -1) {
+      dialog.showMessageBox({
+        type: "error",
+        title: "Whoops",
+        message: "Error in python bot",
+        detail: "" + data,
+        buttons: ["Yes I read carefully error message"]
+      });
     }
   });
 
@@ -267,5 +277,5 @@ function startPython(auth, code, location, opts) {
     procStarted = false;
     setupMainWindow();
   });
-  
+
 };
