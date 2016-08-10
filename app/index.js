@@ -71,7 +71,7 @@ var itemsArray = {
 var stats_at_start = {};
 
 $(document).ready(function() {
-  loadScript("https://maps.googleapis.com/maps/api/js?key=" + gMapsAPIKey + "&libraries=drawing&callback=initMap");
+  loadScript("https://maps.googleapis.com/maps/api/js?key=" + userInfo.gMapsAPIKey + "&libraries=drawing&callback=initMap");
 
   $('select').material_select();
   $('.modal-trigger').leanModal();
@@ -119,9 +119,9 @@ function initMap() {
     pokemoncandyArray = data;
   }, errorFunc, 'pokemonCandy');
 
-  for (var i = 0; i < users.length; i++) {
-    user_data[users[i]] = {};
-    pathcoords[users[i]] = [];
+  for (var i = 0; i < userInfo.users.length; i++) {
+    user_data[userInfo.users[i]] = {};
+    pathcoords[userInfo.users[i]] = [];
   }
   map = new google.maps.Map(document.getElementById('map'), {
     center: {
@@ -131,9 +131,9 @@ function initMap() {
     zoom: 3
   });
 
-  document.getElementById('switchPan').checked = userFollow;
-  document.getElementById('switchZoom').checked = userZoom;
-  document.getElementById('imageType').checked = (imageExt != '.png');
+  document.getElementById('switchPan').checked = userInfo.userFollow;
+  document.getElementById('switchZoom').checked = userInfo.userZoom;
+  document.getElementById('imageType').checked = (userInfo.imageExt != '.png');
   document.getElementById('strokeOn').checked = true;
   setTimeout(function() {
     placeTrainer();
@@ -150,31 +150,31 @@ function initMap() {
 
 $('#switchPan').change(function() {
   if (this.checked) {
-    userFollow = true;
+    userInfo.userFollow = true;
   } else {
-    userFollow = false;
+    userInfo.userFollow = false;
   }
 });
 
 $('#switchZoom').change(function() {
   if (this.checked) {
-    userZoom = true;
+    userInfo.userZoom = true;
   } else {
-    userZoom = false;
+    userInfo.userZoom = false;
   }
 });
 
 $('#imageType').change(function() {
   if (this.checked) {
-    imageExt = '.gif';
+    userInfo.imageExt = '.gif';
   } else {
-    imageExt = '.png';
+    userInfo.imageExt = '.png';
   }
 });
 
 $('#strokeOn').change(function() {
-  for (var i = 0; i < users.length; i++) {
-    user_data[users[i]].trainerPath.setOptions({
+  for (var i = 0; i < userInfo.users.length; i++) {
+    user_data[userInfo.users[i]].trainerPath.setOptions({
       strokeOpacity: this.checked ? 1.0 : 0.0
     })
   }
@@ -186,7 +186,7 @@ $('#btn-info').click(function() {
 });
 
 var updateData = function() {
-  document.getElementById('username').innerHTML = users[0];
+  document.getElementById('username').innerHTML = userInfo.users[0];
   document.getElementById('level').innerHTML = "Level " + stats[0].inventory_item_data.player_stats.level;
 };
 
@@ -271,26 +271,26 @@ var trainerFunc = function(data, user_index) {
       }
     }
   }
-  if (pathcoords[users[user_index]][pathcoords[users[user_index]].length] > 1) {
+  if (pathcoords[userInfo.users[user_index]][pathcoords[userInfo.users[user_index]].length] > 1) {
     var tempcoords = [{
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng)
     }];
-    if (tempcoords.lat != pathcoords[users[user_index]][pathcoords[users[user_index]].length - 1].lat && tempcoords.lng != pathcoords[users[user_index]][pathcoords[users[user_index]].length - 1].lng || pathcoords[users[user_index]].length === 1) {
-      pathcoords[users[user_index]].push({
+    if (tempcoords.lat != pathcoords[userInfo.users[user_index]][pathcoords[userInfo.users[user_index]].length - 1].lat && tempcoords.lng != pathcoords[userInfo.users[user_index]][pathcoords[userInfo.users[user_index]].length - 1].lng || pathcoords[userInfo.users[user_index]].length === 1) {
+      pathcoords[userInfo.users[user_index]].push({
         lat: parseFloat(data.lat),
         lng: parseFloat(data.lng)
       })
     }
   } else {
-    pathcoords[users[user_index]].push({
+    pathcoords[userInfo.users[user_index]].push({
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng)
     })
   }
-  if (user_data[users[user_index]].hasOwnProperty('marker') === false) {
+  if (user_data[userInfo.users[user_index]].hasOwnProperty('marker') === false) {
     randomSex = Math.round(Math.random());
-    user_data[users[user_index]].marker = new google.maps.Marker({
+    user_data[userInfo.users[user_index]].marker = new google.maps.Marker({
       map: map,
       position: {
         lat: parseFloat(data.lat),
@@ -298,30 +298,30 @@ var trainerFunc = function(data, user_index) {
       },
       icon: '../resources/image/trainer/' + trainerSex[randomSex] + Math.floor(Math.random() * numTrainers[randomSex]) + '.png',
       zIndex: 2,
-      label: users[user_index]
+      label: userInfo.users[user_index]
     });
   } else {
-    user_data[users[user_index]].marker.setPosition({
+    user_data[userInfo.users[user_index]].marker.setPosition({
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng)
     });
-    if (pathcoords[users[user_index]].length === 2) {
-      user_data[users[user_index]].trainerPath = new google.maps.Polyline({
+    if (pathcoords[userInfo.users[user_index]].length === 2) {
+      user_data[userInfo.users[user_index]].trainerPath = new google.maps.Polyline({
         map: map,
-        path: pathcoords[users[user_index]],
+        path: pathcoords[userInfo.users[user_index]],
         geodisc: true,
         strokeColor: '#FF0000',
         strokeOpacity: 0.7,
         strokeWeight: 2
       });
     } else {
-      user_data[users[user_index]].trainerPath.setPath(pathcoords[users[user_index]]);
+      user_data[userInfo.users[user_index]].trainerPath.setPath(pathcoords[userInfo.users[user_index]]);
     }
   }
-  if (users.length === 1 && userZoom === true) {
+  if (userInfo.users.length === 1 && userInfo.userZoom === true) {
     map.setZoom(16);
   }
-  if (users.length === 1 && userFollow === true) {
+  if (userInfo.users.length === 1 && userInfo.userFollow === true) {
     map.panTo({
       lat: parseFloat(data.lat),
       lng: parseFloat(data.lng)
@@ -330,71 +330,71 @@ var trainerFunc = function(data, user_index) {
 };
 
 function placeTrainer() {
-  for (var i = 0; i < users.length; i++) {
-    loadJSON('../gofbot/web/location-' + users[i] + '.json', trainerFunc, errorFunc, i);
+  for (var i = 0; i < userInfo.users.length; i++) {
+    loadJSON('../gofbot/web/location-' + userInfo.users[i] + '.json', trainerFunc, errorFunc, i);
   }
 }
 
 function updateTrainer() {
-  for (var i = 0; i < users.length; i++) {
-    loadJSON('../gofbot/web/location-' + users[i] + '.json', trainerFunc, errorFunc, i);
+  for (var i = 0; i < userInfo.users.length; i++) {
+    loadJSON('../gofbot/web/location-' + userInfo.users[i] + '.json', trainerFunc, errorFunc, i);
   }
 }
 
 var catchSuccess = function(data, user_index) {
   if (data !== undefined && Object.keys(data).length > 0) {
-    if (user_data[users[user_index]].catchables === undefined) {
-      user_data[users[user_index]].catchables = {};
+    if (user_data[userInfo.users[user_index]].catchables === undefined) {
+      user_data[userInfo.users[user_index]].catchables = {};
     }
     if (data.latitude !== undefined) {
-      if (user_data[users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
+      if (user_data[userInfo.users[user_index]].catchables.hasOwnProperty(data.spawnpoint_id) === false) {
         poke_name = pokemonArray[data.pokemon_id - 1].Name;
-        user_data[users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
+        user_data[userInfo.users[user_index]].catchables[data.spawnpoint_id] = new google.maps.Marker({
           map: map,
           position: {
             lat: parseFloat(data.latitude),
             lng: parseFloat(data.longitude)
           },
-          icon: '../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt,
+          icon: '../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt,
           zIndex: 4,
           optimized: false
         });
-        if (userZoom === true) {
+        if (userInfo.userZoom === true) {
           map.setZoom(16);
         }
-        if (userFollow === true) {
+        if (userInfo.userFollow === true) {
           map.panTo({
             lat: parseFloat(data.latitude),
             lng: parseFloat(data.longitude)
           });
         }
       } else {
-        user_data[users[user_index]].catchables[data.spawnpoint_id].setPosition({
+        user_data[userInfo.users[user_index]].catchables[data.spawnpoint_id].setPosition({
           lat: parseFloat(data.latitude),
           lng: parseFloat(data.longitude)
         });
-        user_data[users[user_index]].catchables[data.spawnpoint_id].setIcon('../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + imageExt);
+        user_data[userInfo.users[user_index]].catchables[data.spawnpoint_id].setIcon('../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt);
       }
     }
   } else {
-    if (user_data[users[user_index]].catchables !== undefined && Object.keys(user_data[users[user_index]].catchables).length > 0) {
-      for (var key in user_data[users[user_index]].catchables) {
-        user_data[users[user_index]].catchables[key].setMap(null);
+    if (user_data[userInfo.users[user_index]].catchables !== undefined && Object.keys(user_data[userInfo.users[user_index]].catchables).length > 0) {
+      for (var key in user_data[userInfo.users[user_index]].catchables) {
+        user_data[userInfo.users[user_index]].catchables[key].setMap(null);
       }
-      user_data[users[user_index]].catchables = undefined;
+      user_data[userInfo.users[user_index]].catchables = undefined;
     }
   }
 };
 
 function addCatchable() {
-  for (var i = 0; i < users.length; i++) {
-    loadJSON('../gofbot/web/catchable-' + users[i] + '.json', catchSuccess, errorFunc, i);
+  for (var i = 0; i < userInfo.users.length; i++) {
+    loadJSON('../gofbot/web/catchable-' + userInfo.users[i] + '.json', catchSuccess, errorFunc, i);
   }
 }
 
 function addInventory() {
-  for (var i = 0; i < users.length; i++) {
-    loadJSON('../gofbot/web/inventory-' + users[i] + '.json', invSuccess, errorFunc, i);
+  for (var i = 0; i < userInfo.users.length; i++) {
+    loadJSON('../gofbot/web/inventory-' + userInfo.users[i] + '.json', invSuccess, errorFunc, i);
   }
 }
 
@@ -464,8 +464,8 @@ function fillInventory() {
     <div class="modal-content">
     <div id="info" class="row">
     <div class="col s12 center" style="margin-bottom: 25px;">
-      <img src="${user_data[users[0]].marker.icon}">
-      <h5>${users[0]}</h5>
+      <img src="${user_data[userInfo.users[0]].marker.icon}">
+      <h5>${userInfo.users[0]}</h5>
       Level ${current_user_stats.level} <br> 
       ${current_user_stats.experience}  /  ${parseInt(current_user_stats.next_level_xp, 10) }<br>
     </div>
