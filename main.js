@@ -239,13 +239,13 @@ function startPython(auth, code, location, opts) {
   }
 
   let userdata_code = [
-      'var userInfo : {',
+      'var userInfo = {',
       'users : ["' + settings.username + '"],',
       'userZoom : true,',
       'userFollow : true,',
       'imageExt : ".png",',
       'gMapsAPIKey : "' + settings.gmapkey + '"',
-      '}'
+      '};'
   ];
 
   // Write userdata for map                
