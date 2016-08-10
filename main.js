@@ -237,13 +237,16 @@ function startPython(auth, code, location, opts) {
             }
         });
   }
-  
-  var userdata_code = ['var users = ["' + settings.username + '"];',
-    'var userZoom = true;',
-    'var userFollow = true;',
-    'var imageExt = ".png";',
-    'var gMapsAPIKey = "' + settings.gmapkey + '";',
-  ]
+
+  let userdata_code = [
+      'var userInfo = {',
+      'users = ["' + settings.username + '"],',
+      'userZoom = true,',
+      'userFollow = true,',
+      'imageExt = ".png",',
+      'gMapsAPIKey = "' + settings.gmapkey + '"',
+      '}'
+  ];
 
   // Write userdata for map                
   fs.writeFileSync(path.join(__dirname, 'gofbot/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
