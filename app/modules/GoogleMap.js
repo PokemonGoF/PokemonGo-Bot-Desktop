@@ -1,4 +1,6 @@
 const constants = require('./const.js');
+const utils = require('./Utils.js');
+
 class GoogleMap {
     constructor(userInfo, user) {
         this.userInfo = userInfo;
@@ -49,6 +51,8 @@ class GoogleMap {
     }
 
     placeCatchable(data) {
+        let poke_name = '';
+
         if (data !== undefined && Object.keys(data).length > 0) {
             if (this.user.catchables === undefined) {
                 this.user.catchables = {};
@@ -62,7 +66,7 @@ class GoogleMap {
                             lat: parseFloat(data.latitude),
                             lng: parseFloat(data.longitude)
                         },
-                        icon: '../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt,
+                        icon: '../resources/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt,
                         zIndex: 4,
                         optimized: false
                     });
@@ -80,7 +84,7 @@ class GoogleMap {
                         lat: parseFloat(data.latitude),
                         lng: parseFloat(data.longitude)
                     });
-                    this.user.catchables[data.spawnpoint_id].setIcon('../resources/image/pokemon/' + pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt);
+                    this.user.catchables[data.spawnpoint_id].setIcon('../resources/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt);
                 }
             }
         } else {
