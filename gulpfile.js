@@ -14,6 +14,7 @@ const vfs = require('vinyl-fs');
 const imagemin = require ('gulp-imagemin');
 const sass = require('gulp-sass');
 const merge = require('merge2');
+const runElectron = require("gulp-run-electron");
 
 //CONFIG
 const BUILD_DIR = 'build';
@@ -109,5 +110,10 @@ gulp.task('build:src', ['clean'], () => {
     );
 });
 
+gulp.task('electron:run', ['build'], () => {
+    gulp.src("build").pipe(runElectron());
+});
+
 gulp.task('build', ['gofbot:prune', 'build:node', 'build:src']);
+gulp.task('develop', ['build', 'electron:run']);
 gulp.task('release', ['build', 'python:package', 'electron:osx', 'electron:windows']);

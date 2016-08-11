@@ -10,8 +10,8 @@ const fs = require('fs');
 const autoUpdater = electron.autoUpdater;
 
 var platform = os.platform() + '_' + os.arch();
-global.appRoot = path.resolve(appRoot);
-app.setVersion(require('package.json').version);
+global.appRoot = path.resolve(__dirname);
+app.setVersion(require('./package.json').version);
 
 var mainWindow = null;
 var procStarted = false;

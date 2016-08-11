@@ -5,9 +5,9 @@
   "repository": "https://github.com/PokemonGoF/PokemonGo-Bot-Desktop",
   "license": "MIT",
   "version": "0.0.1-alpha",
-  "main": "main.js",
+  "main": "app.js",
   "scripts": {
-    "start": "electron main.js"
+    "start": "electron app.js"
   },
   "dependencies": {
     "async": "^0.9.0",
@@ -35,6 +35,7 @@
     "gulp-git": "^1.11.0",
     "gulp-imagemin": "^3.0.2",
     "gulp-rimraf": "^0.2.0",
+    "gulp-run-electron": "^2.0.0",
     "gulp-sass": "^2.3.2",
     "gulp-symdest": "latest",
     "gulp-util": "^3.0.7",
