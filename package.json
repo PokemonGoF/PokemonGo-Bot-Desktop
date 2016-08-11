@@ -32,10 +32,12 @@
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
     "gulp-atom-electron": "^1.9.0",
+    "gulp-debug": "^2.1.2",
     "gulp-git": "^1.11.0",
     "gulp-symdest": "latest",
     "gulp-util": "^3.0.7",
     "gulp-zip": "^3.2.0",
+    "merge-stream": "latest",
     "rimraf": "^2.5.4"
   }
 }

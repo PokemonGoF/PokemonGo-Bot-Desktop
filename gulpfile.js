@@ -8,6 +8,10 @@ const electron = require('gulp-atom-electron');
 const symdest = require('gulp-symdest');
 const git = require('gulp-git');
 const exec = require('child_process').exec;
+const merge = require('merge-stream');
+const debug = require('gulp-debug');
+
+
 
 //CONFIG
 const BUILD_DIR = 'build';
@@ -78,8 +82,12 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
     ], callback);
 });
 
-gulp.task('copy-required', () => {
-
+gulp.task('copy', () => {
+    return merge(
+        gulp.src('node_modules/**/.*',  {base: '.'}).pipe(debug()).pipe(gulp.dest('build')),
+        gulp.src('src/.*').pipe(debug()).pipe(gulp.dest('build')),
+        gulp.src('package.json',  {base: '.'}).pipe(gulp.dest('build'))
+    );
 });
 
 gulp.task('build', ['gofbot:prune']);
