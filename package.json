@@ -18,7 +18,6 @@
     "hammerjs": "^2.0.8",
     "jquery": "^3.1.0",
     "lock": "^0.1.2",
-    "materialize": "^1.0.0",
     "materialize-css": "^0.97.7",
     "node-uuid": "^1.4.3",
     "portfinder": "*",
@@ -34,10 +33,13 @@
     "gulp-atom-electron": "^1.9.0",
     "gulp-debug": "^2.1.2",
     "gulp-git": "^1.11.0",
+    "gulp-imagemin": "^3.0.2",
+    "gulp-rimraf": "^0.2.0",
     "gulp-symdest": "latest",
     "gulp-util": "^3.0.7",
     "gulp-zip": "^3.2.0",
-    "merge-stream": "latest",
-    "rimraf": "^2.5.4"
+    "merge2": "^1.0.2",
+    "rimraf": "^2.5.4",
+    "vinyl-fs": "^2.4.3"
   }
 }

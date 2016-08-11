@@ -8,10 +8,11 @@ const electron = require('gulp-atom-electron');
 const symdest = require('gulp-symdest');
 const git = require('gulp-git');
 const exec = require('child_process').exec;
-const merge = require('merge-stream');
+const grimraf = require('gulp-rimraf');
 const debug = require('gulp-debug');
-
-
+const vfs = require('vinyl-fs');
+const imagemin = require ('gulp-imagemin');
+const merge = require('merge2');
 
 //CONFIG
 const BUILD_DIR = 'build';
@@ -33,6 +34,7 @@ gulp.task('python:install', callback => {
 gulp.task('python:package', ['python:install'], () => {
     return gulp.src(`${PACKAGES}/**/!(*.pyc|*.egg-info)`)
         .pipe(zip('packages.zip'))
+        .pipe(grimraf())
         .pipe(gulp.dest('build'))
 });
 
@@ -82,11 +84,22 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
     ], callback);
 });
 
-gulp.task('copy', () => {
+gulp.task('clean', () => {
+    vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`])
+        .pipe(debug())
+        .pipe(grimraf())
+});
+
+gulp.task('copy:node', ['clean'], () => {
+    const getNodeModules = () => Object.keys(JSON.parse(fs.readFileSync('package.json').toString()).dependencies)
+        .map(_ => `./node_modules/${_}/**/*`);
     return merge(
-        gulp.src('node_modules/**/.*',  {base: '.'}).pipe(debug()).pipe(gulp.dest('build')),
-        gulp.src('src/**/.*').pipe(debug()).pipe(gulp.dest('build')),
-        gulp.src('package.json',  {base: '.'}).pipe(gulp.dest('build'))
+        vfs.src(getNodeModules(),  {base: '.'})
+
+
+            .pipe(gulp.dest(BUILD_DIR)),
+        gulp.src('package.json')
+            .pipe(gulp.dest(BUILD_DIR))
     );
 });
 
