@@ -27,9 +27,8 @@
     "async": "^0.9.2",
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
-    "gulp-atom-electron": "^1.9.0",
-    "gulp-git": "^1.11.0",
     "gulp-symdest": "latest",
+    "gulp-atom-electron": "^1.9.0",
     "gulp-util": "^3.0.7",
     "gulp-zip": "^3.2.0",
     "rimraf": "^2.5.4"
