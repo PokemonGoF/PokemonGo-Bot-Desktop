@@ -79,12 +79,11 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
     //TODO - Switch to grimraf
     async.parallel([
         _ => rimraf(`${BOT_DIR}/docs`, _),
-        _ => rimraf(`${BOT_DIR}/web`, _),
         _ => rimraf(`${BOT_DIR}/.github`, _),
         _ => rimraf(`${BOT_DIR}/tests`, _),
         _ => async.concat(['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'run.bat',
             'LICENSE', 'Dockerfile', 'install.sh', 'CONTRIBUTORS.md', 'docker-compose.yml', '.travis.yml', '.styles.yapf',
-            '.pylintrc', '.mention-bot', '.pullapprove.yml', '.gitmodules', '.dockerignore', '.gitignore'].map(x => `${BOT_DIR}/${x}`), fs.unlink, _)
+            '.pylintrc', '.mention-bot', '.pullapprove.yml', '.dockerignore', '.gitignore'].map(x => `${BOT_DIR}/${x}`), fs.unlink, _)
     ], callback);
 });
 
