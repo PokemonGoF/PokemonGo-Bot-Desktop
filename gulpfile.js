@@ -73,6 +73,7 @@ gulp.task('gofbot:update', (callback) => {
 });
 
 gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
+    //TODO - Switch to grimraf
     async.parallel([
         _ => rimraf(`${BOT}/docs`, _),
         _ => rimraf(`${BOT}/web`, _),
@@ -87,8 +88,7 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
 gulp.task('clean', () => vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
 gulp.task('build:node', ['clean'], () => {
-    const getNodeModules = () => Object.keys(JSON.parse(fs.readFileSync('package.json').toString()).dependencies)
-        .map(_ => `./node_modules/${_}/**/*`);
+    const getNodeModules = () => Object.keys(JSON.parse(fs.readFileSync('package.json').toString()).dependencies).map(_ => `node_modules/${_}/**/*`);
     return merge(
         vfs.src(getNodeModules(),  {base: '.'})
             .pipe(gulp.dest(BUILD_DIR)),
