@@ -1,8 +1,11 @@
 ![screenshot](http://i.imgur.com/tzMaWv4.png)
 # Pokemon GO Bot Desktop
 **THE BOT IS CURRENTLY UNDERGOING A MAJOR BUILD SYSTEM REVAMP PLEASE BE PATIENT**
+
 **Bot is working:** [Download](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/tag/v0.0.2-alpha)
+
 Desktop Pokemon GO Bot based on [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot)  
+
 Join us at #desktop-porting channel at [our slack chat](https://pokemongo-bot.herokuapp.com/)
 
 
