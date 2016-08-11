@@ -717,3 +717,7 @@ function pingStats() {
     $("#stats").css("background-color", "#eee");
   }, 250);
 }
+
+function clearLog() {
+  $('.log-item').remove();
+}
