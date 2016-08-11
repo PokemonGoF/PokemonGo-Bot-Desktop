@@ -29,18 +29,20 @@ gulp.task('python:package', ['python:install'], () => {
         .pipe(gulp.dest('build'))
 });
 
+const PACKAGE_SRC = ['app/**', 'LICENSE', 'gofbot/**/*', 'package.json', 'main.js'];
+
 gulp.task('electron:osx', ['python:package'], () => {
-    return gulp.src(['app/**', 'LICENSE', 'gofbot/**/*', 'package.json', 'main.js'])
+    return gulp.src(PACKAGE_SRC, {base: '.'})
         .pipe(electron({
             version: '1.3.3',
             platform: 'darwin',
             darwinIcon: 'resources/image/icons/pokemon.icns',
             darwinBundleIdentifier: 'com.github.pokemongof'
-        })).pipe(symdest('build/app'));
+        })).pipe(symdest('build'));
 });
 
 gulp.task('electron:windows', ['python:package'], () => {
-    return gulp.src(['app/**', 'LICENSE', 'gofbot/**/*', 'package.json', 'main.js', 'pywin/**/*'])
+    return gulp.src(PACKAGE_SRC.concat('pywin/**/*'), {base: '.'})
         .pipe(electron({
             version: '1.3.3',
             platform: 'win32',
@@ -49,7 +51,7 @@ gulp.task('electron:windows', ['python:package'], () => {
             companyName: 'PokemonGoF',
             copyright: '2016 PokemonGOF, All Rights Reserved.'
         }))
-        .pipe(zip('app-windows.zip'))
+        .pipe(zip('app-windows.exe'))
         .pipe(gulp.dest('build/'));
 });
 
