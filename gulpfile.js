@@ -12,33 +12,35 @@ const grimraf = require('gulp-rimraf');
 const debug = require('gulp-debug');
 const vfs = require('vinyl-fs');
 const imagemin = require ('gulp-imagemin');
+const sass = require('gulp-sass');
 const merge = require('merge2');
 
 //CONFIG
 const BUILD_DIR = 'build';
-const PACKAGES = `${BUILD_DIR}/packages`;
-const BOT = `${BUILD_DIR}/gofbot`;
+const RELEASE_DIR = 'release';
+const PACKAGES_DIR = `${BUILD_DIR}/packages`;
+const BOT_DIR = `${BUILD_DIR}/gofbot`;
 
 gulp.task('python:install', callback => {
     async.waterfall([
-        cb => rimraf(PACKAGES, cb),
+        cb => rimraf(PACKAGES_DIR, cb),
         cb => async.concat(fs.readFileSync('build/gofbot/requirements.txt')
             .toString()
             .split('\n')
-            .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${PACKAGES}`, _), err => cb(err)),
-        cb => fs.open(`${PACKAGES}/google/__init__.py`, 'wx', cb),
+            .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${PACKAGES_DIR}`, _), err => cb(err)),
+        cb => fs.open(`${PACKAGES_DIR}/google/__init__.py`, 'wx', cb),
         (file, cb) => fs.close(file, cb)
     ], callback);
 });
 
 gulp.task('python:package', ['python:install'], () => {
-    return gulp.src(`${PACKAGES}/**/!(*.pyc|*.egg-info)`)
+    return gulp.src(`${PACKAGES_DIR}/**/!(*.pyc|*.egg-info)`)
         .pipe(zip('packages.zip'))
         .pipe(grimraf())
         .pipe(gulp.dest('build'))
 });
 
-const PACKAGE_SRC = ['app/**', 'LICENSE', 'gofbot/**/*', 'package.json', 'main.js'];
+const PACKAGE_SRC = [`${BUILD_DIR}/**/*`, `!${BUILD_DIR}/{packages,packages/**}`];
 
 gulp.task('electron:osx', ['python:package'], () => {
     return gulp.src(PACKAGE_SRC, {base: '.'})
@@ -47,7 +49,7 @@ gulp.task('electron:osx', ['python:package'], () => {
             platform: 'darwin',
             darwinIcon: 'src/assets/resources/image/icons/pokemon.icns',
             darwinBundleIdentifier: 'com.github.pokemongof'
-        })).pipe(symdest('build'));
+        })).pipe(symdest(RELEASE_DIR));
 });
 
 gulp.task('electron:windows', ['python:package'], () => {
@@ -61,13 +63,13 @@ gulp.task('electron:windows', ['python:package'], () => {
             copyright: '2016 PokemonGOF, All Rights Reserved.'
         }))
         .pipe(zip('app-windows.exe'))
-        .pipe(gulp.dest('build/'));
+        .pipe(gulp.dest(RELEASE_DIR));
 });
 
 
 gulp.task('gofbot:update', (callback) => {
     async.series([
-        _ => git.exec({args: `submodule deinit -f ${BOT}`}, _),
+        _ => git.exec({args: `submodule deinit -f ${BOT_DIR}`}, _),
         _ => git.updateSubmodule({ args: '--init' }, _)
     ], callback);
 });
@@ -75,13 +77,13 @@ gulp.task('gofbot:update', (callback) => {
 gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
     //TODO - Switch to grimraf
     async.parallel([
-        _ => rimraf(`${BOT}/docs`, _),
-        _ => rimraf(`${BOT}/web`, _),
-        _ => rimraf(`${BOT}/.github`, _),
-        _ => rimraf(`${BOT}/tests`, _),
+        _ => rimraf(`${BOT_DIR}/docs`, _),
+        _ => rimraf(`${BOT_DIR}/web`, _),
+        _ => rimraf(`${BOT_DIR}/.github`, _),
+        _ => rimraf(`${BOT_DIR}/tests`, _),
         _ => async.concat(['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'run.bat',
             'LICENSE', 'Dockerfile', 'install.sh', 'CONTRIBUTORS.md', 'docker-compose.yml', '.travis.yml', '.styles.yapf',
-            '.pylintrc', '.mention-bot', '.pullapprove.yml', '.gitmodules', '.dockerignore', '.gitignore'].map(x => `${BOT}/${x}`), fs.unlink, _)
+            '.pylintrc', '.mention-bot', '.pullapprove.yml', '.gitmodules', '.dockerignore', '.gitignore'].map(x => `${BOT_DIR}/${x}`), fs.unlink, _)
     ], callback);
 });
 
@@ -97,7 +99,16 @@ gulp.task('build:node', ['clean'], () => {
     );
 });
 
-gulp.task('build:src', ['clean'], () => gulp.src('src/**/*').pipe(gulp.dest(BUILD_DIR)));
+gulp.task('build:src', ['clean'], () => {
+    return merge(
+        gulp.src(['src/**/*', '!src/{styles,styles/**}'])
+            .pipe(gulp.dest(BUILD_DIR)),
+        gulp.src('src/**/*.{scss,sass}')
+            .pipe(sass({ includePaths: ['node_modules/materialize-css/sass'] }).on('error', sass.logError))
+            .pipe(gulp.dest(BUILD_DIR))
+    );
+});
+
 
 gulp.task('build', ['gofbot:prune', 'build:node', 'build:src']);
 gulp.task('release', ['build', 'python:package', 'electron:osx', 'electron:windows']);

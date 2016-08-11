@@ -49,3 +49,6 @@ build/*
 
 # Unblock Gofbot
 !build/gofbot
+
+# Ignore Releases
+release
