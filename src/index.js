@@ -515,7 +515,7 @@ function fillInventory() {
   for (i = 0; i < current_user_bag_items.length; i++) {
     text += `
     <div class="col s12 m4 l3 center" style="float: left; height: 144px;">
-      <img src="../resources/image/items/${current_user_bag_items[i].inventory_item_data.item.item_id}.png" class="item_img"><br>
+      <img src="assets/image/items/${current_user_bag_items[i].inventory_item_data.item.item_id}.png" class="item_img"><br>
       <b>${itemsArray[current_user_bag_items[i].inventory_item_data.item.item_id]}</b><br>
       Count:  ${(current_user_bag_items[i].inventory_item_data.item.count || 0)}
     </div>`;
@@ -545,7 +545,7 @@ function fillInventory() {
     }
     text += `
     <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;">
-      <img src="../resources/image/pokemon/${pkmnImage}" class="png_img"><br>
+      <img src="assets/image/pokemon/${pkmnImage}" class="png_img"><br>
       <b><span class="pokemon-name">${pkmnName}</span></b><br>
       <b>CP: </b>${pkmnCP } | <b>IV:</b> ${pkmnIV}<br>
       <b>A/D/S: </b>${pkmnIVA}/${pkmnIVD}/${pkmnIVS}<br>
@@ -580,7 +580,7 @@ function fillInventory() {
 
     text += `
     <div class="col s6 m6 l3 center">
-      <img src="../resources/image/pokemon/${pkmnImage}" class="png_img"><br>
+      <img src="assets/image/pokemon/${pkmnImage}" class="png_img"><br>
       <b>${pad_with_zeroes(pkmnNum, 3)} ${pkmnName}</b><br>
       Times Seen: ${pkmnEnc}<br>
       Times Caught: ${pkmnCap}<br>
@@ -636,14 +636,14 @@ function log(message) {
   for (var key in itemsArray) {
     var item_name = itemsArray[key];
     if (log.message.indexOf(item_name) > -1) {
-      log.images.push('<img src="../resources/image/items/' + key + '.png" class="log-img">')
+      log.images.push('<img src="assets/image/items/' + key + '.png" class="log-img">')
     }
   }
 
   // Check for pokemon words
   for (var i = 0; i < pokemonArray.length; i++) {
     if (log.message.indexOf(pokemonArray[i].Name) > -1) {
-      log.images.push('<img src="../resources/image/pokemon/' + pad_with_zeroes(i + 1, 3) + '.png" class="log-img log-pokemon">')
+      log.images.push('<img src="assets/image/pokemon/' + pad_with_zeroes(i + 1, 3) + '.png" class="log-img log-pokemon">')
     }
   }
   log.date = new Date();

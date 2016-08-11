@@ -6,6 +6,7 @@ const zip = require('gulp-zip');
 const util = require('gulp-util');
 const electron = require('gulp-atom-electron');
 const symdest = require('gulp-symdest');
+const git = require('gulp-git');
 const exec = require('child_process').exec;
 
 const BUILD_DIR = 'build';
@@ -53,6 +54,13 @@ gulp.task('electron:windows', ['python:package'], () => {
         }))
         .pipe(zip('app-windows.exe'))
         .pipe(gulp.dest('build/'));
+});
+
+gulp.task('gofbot:reset', () => {
+    return gulp.src('gofbot/*')
+        .pipe(git.fetch('origin', 'master'))
+        .pipe(git.reset('HEAD', {args:'--hard origin/master'}))
+        .pipe(git.clean({args: '-f'}));
 });
 
 gulp.task('build', ['python:package', 'electron:osx', 'electron:windows']);
