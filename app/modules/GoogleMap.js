@@ -55,7 +55,7 @@ class GoogleMap {
             }
             if (data.latitude !== undefined) {
                 if (this.user.catchables.hasOwnProperty(data.spawnpoint_id) === false) {
-                    poke_name = constants.pokemonArray[data.pokemon_id - 1].Name;
+                    let poke_name = constants.pokemonArray[data.pokemon_id - 1].Name;
                     this.user.catchables[data.spawnpoint_id] = new google.maps.Marker({
                         map: this.map,
                         position: {
