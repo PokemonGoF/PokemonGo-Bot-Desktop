@@ -447,6 +447,14 @@ $(document).ready(function() {
   });
 });
 
+//filter pokemons 
+function fuzzy_match(str, pattern) {
+  pattern = pattern.split("").reduce(function(a, b) {
+    return a + ".*" + b;
+  });
+  return (new RegExp(pattern)).test(str);
+};
+var pokemonFilterTimer;
 
 function fillInventory() {
   addInventory();
@@ -610,6 +618,26 @@ function fillInventory() {
             <a href="#!" class="info-close modal-action modal-close waves-effect waves-brown btn-flat">Close</a>
         </div>`;
   $('#modal-info').html(text);
+
+  $('#pokemon .item-filter input').bind('change blur keyup mouseup', function(event) {
+    if (pokemonFilterTimer) {
+      clearTimeout(pokemonFilterTimer);
+    }
+    var searchTerm = $('#pokemon .item-filter input').val().toLowerCase();
+    if (searchTerm != '') {
+      pokemonFilterTimer = setTimeout(function() {
+        $('#pokemon .pokemon-list-item').each(function(i, e) {
+          pokemonName = $(e).find('.pokemon-name').text().toLowerCase();
+          fuzzy_match(pokemonName, searchTerm) && $(e).show() || $(e).hide();
+        });
+      }, 100);
+    } else {
+      $('#pokemon .pokemon-list-item').each(function(i, e) {
+        $(e).show();
+      });
+    }
+  });
+
   setTimeout(function() {
     $('.tabs').tabs();
   }, 1);
@@ -689,30 +717,3 @@ function pingStats() {
     $("#stats").css("background-color", "#eee");
   }, 250);
 }
-
-//filter pokemons 
-function fuzzy_match(str, pattern) {
-  pattern = pattern.split("").reduce(function(a, b) {
-    return a + ".*" + b;
-  });
-  return (new RegExp(pattern)).test(str);
-};
-var pokemonFilterTimer;
-$('#pokemon .item-filter input').bind('change blur keyup mouseup', function(event) {
-  if (pokemonFilterTimer) {
-    clearTimeout(pokemonFilterTimer);
-  }
-  var searchTerm = $('#pokemon .item-filter input').val().toLowerCase();
-  if (searchTerm != '') {
-    pokemonFilterTimer = setTimeout(function() {
-      $('#pokemon .pokemon-list-item').each(function(i, e) {
-        pokemonName = $(e).find('.pokemon-name').text().toLowerCase();
-        fuzzy_match(pokemonName, searchTerm) && $(e).show() || $(e).hide();
-      });
-    }, 100);
-  } else {
-    $('#pokemon .pokemon-list-item').each(function(i, e) {
-      $(e).show();
-    });
-  }
-});
