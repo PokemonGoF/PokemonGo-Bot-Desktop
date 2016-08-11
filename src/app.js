@@ -10,7 +10,8 @@ const fs = require('fs');
 const autoUpdater = electron.autoUpdater;
 
 var platform = os.platform() + '_' + os.arch();
-app.setVersion(require('../package.json').version);
+global.appRoot = path.resolve(appRoot);
+app.setVersion(require('package.json').version);
 
 var mainWindow = null;
 var procStarted = false;
@@ -126,7 +127,7 @@ function setupMainWindow() {
       minHeight: 500
     });
   }
-  mainWindow.loadURL('file://' + __dirname + '/app/login.html');
+  mainWindow.loadURL('file://' + appRoot + '/pages/login.html');
 
   mainWindow.on('closed', function() {
     mainWindow = null;
@@ -162,44 +163,44 @@ function killProcess(pid) {
 function startPython(auth, code, location, opts) {
 
   // Load Index page
-  mainWindow.loadURL('file://' + __dirname + '/app/index.html');
+  mainWindow.loadURL('file://' + appRoot + '/pages/index.html');
 
   var cmdLine = [
     './pokecli.py',
   ];
 
-  logData('Bot path: ' + path.join(__dirname, 'gofbot'));
+  logData('Bot path: ' + path.join(appRoot, 'gofbot'));
   logData('python ' + cmdLine.join(' '));
 
   var pythonCmd = 'python';
   if (os.platform() == 'win32') {
-    pythonCmd = path.join(__dirname, 'pywin', 'python.exe');
+    pythonCmd = path.join(appRoot, 'pywin', 'python.exe');
   }
 
   // Rename config.json if needed
   try {
     //test to see if settings exist
-    var setting_path = path.join(__dirname, 'gofbot/configs/config.json');
+    var setting_path = path.join(appRoot, 'gofbot/configs/config.json');
     fs.openSync(setting_path, 'r+');
   } catch (err) {
-    fs.renameSync(path.join(__dirname, 'gofbot/configs/config.json.example'), setting_path);
+    fs.renameSync(path.join(appRoot, 'gofbot/configs/config.json.example'), setting_path);
   }
 
   // Rename userdata.js if needed
   try {
     //test to see if settings exist
-    var user_path = path.join(__dirname, 'gofbot/web/config/userdata.js');
+    var user_path = path.join(appRoot, 'gofbot/web/config/userdata.js');
     fs.openSync(user_path, 'r+');
   } catch (err) {
-    fs.renameSync(path.join(__dirname, 'gofbot/web/config/userdata.js.example'), user_path);
+    fs.renameSync(path.join(appRoot, 'gofbot/web/config/userdata.js.example'), user_path);
   }
 
   // Load user config
-  var data = fs.readFileSync(path.join(__dirname, 'gofbot/configs/config.json'));
+  var data = fs.readFileSync(path.join(appRoot, 'gofbot/configs/config.json'));
   var settings = JSON.parse(data);
 
   // Load settings
-  settings.auth_service = auth
+  settings.auth_service = auth;
   if (auth == 'google') {
     settings.password = opts.google_password;
     settings.username = opts.google_username;
@@ -249,30 +250,30 @@ function startPython(auth, code, location, opts) {
   ];
 
   // Write userdata for map                
-  fs.writeFileSync(path.join(__dirname, 'gofbot/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
+  fs.writeFileSync(path.join(appRoot, 'gofbot/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
   //temporary fix for location/catchable bug in PokemonGo-Bot
   try {
     //test to see if settings exist
-    var location_path = path.join(__dirname, 'gofbot/web/location-' + settings.username + '.json');
+    var location_path = path.join(appRoot, 'gofbot/web/location-' + settings.username + '.json');
     fs.openSync(location_path, 'r+');
   } catch (err) {
     fs.writeFileSync(location_path, "{}");
   }
   try {
     //test to see if settings exist
-    var location_path = path.join(__dirname, 'gofbot/web/catchable-' + settings.username + '.json');
+    var location_path = path.join(appRoot, 'gofbot/web/catchable-' + settings.username + '.json');
     fs.openSync(location_path, 'r+');
   } catch (err) {
     fs.writeFileSync(location_path, "{}");
   }
 
   // Save user config
-  fs.writeFileSync(path.join(__dirname, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4), 'utf-8');
+  fs.writeFileSync(path.join(appRoot, 'gofbot/configs/config.json'), JSON.stringify(settings, null, 4), 'utf-8');
 
   // Create python bot process
   subpy = require('child_process').spawn(pythonCmd, cmdLine, {
-    cwd: path.join(__dirname, 'gofbot'),
+    cwd: path.join(appRoot, 'gofbot'),
     detached: true
   });
 

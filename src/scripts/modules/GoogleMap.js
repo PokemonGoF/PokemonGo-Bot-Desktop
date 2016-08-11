@@ -43,8 +43,8 @@ class GoogleMap {
         Object.keys(require.cache).forEach(function(key) {
             delete require.cache[key]
         })
-        this.placeCatchable(require('../../gofbot/web/catchable-' + this.userInfo.users[0] + '.json'));
-        this.placeTrainer(require('../../gofbot/web/location-' + this.userInfo.users[0] + '.json'));
+        this.placeCatchable(require(path.join(appRoot, 'gofbot/web/catchable-' + this.userInfo.users[0] + '.json')));
+        this.placeTrainer(require(path.join(appRoot, 'web/location-' + this.userInfo.users[0] + '.json')));
         // Update side menu data
         document.getElementById('username').innerHTML = this.user.name;
         document.getElementById('level').innerHTML = "Level " + this.user.stats[0].inventory_item_data.player_stats.level;
@@ -64,7 +64,7 @@ class GoogleMap {
                             lat: parseFloat(data.latitude),
                             lng: parseFloat(data.longitude)
                         },
-                        icon: '../resources/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt,
+                        icon: path.join(appRoot, 'assets/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt),
                         zIndex: 4,
                         optimized: false
                     });
@@ -82,7 +82,7 @@ class GoogleMap {
                         lat: parseFloat(data.latitude),
                         lng: parseFloat(data.longitude)
                     });
-                    this.user.catchables[data.spawnpoint_id].setIcon('../resources/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt);
+                    this.user.catchables[data.spawnpoint_id].setIcon(path.join(appRoot, 'assets/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt));
                 }
             }
         } else {
@@ -109,7 +109,7 @@ class GoogleMap {
                                     lat: parseFloat(fort.latitude),
                                     lng: parseFloat(fort.longitude)
                                 },
-                                icon: '../resources/image/forts/img_pokestop.png'
+                                icon: path.join(appRoot, 'assets/image/forts/img_pokestop.png')
                             });
                         } else {
                             this.forts[fort.id] = new google.maps.Marker({
@@ -118,7 +118,7 @@ class GoogleMap {
                                     lat: parseFloat(fort.latitude),
                                     lng: parseFloat(fort.longitude)
                                 },
-                                icon: '../resources/image/forts/' + constants.teams[fort.owned_by_team] + '.png'
+                                icon: path.join(appRoot, 'assets/image/forts/' + constants.teams[fort.owned_by_team] + '.png')
                             });
                         }
                         let fortPoints = '';
@@ -170,7 +170,7 @@ class GoogleMap {
                     lat: parseFloat(data.lat),
                     lng: parseFloat(data.lng)
                 },
-                icon: '../resources/image/trainer/' + constants.trainerSex[constants.randomSex] + Math.floor(Math.random() * constants.numTrainers[constants.randomSex]) + '.png',
+                icon: path.join(appRoot, 'assets/image/trainer/' + constants.trainerSex[constants.randomSex] + Math.floor(Math.random() * constants.numTrainers[constants.randomSex]) + '.png'),
                 zIndex: 2,
                 label: this.user.name
             });

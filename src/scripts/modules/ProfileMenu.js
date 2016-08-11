@@ -115,7 +115,7 @@ class ProfileMenu {
         for (i = 0; i < current_user_bag_items.length; i++) {
             text += `
     <div class="col s12 m4 l3 center" style="float: left; height: 144px;">
-      <img src="../resources/image/items/${current_user_bag_items[i].inventory_item_data.item.item_id}.png" class="item_img"><br>
+      <img src="${path.join(appRoot, `assets/image/items/${current_user_bag_items[i].inventory_item_data.item.item_id}.png)`)}" class="item_img"><br>
       <b>${constants.itemsArray[current_user_bag_items[i].inventory_item_data.item.item_id]}</b><br>
       Count:  ${(current_user_bag_items[i].inventory_item_data.item.count || 0)}
     </div>`;
@@ -145,7 +145,7 @@ class ProfileMenu {
             }
             text += `
     <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;">
-      <img src="../resources/image/pokemon/${pkmnImage}" class="png_img"><br>
+      <img src="${path.join(appRoot, `assets/image/pokemon/${pkmnImage}`)}" class="png_img"><br>
       <b><span class="pokemon-name">${pkmnName}</span></b><br>
       <b>CP: </b>${pkmnCP } | <b>IV:</b> ${pkmnIV}<br>
       <b>A/D/S: </b>${pkmnIVA}/${pkmnIVD}/${pkmnIVS}<br>
@@ -180,7 +180,7 @@ class ProfileMenu {
 
             text += `
     <div class="col s6 m6 l3 center">
-      <img src="../resources/image/pokemon/${pkmnImage}" class="png_img"><br>
+      <img src="${path.join(appRoot, `assets/image/pokemon/${pkmnImage}`)}" class="png_img"><br>
       <b>${this.pad_with_zeroes(pkmnNum, 3)} ${pkmnName}</b><br>
       Times Seen: ${pkmnEnc}<br>
       Times Caught: ${pkmnCap}<br>

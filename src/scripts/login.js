@@ -55,7 +55,7 @@ $(document).ready(function() {
 function checkForEncryptionFile() {
     let platform = os.platform(),
         fileName = platform == 'win32' ? 'encrypt.dll' : 'encrypt.so';
-    fs.access(path.join(__dirname, '../gofbot/' + fileName), fs.constants.R_OK, (err) => {
+    fs.access(path.join(appRoot, 'gofbot/' + fileName), fs.constants.R_OK, (err) => {
         if (err === null) {
             //No error, file exists and is readable.
             $('#selectEncryptionFileDiv').hide();
@@ -71,7 +71,7 @@ function checkForEncryptionFile() {
 
 function openFile() {
     dialog.showOpenDialog(function(fileNames) {
-        fs.copySync((fileNames[0]), path.join(__dirname, '../gofbot/encrypt' + fileNames[0].match(/\.\w+/)[0]));
+        fs.copySync((fileNames[0]), path.join(appRoot, 'gofbot/encrypt' + fileNames[0].match(/\.\w+/)[0]));
         var file_end = fileNames[0];
         document.getElementById('file_path').innerHTML = fileNames[0];
         checkForEncryptionFile();

@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = {
     itemsArray: {
         '0': 'Unknown',
@@ -45,6 +47,6 @@ module.exports = {
         'm',
         'f'
     ],
-    pokemoncandyArray: require('../../assets/data/pokemoncandy.json'),
-    pokemonArray: require('../../assets/data/pokemondata.json')
+    pokemoncandyArray: require(path.join(appRoot, 'assets/data/pokemoncandy.json')),
+    pokemonArray: require(path.join(appRoot, 'assets/data/pokemondata.json'))
 };

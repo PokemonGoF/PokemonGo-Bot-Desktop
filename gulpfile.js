@@ -109,6 +109,5 @@ gulp.task('build:src', ['clean'], () => {
     );
 });
 
-
 gulp.task('build', ['gofbot:prune', 'build:node', 'build:src']);
 gulp.task('release', ['build', 'python:package', 'electron:osx', 'electron:windows']);
