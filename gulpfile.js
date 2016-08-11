@@ -78,4 +78,9 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
     ], callback);
 });
 
-gulp.task('build', ['python:package', 'electron:osx', 'electron:windows']);
+gulp.task('copy-required', () => {
+
+});
+
+gulp.task('build', ['gofbot:prune']);
+gulp.task('release', ['build', 'python:package', 'electron:osx', 'electron:windows']);
