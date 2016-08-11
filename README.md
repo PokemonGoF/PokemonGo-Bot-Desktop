@@ -13,33 +13,9 @@ Join us at #desktop-porting channel at [our slack chat](https://pokemongo-bot.he
 ## Getting Started
 
 ###Install
-
-####macOS
 ```
 git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
-brew install python node wget
-pip install virtualenv
-cd PokemonGo-Bot-Desktop
-npm install
-```
-
-####Linux
-Install [Node.js](https://nodejs.org/en/)
-```
-git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
-sudo apt-get install python wget
-pip install virtualenv
-cd PokemonGo-Bot-Desktop
-npm install
-```
-
-####Windows
-Install [git bash](https://git-scm.com/downloads)  
-Install [Python 2.7](https://www.python.org/downloads/)  
-Install [Node.js](https://nodejs.org/en/)  
-Set your $PATH
-```
-git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
+brew install python node
 pip install virtualenv
 cd PokemonGo-Bot-Desktop
 npm install
@@ -76,8 +52,7 @@ JacerOmri
 ariestiyansyah  
 GodLesZ  
 sniok  
-mmnsgo  
-Outpox
+mmnsgo
 
 *Don't forget to add yourself when doing PR*
 

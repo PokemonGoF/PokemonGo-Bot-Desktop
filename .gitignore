@@ -39,13 +39,7 @@ jspm_packages
 .node_repl_history
 
 # Ignore Our Deploy directory
-build/*
+build
 
 # Silly Mac Files
 .DS_Store
-
-# Unblock PyWIn
-!build/pywin
-
-# Unblock Gofbot
-!build/gofbot

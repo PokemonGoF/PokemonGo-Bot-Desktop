@@ -6,18 +6,15 @@ const zip = require('gulp-zip');
 const util = require('gulp-util');
 const electron = require('gulp-atom-electron');
 const symdest = require('gulp-symdest');
-const git = require('gulp-git');
 const exec = require('child_process').exec;
 
-//CONFIG
 const BUILD_DIR = 'build';
 const PACKAGES = `${BUILD_DIR}/packages`;
-const BOT = `${BUILD_DIR}/gofbot`;
 
 gulp.task('python:install', callback => {
     async.waterfall([
         cb => rimraf(PACKAGES, cb),
-        cb => async.concat(fs.readFileSync('build/gofbot/requirements.txt')
+        cb => async.concat(fs.readFileSync('gofbot/requirements.txt')
             .toString()
             .split('\n')
             .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${PACKAGES}`, _), err => cb(err)),
@@ -39,7 +36,7 @@ gulp.task('electron:osx', ['python:package'], () => {
         .pipe(electron({
             version: '1.3.3',
             platform: 'darwin',
-            darwinIcon: 'src/assets/resources/image/icons/pokemon.icns',
+            darwinIcon: 'resources/image/icons/pokemon.icns',
             darwinBundleIdentifier: 'com.github.pokemongof'
         })).pipe(symdest('build'));
 });
@@ -50,32 +47,12 @@ gulp.task('electron:windows', ['python:package'], () => {
             version: '1.3.3',
             platform: 'win32',
             arch: 'ia32',
-            winIcon: 'src/assets/resources/image/icons/pokemon.ico',
+            winIcon: 'resources/image/icons/pokemon.ico',
             companyName: 'PokemonGoF',
             copyright: '2016 PokemonGOF, All Rights Reserved.'
         }))
         .pipe(zip('app-windows.exe'))
         .pipe(gulp.dest('build/'));
-});
-
-
-gulp.task('gofbot:update', (callback) => {
-    async.series([
-        _ => git.exec({args: `submodule deinit -f ${BOT}`}, _),
-        _ => git.updateSubmodule({ args: '--init' }, _)
-    ], callback);
-});
-
-gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
-    async.parallel([
-        _ => rimraf(`${BOT}/docs`, _),
-        _ => rimraf(`${BOT}/web`, _),
-        _ => rimraf(`${BOT}/.github`, _),
-        _ => rimraf(`${BOT}/tests`, _),
-        _ => async.concat(['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'run.bat',
-            'LICENSE', 'Dockerfile', 'install.sh', 'CONTRIBUTORS.md', 'docker-compose.yml', '.travis.yml', '.styles.yapf',
-            '.pylintrc', '.mention-bot', '.pullapprove.yml', '.gitmodules', '.dockerignore', '.gitignore'].map(x => `${BOT}/${x}`), fs.unlink, _)
-    ], callback);
 });
 
 gulp.task('build', ['python:package', 'electron:osx', 'electron:windows']);
