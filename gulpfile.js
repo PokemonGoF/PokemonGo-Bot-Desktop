@@ -84,24 +84,20 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
     ], callback);
 });
 
-gulp.task('clean', () => {
-    vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`])
-        .pipe(debug())
-        .pipe(grimraf())
-});
+gulp.task('clean', () => vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
-gulp.task('copy:node', ['clean'], () => {
+gulp.task('build:node', ['clean'], () => {
     const getNodeModules = () => Object.keys(JSON.parse(fs.readFileSync('package.json').toString()).dependencies)
         .map(_ => `./node_modules/${_}/**/*`);
     return merge(
         vfs.src(getNodeModules(),  {base: '.'})
-
-
             .pipe(gulp.dest(BUILD_DIR)),
         gulp.src('package.json')
             .pipe(gulp.dest(BUILD_DIR))
     );
 });
 
-gulp.task('build', ['gofbot:prune']);
+gulp.task('build:src', ['clean'], () => gulp.src('src/**/*').pipe(gulp.dest(BUILD_DIR)));
+
+gulp.task('build', ['gofbot:prune', 'build:node', 'build:src']);
 gulp.task('release', ['build', 'python:package', 'electron:osx', 'electron:windows']);
