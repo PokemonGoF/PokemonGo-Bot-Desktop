@@ -33,6 +33,7 @@ var playerInfo = {};
 var pokedex = {};
 var pokemonArray = {};
 var pokemoncandyArray = {};
+var pokemonMoves = {};
 var stats = {};
 var user_data = {};
 var itemsArray = {
@@ -119,6 +120,16 @@ function initMap() {
     pokemoncandyArray = data;
   }, errorFunc, 'pokemonCandy');
 
+  // Load candies map.
+  loadJSON('../gofbot/data/fast_moves.json', function(data, successData) {
+    pokemonMoves.fast = parseMoves(data);
+  }, errorFunc, 'pokemonFastMoves');
+
+  // Load candies map.
+  loadJSON('../gofbot/data/charged_moves.json', function(data, successData) {
+    pokemonMoves.charged = parseMoves(data);
+  }, errorFunc, 'pokemonChargedMoves');
+
   for (var i = 0; i < userInfo.users.length; i++) {
     user_data[userInfo.users[i]] = {};
     pathcoords[userInfo.users[i]] = [];
@@ -201,6 +212,16 @@ var getCandy = function(p_num) {
       return (user_data.bagCandy[i].inventory_item_data.candy.candy || 0);
     }
   }
+};
+
+var parseMoves = function(moveList) {
+  var parsedMoves = {};
+
+  moveList.forEach(function(move) {
+    parsedMoves[move.id] = move;
+  });
+
+  return parsedMoves;
 };
 
 var invSuccess = function(data, user_index) {
@@ -540,16 +561,52 @@ function fillInventory() {
       pkmnIVA = current_pokemon_data.individual_attack || 0;
       pkmnIVD = current_pokemon_data.individual_defense || 0;
       pkmnIVS = current_pokemon_data.individual_stamina || 0;
-      pkmnIV = ((pkmnIVA + pkmnIVD + pkmnIVS) / 45.0).toFixed(2);
+      pkmnIV = Math.floor(((pkmnIVA + pkmnIVD + pkmnIVS) / 45.0) * 100);
       pkmCandy = getCandy(pkmnNum);
+      pkmFastMove = pokemonMoves.fast[current_pokemon_data.move_1];
+      pkmChargedMove = pokemonMoves.charged[current_pokemon_data.move_2];
+      moveDivisions = Math.floor(100 / pkmChargedMove.energy);
     }
+
+    var renderDivisions = '<span class="move-division"></span>'.repeat(moveDivisions);
+
     text += `
-    <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;">
-      <img src="../resources/image/pokemon/${pkmnImage}" class="png_img"><br>
+    <div class="center card pokemon-card">
       <b><span class="pokemon-name">${pkmnName}</span></b><br>
-      <b>CP: </b>${pkmnCP } | <b>IV:</b> ${pkmnIV}<br>
-      <b>A/D/S: </b>${pkmnIVA}/${pkmnIVD}/${pkmnIVS}<br>
-      <b>Candies: </b>${pkmCandy}
+      <img src="../resources/image/pokemon/${pkmnImage}" class="png_img"><br>
+      <div class="pokemon-stats">
+        <div class="cp">
+         <span class="value">${pkmnCP}</span>
+         <span class="name">CP</span>
+        </div>
+        <div class="iv">
+         <span class="value">${pkmnIV}%</span>
+         <span class="name">IV</span>
+        </div>
+      </div>
+      <div class="details">
+        <b>A/D/S: </b>${pkmnIVA}/${pkmnIVD}/${pkmnIVS}<br>
+        <b>Candies: </b>${pkmCandy}
+      </div>
+      <div class="moves">
+        <div class="fast-move">
+          <div class="move">
+            <span class="move-name">${pkmFastMove.name}</span>
+            <span class="move-damage">${pkmFastMove.damage}</span>
+          </div>
+          <span class="move-type">${pkmFastMove.type}</span>
+        </div>
+        <div class="charged-move">
+          <div class="move">
+            <span class="move-name">${pkmChargedMove.name}</span>
+            <span class="move-damage">${pkmChargedMove.damage}</span>
+          </div>
+          <div class="charged-divisions">
+            <span class="move-type">${pkmChargedMove.type}</span>
+            <div class="move-divisions">${renderDivisions}</div>
+          </div>
+        </div>
+      </div>
     </div>`;
   }
   text += '</div></div>';
