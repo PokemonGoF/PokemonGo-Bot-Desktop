@@ -15,7 +15,7 @@ const PACKAGES = `${BUILD_DIR}/packages`;
 gulp.task('python:install', callback => {
     async.waterfall([
         cb => rimraf(PACKAGES, cb),
-        cb => async.concat(fs.readFileSync('build/gofbot/requirements.txt')
+        cb => async.concat(fs.readFileSync('gofbot/requirements.txt')
             .toString()
             .split('\n')
             .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${PACKAGES}`, _), err => cb(err)),
@@ -37,7 +37,7 @@ gulp.task('electron:osx', ['python:package'], () => {
         .pipe(electron({
             version: '1.3.3',
             platform: 'darwin',
-            darwinIcon: 'src/assets/resources/image/icons/pokemon.icns',
+            darwinIcon: 'resources/image/icons/pokemon.icns',
             darwinBundleIdentifier: 'com.github.pokemongof'
         })).pipe(symdest('build'));
 });
@@ -48,7 +48,7 @@ gulp.task('electron:windows', ['python:package'], () => {
             version: '1.3.3',
             platform: 'win32',
             arch: 'ia32',
-            winIcon: 'src/assets/resources/image/icons/pokemon.ico',
+            winIcon: 'resources/image/icons/pokemon.ico',
             companyName: 'PokemonGoF',
             copyright: '2016 PokemonGOF, All Rights Reserved.'
         }))

@@ -5,7 +5,7 @@ let User = require('./modules/User.js'),
     Logger = require('./modules/Logger.js'),
     Materialize = require('./modules/Materialize.js'),
     GoogleMap = require('./modules/GoogleMap.js'),
-    ProfileMenu = require('./modules/ProfileMenu.js');
+    ProfileMenu = require('./modules/ProfileMenu.js')
 
 // Global vars
 let user,
