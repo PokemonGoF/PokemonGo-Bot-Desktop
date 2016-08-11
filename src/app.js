@@ -10,7 +10,7 @@ const fs = require('fs');
 const autoUpdater = electron.autoUpdater;
 
 var platform = os.platform() + '_' + os.arch();
-app.setVersion(require('./package.json').version);
+app.setVersion(require('../package.json').version);
 
 var mainWindow = null;
 var procStarted = false;
@@ -305,4 +305,4 @@ function startPython(auth, code, location, opts) {
     setupMainWindow();
   });
 
-};
+}
