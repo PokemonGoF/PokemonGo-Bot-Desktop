@@ -6,6 +6,7 @@
   "license": "MIT",
   "version": "0.0.1-alpha",
   "main": "app.js",
+  "engine": {"node":  "0.6.x"},
   "scripts": {
     "start": "gulp develop",
     "publish": "gulp release"
