@@ -9,10 +9,8 @@ const symdest = require('gulp-symdest');
 const git = require('gulp-git');
 const exec = require('child_process').exec;
 
-//CONFIG
 const BUILD_DIR = 'build';
 const PACKAGES = `${BUILD_DIR}/packages`;
-const BOT = `${BUILD_DIR}/gofbot`;
 
 gulp.task('python:install', callback => {
     async.waterfall([
@@ -58,24 +56,11 @@ gulp.task('electron:windows', ['python:package'], () => {
         .pipe(gulp.dest('build/'));
 });
 
-
-gulp.task('gofbot:update', (callback) => {
-    async.series([
-        _ => git.exec({args: `submodule deinit -f ${BOT}`}, _),
-        _ => git.updateSubmodule({ args: '--init' }, _)
-    ], callback);
-});
-
-gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
-    async.parallel([
-        _ => rimraf(`${BOT}/docs`, _),
-        _ => rimraf(`${BOT}/web`, _),
-        _ => rimraf(`${BOT}/.github`, _),
-        _ => rimraf(`${BOT}/tests`, _),
-        _ => async.concat(['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'run.bat',
-            'LICENSE', 'Dockerfile', 'install.sh', 'CONTRIBUTORS.md', 'docker-compose.yml', '.travis.yml', '.styles.yapf',
-            '.pylintrc', '.mention-bot', '.pullapprove.yml', '.gitmodules', '.dockerignore', '.gitignore'].map(x => `${BOT}/${x}`), fs.unlink, _)
-    ], callback);
+gulp.task('gofbot:reset', () => {
+    return gulp.src('gofbot/*')
+        .pipe(git.fetch('origin', 'master'))
+        .pipe(git.reset('HEAD', {args:'--hard origin/master'}))
+        .pipe(git.clean({args: '-f'}));
 });
 
 gulp.task('build', ['python:package', 'electron:osx', 'electron:windows']);
