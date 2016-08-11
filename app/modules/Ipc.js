@@ -7,7 +7,7 @@ class Ipc {
     enableLogging(logSystem) {
         this.ipcRenderer.on('pythonLog', function(evt, data) {
             var lines = data.msg.split("\n")
-            for (var i = 0; i < lines.length; i++) {
+            for (let i = 0; i < lines.length; i++) {
                 logSystem.log(lines[i]);
             }
             console.log(data.msg);

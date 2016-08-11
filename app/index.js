@@ -8,8 +8,8 @@ let User = require('./modules/User.js'),
     ProfileMenu = require('./modules/ProfileMenu.js')
 
 // Global vars
-let user;
-let googleMap,
+let user,
+    googleMap,
     omap,
     forts = [],
     info_windows = [], // windows that appear when you click on fort
