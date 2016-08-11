@@ -7,7 +7,6 @@
   "version": "0.0.1-alpha",
   "main": "main.js",
   "scripts": {
-    "postinstall": "cd ./gofbot/ && pip install -r requirements.txt",
     "start": "electron main.js"
   },
   "dependencies": {
@@ -25,8 +24,13 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "async": "^0.9.2",
     "bower": "^1.7.9",
-    "electron-packager": "*",
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "gulp-symdest": "latest",
+    "gulp-atom-electron": "^1.9.0",
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0",
+    "rimraf": "^2.5.4"
   }
 }
