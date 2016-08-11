@@ -85,7 +85,7 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
 gulp.task('copy', () => {
     return merge(
         gulp.src('node_modules/**/.*',  {base: '.'}).pipe(debug()).pipe(gulp.dest('build')),
-        gulp.src('src/.*').pipe(debug()).pipe(gulp.dest('build')),
+        gulp.src('src/**/.*').pipe(debug()).pipe(gulp.dest('build')),
         gulp.src('package.json',  {base: '.'}).pipe(gulp.dest('build'))
     );
 });
