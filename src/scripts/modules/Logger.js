@@ -1,4 +1,5 @@
 // Takes logs and prints them
+const utils = require('./Utils.js');
 
 class Logger {
     log(message) {
@@ -29,7 +30,7 @@ class Logger {
         // Check for pokemon words
         for (var i = 0; i < constants.pokemonArray.length; i++) {
             if (log.message.indexOf(constants.pokemonArray[i].Name) > -1) {
-                log.images.push('<img src="../resources/image/pokemon/' + pad_with_zeroes(i + 1, 3) + '.png" class="log-img log-pokemon">')
+                log.images.push('<img src="../resources/image/pokemon/' + utils.pad_with_zeroes(i + 1, 3) + '.png" class="log-img log-pokemon">')
             }
         }
         log.date = new Date();
