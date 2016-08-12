@@ -1,4 +1,8 @@
 ![screenshot](http://i.imgur.com/tzMaWv4.png)
+<p align="center">
+  <a href="https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/download/v0.0.2-alpha/PikaBot-0.2-alpha-mac.zip"><img src="http://i.imgur.com/pRNJGt6.png"></a> 
+  <a href="https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/download/v0.0.2-alpha/PikaBot-0.2-alpha-win.zip"><img src="http://i.imgur.com/CSz91B9.png"></a>
+</p>
 # Pokemon GO Bot Desktop
 **THE BOT IS CURRENTLY UNDERGOING A MAJOR BUILD SYSTEM REVAMP PLEASE BE PATIENT**
 
@@ -18,50 +22,46 @@ Join us at #desktop-porting channel at [our slack chat](https://pokemongo-bot.he
 
 ###Install
 
-####macOS
+#### macOS
 ```
 git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
 brew install python node wget
-pip install virtualenv
 cd PokemonGo-Bot-Desktop
 npm install
 ```
 
-####Linux
+#### Linux
 Install [Node.js](https://nodejs.org/en/)
 ```
 git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
 sudo apt-get install python wget
-pip install virtualenv
 cd PokemonGo-Bot-Desktop
 npm install
 ```
 
-####Windows
+#### Windows
 Install [git bash](https://git-scm.com/downloads)  
 Install [Python 2.7](https://www.python.org/downloads/)  
 Install [Node.js](https://nodejs.org/en/)  
 Set your $PATH
 ```
 git clone --recursive https://github.com/PokemonGoF/PokemonGo-Bot-Desktop
-pip install virtualenv
 cd PokemonGo-Bot-Desktop
 npm install
 ```
 
-###Run
+### Run
 ```
 npm start
 ```
 
-###Update
+### Update
 ```
 git pull
-git submodule update
 npm install
 ```
 
-###Get encrypt.so
+### Get encrypt.so
 Create a new separate folder somwhere  
 Run  
 ```
@@ -74,8 +74,8 @@ We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Deskto
 
 ## Contributors
 JVenberg  
+ProjectBarks 
 solderzzc  
-ProjectBarks  
 JacerOmri  
 ariestiyansyah  
 GodLesZ  
@@ -85,7 +85,7 @@ Outpox
 
 *Don't forget to add yourself when doing PR*
 
-##Credits
+## Credits
 [PokemonGo-DesktopMap](https://github.com/mchristopher/PokemonGo-DesktopMap) Amazing job done by  Mike Christopher
 
 ## Licensing
