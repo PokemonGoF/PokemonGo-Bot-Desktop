@@ -27,6 +27,7 @@ let config = {
     ignore: /node_modules|src|main.ejs|icons/,
     out: path.join(__dirname, 'builds'),
     overwrite: true,
+    extraResources: ["gofbot/"],
     platform
   }
 }

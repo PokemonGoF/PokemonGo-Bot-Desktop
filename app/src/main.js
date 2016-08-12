@@ -3,7 +3,7 @@ import Electron from 'vue-electron';
 import Resource from 'vue-resource';
 
 import '../node_modules/materialize-css/dist/css/materialize.min.css';
-import '../node_modules/materialize-css/dist/js/materialize.min';
+import '../node_modules/materialize-css/dist/js/materialize.min.js';
 
 Vue.use(Electron);
 Vue.use(Resource);

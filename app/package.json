@@ -4,6 +4,7 @@
   "description": "",
   "main": "electron.js",
   "dependencies": {
+    "fs-extra": "^0.30.0",
     "materialize-css": "^0.97.7",
     "vue": "^1.0.24",
     "vue-electron": "^1.0.0",
