@@ -4,7 +4,7 @@ const fs = require('fs');
 const rimraf = require('rimraf');
 const zip = require('gulp-zip');
 const util = require('gulp-util');
-const electron = require('gulp-atom-electron');
+const packageElectron = require('gulp-atom-electron');
 const symdest = require('gulp-symdest');
 const git = require('gulp-git');
 const exec = require('child_process').exec;
@@ -13,14 +13,17 @@ const debug = require('gulp-debug');
 const vfs = require('vinyl-fs');
 const imagemin = require ('gulp-imagemin');
 const sass = require('gulp-sass');
+const rseq = require('run-sequence');
 const merge = require('merge2');
-const runElectron = require("gulp-run-electron");
+const electron = require('electron-connect');
+
 
 //CONFIG
 const BUILD_DIR = 'build';
 const RELEASE_DIR = 'release';
 const PACKAGES_DIR = `${BUILD_DIR}/packages`;
 const BOT_DIR = `${BUILD_DIR}/gofbot`;
+const server = electron.server.create({path: BUILD_DIR, verbose: true});
 
 gulp.task('python:install', callback => {
     async.waterfall([
@@ -34,18 +37,40 @@ gulp.task('python:install', callback => {
     ], callback);
 });
 
-gulp.task('python:package', ['python:install'], () => {
+gulp.task('python:package', () => {
     return gulp.src(`${PACKAGES_DIR}/**/!(*.pyc|*.egg-info)`)
         .pipe(zip('packages.zip'))
         .pipe(grimraf())
-        .pipe(gulp.dest('build'))
+        .pipe(gulp.dest(BOT_DIR))
 });
+
+gulp.task('python:associate', callback => {
+    async.waterfall([
+        _ => fs.readFile(`${BOT_DIR}/pokecli.py`, _),
+        (data, cb) => {
+            let parsed = data.toString().split('\n');
+            var targetIndex = 0;
+            for (let i = 0; i <= parsed.length; i++) {
+                let line = parsed[i];
+                if (line.toLowerCase().indexOf('import sys') == 0) {
+                    targetIndex = i;
+                    break;
+                }
+            }
+            parsed.splice(targetIndex + 1, 0, 'sys.path.insert(0, \'packages.zip\')');
+            cb(null, new Buffer(parsed.join('\n')));
+        },
+        (data, _) => fs.writeFile(`${BOT_DIR}/pokecli.py`, data, _)
+    ], callback);
+});
+
+gulp.task('python', _ => rseq('python:install', 'python:package', 'python:associate', _));
 
 const PACKAGE_SRC = [`${BUILD_DIR}/**/*`, `!${BUILD_DIR}/{packages,packages/**}`];
 
-gulp.task('electron:osx', ['python:package'], () => {
-    return gulp.src(PACKAGE_SRC, {base: '.'})
-        .pipe(electron({
+gulp.task('electron:osx', () => {
+    return gulp.src(PACKAGE_SRC, {base: 'build'})
+        .pipe(packageElectron({
             version: '1.3.3',
             platform: 'darwin',
             darwinIcon: 'src/assets/resources/image/icons/pokemon.icns',
@@ -53,9 +78,9 @@ gulp.task('electron:osx', ['python:package'], () => {
         })).pipe(symdest(RELEASE_DIR));
 });
 
-gulp.task('electron:windows', ['python:package'], () => {
-    return gulp.src(PACKAGE_SRC.concat('pywin/**/*'), {base: '.'})
-        .pipe(electron({
+gulp.task('electron:windows', () => {
+    return gulp.src(PACKAGE_SRC.concat(`${BUILD_DIR}pywin/**/*`), {base: 'build'})
+        .pipe(packageElectron({
             version: '1.3.3',
             platform: 'win32',
             arch: 'ia32',
@@ -67,15 +92,16 @@ gulp.task('electron:windows', ['python:package'], () => {
         .pipe(gulp.dest(RELEASE_DIR));
 });
 
+gulp.task('electron', ['electron:windows', 'electron:osx']);
 
 gulp.task('gofbot:update', (callback) => {
     async.series([
         _ => git.exec({args: `submodule deinit -f ${BOT_DIR}`}, _),
-        _ => git.updateSubmodule({ args: '--init' }, _)
+        _ => git.updateSubmodule({ args: '--init --recursive' }, _)
     ], callback);
 });
 
-gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
+gulp.task('gofbot:prune', (callback) => {
     //TODO - Switch to grimraf
     async.parallel([
         _ => rimraf(`${BOT_DIR}/docs`, _),
@@ -86,6 +112,8 @@ gulp.task('gofbot:prune', ['gofbot:update'], (callback) => {
             '.pylintrc', '.mention-bot', '.pullapprove.yml', '.dockerignore', '.gitignore'].map(x => `${BOT_DIR}/${x}`), fs.unlink, _)
     ], callback);
 });
+
+gulp.task('gofbot', _ => rseq('gofbot:update', ['gofbot:prune', 'python'], _));
 
 gulp.task('clean', () => vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
@@ -109,10 +137,8 @@ gulp.task('build:src', ['clean'], () => {
     );
 });
 
-gulp.task('electron:run', ['build'], () => {
-    gulp.src("build").pipe(runElectron());
-});
+gulp.task('electron:run', ['build'], () => server.start());
 
-gulp.task('build', ['gofbot:prune', 'build:node', 'build:src']);
-gulp.task('develop', ['build', 'electron:run']);
-gulp.task('release', ['build', 'python:package', 'electron:osx', 'electron:windows']);
+gulp.task('build', _ => rseq('clean', ['build:node', 'build:src'], _));
+gulp.task('develop', _ => rseq(['gofbot', 'build'], 'electron:run', _));
+gulp.task('release', _ => rseq(['gofbot', 'build'], 'electron', _));

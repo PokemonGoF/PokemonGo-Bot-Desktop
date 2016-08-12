@@ -6,7 +6,9 @@
   "license": "MIT",
   "version": "0.0.1-alpha",
   "main": "app.js",
-  "engine": {"node":  "0.6.x"},
+  "engine": {
+    "node": "0.6.x"
+  },
   "scripts": {
     "start": "gulp develop",
     "publish": "gulp release"
@@ -14,6 +16,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "cross-spawn": "*",
+    "electron-connect": "^0.4.2",
     "fs-extra": "^0.30.0",
     "hammerjs": "^2.0.8",
     "jquery": "^3.1.0",
@@ -44,6 +47,7 @@
     "gulp-zip": "^3.2.0",
     "merge2": "^1.0.2",
     "rimraf": "^2.5.4",
+    "run-sequence": "^1.2.2",
     "vinyl-fs": "^2.4.3"
   }
 }
