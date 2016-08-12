@@ -110,7 +110,7 @@ gulp.task('gofbot', _ => rseq('gofbot:update', ['gofbot:prune', 'python'], _));
 
 gulp.task('clean', () => vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
-gulp.task('build:node', ['clean'], () => {
+gulp.task('build:node', () => {
     const getNodeModules = () => Object.keys(JSON.parse(fs.readFileSync('package.json').toString()).dependencies).map(_ => `node_modules/${_}/**/*`);
     return merge(
         vfs.src(getNodeModules(),  {base: '.'})
@@ -120,7 +120,7 @@ gulp.task('build:node', ['clean'], () => {
     );
 });
 
-gulp.task('build:src', ['clean'], () => {
+gulp.task('build:src', () => {
     return merge(
         gulp.src(['src/**/*', '!src/{styles,styles/**}'])
             .pipe(gulp.dest(BUILD_DIR)),
@@ -130,8 +130,8 @@ gulp.task('build:src', ['clean'], () => {
     );
 });
 
-gulp.task('electron:run', ['build'], () => server.start());
+gulp.task('run', () => server.start());
 
-gulp.task('build', _ => rseq('clean', ['build:node', 'build:src'], _));
-gulp.task('develop', _ => rseq(['gofbot', 'build'], 'electron:run', _));
-gulp.task('release', _ => rseq(['gofbot', 'build'], 'electron', _));
+gulp.task('build', _ => rseq('clean', ['gofbot', 'build:node', 'build:src'], _));
+gulp.task('develop', _ => rseq('build', 'run', _));
+gulp.task('release', _ => rseq('build', 'electron', _));

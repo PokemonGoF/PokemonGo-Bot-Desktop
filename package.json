@@ -10,8 +10,8 @@
     "node": "0.6.x"
   },
   "scripts": {
-    "start": "gulp develop",
-    "publish": "gulp release"
+    "postinstall": "gulp build",
+    "start": "gulp run"
   },
   "dependencies": {
     "async": "^0.9.0",
