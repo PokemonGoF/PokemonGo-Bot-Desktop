@@ -1,29 +1,30 @@
-const gulp = require('gulp');
-const async = require('async');
-const fs = require('fs');
-const rimraf = require('rimraf');
-const zip = require('gulp-zip');
-const util = require('gulp-util');
-const packageElectron = require('gulp-atom-electron');
-const symdest = require('gulp-symdest');
-const git = require('gulp-git');
-const exec = require('child_process').exec;
-const grimraf = require('gulp-rimraf');
-const debug = require('gulp-debug');
-const vfs = require('vinyl-fs');
-const imagemin = require ('gulp-imagemin');
-const sass = require('gulp-sass');
-const rseq = require('run-sequence');
-const merge = require('merge2');
-const electron = require('electron-connect');
+const gulp = require('gulp'),
+      async = require('async'),
+      fs = require('fs'),
+      rimraf = require('rimraf'),
+      zip = require('gulp-zip'),
+      util = require('gulp-util'),
+      packageElectron = require('gulp-atom-electron'),
+      symdest = require('gulp-symdest'),
+      git = require('gulp-git'),
+      exec = require('child_process').exec,
+      grimraf = require('gulp-rimraf'),
+      debug = require('gulp-debug'),
+      vfs = require('vinyl-fs'),
+      imagemin = require ('gulp-imagemin'),
+      sass = require('gulp-sass'),
+      rseq = require('run-sequence'),
+      merge = require('merge2'),
+      electron = require('electron-connect');
 
 
 //CONFIG
-const BUILD_DIR = 'build';
-const RELEASE_DIR = 'release';
-const BOT_DIR = `${BUILD_DIR}/gofbot`;
-const PACKAGES_DIR = `${BOT_DIR}/packages`;
-const server = electron.server.create({path: BUILD_DIR, verbose: true});
+const BUILD_DIR = 'build',
+      RELEASE_DIR = 'release',
+      BOT_DIR = `${BUILD_DIR}/gofbot`,
+      PACKAGES_DIR = `${BOT_DIR}/packages`,
+      PACKAGE_SRC = [`${BUILD_DIR}/**/*`, `!${BUILD_DIR}/{packages,packages/**}`],
+      server = electron.server.create({path: BUILD_DIR, verbose: true});
 
 gulp.task('python:install', callback => {
     async.waterfall([
@@ -58,8 +59,6 @@ gulp.task('python:associate', callback => {
 });
 
 gulp.task('python', _ => rseq('python:install', 'python:associate', _));
-
-const PACKAGE_SRC = [`${BUILD_DIR}/**/*`, `!${BUILD_DIR}/{packages,packages/**}`];
 
 gulp.task('electron:osx', () => {
     return gulp.src(PACKAGE_SRC, {base: 'build'})
