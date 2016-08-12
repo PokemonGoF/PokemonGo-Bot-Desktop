@@ -21,8 +21,8 @@ const electron = require('electron-connect');
 //CONFIG
 const BUILD_DIR = 'build';
 const RELEASE_DIR = 'release';
-const PACKAGES_DIR = `${BUILD_DIR}/packages`;
 const BOT_DIR = `${BUILD_DIR}/gofbot`;
+const PACKAGES_DIR = `${BOT_DIR}/packages`;
 const server = electron.server.create({path: BUILD_DIR, verbose: true});
 
 gulp.task('python:install', callback => {
@@ -35,13 +35,6 @@ gulp.task('python:install', callback => {
         cb => fs.open(`${PACKAGES_DIR}/google/__init__.py`, 'wx', cb),
         (file, cb) => fs.close(file, cb)
     ], callback);
-});
-
-gulp.task('python:package', () => {
-    return gulp.src(`${PACKAGES_DIR}/**/!(*.pyc|*.egg-info)`)
-        .pipe(zip('packages.zip'))
-        .pipe(grimraf())
-        .pipe(gulp.dest(BOT_DIR))
 });
 
 gulp.task('python:associate', callback => {
@@ -57,14 +50,14 @@ gulp.task('python:associate', callback => {
                     break;
                 }
             }
-            parsed.splice(targetIndex + 1, 0, 'sys.path.insert(0, \'packages.zip\')');
+            parsed.splice(targetIndex + 1, 0, 'sys.path.insert(0, \'packages\')');
             cb(null, new Buffer(parsed.join('\n')));
         },
         (data, _) => fs.writeFile(`${BOT_DIR}/pokecli.py`, data, _)
     ], callback);
 });
 
-gulp.task('python', _ => rseq('python:install', 'python:package', 'python:associate', _));
+gulp.task('python', _ => rseq('python:install', 'python:associate', _));
 
 const PACKAGE_SRC = [`${BUILD_DIR}/**/*`, `!${BUILD_DIR}/{packages,packages/**}`];
 

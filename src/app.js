@@ -163,7 +163,7 @@ function killProcess(pid) {
 function startPython(auth, code, location, opts) {
 
   // Load Index page
-  mainWindow.loadURL('file://' + appRoot + '/pages/index.html');
+  mainWindow.loadURL('file://' + appRoot + '/pages/home.html');
 
   var cmdLine = [
     './pokecli.py',
