@@ -1,0 +1,15 @@
+{
+  "name": "pikabot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron.js",
+  "dependencies": {
+    "materialize-css": "^0.97.7",
+    "vue": "^1.0.24",
+    "vue-electron": "^1.0.0",
+    "vue-resource": "^0.7.0"
+  },
+  "devDependencies": {},
+  "author": "PokemonGo-Desktop-Team",
+  "license": "ISC"
+}
