@@ -4,7 +4,7 @@
   <a href="https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/download/v0.0.2-alpha/PikaBot-0.2-alpha-win.zip"><img src="http://i.imgur.com/CSz91B9.png"></a>
 </p>
 # Pokemon GO Bot Desktop
-**THE BOT IS CURRENTLY UNDERGOING A MAJOR BUILD SYSTEM REVAMP PLEASE BE PATIENT**
+**Development branch is not working for now, please be patient. You can download working 0.0.2 release.**
 
 Desktop Pokemon GO Bot based on [PokemonGo-Bot](https://github.com/PokemonGoF/PokemonGo-Bot)  
 
