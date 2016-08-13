@@ -256,10 +256,10 @@
                 </div>
             </div>
             <input class="col s4" type="text" v-model="debug_dir">
-            <a v-on:click="debug(1)" class="waves-effect waves-light blue btn col s1">Debug</a>
-            <a v-on:click="debug(2)" class="waves-effect waves-light blue btn col s1">Debug 2</a>
-            <a v-on:click="debug(3)" class="waves-effect waves-light blue btn col s1">Debug 3</a>
-            <a v-on:click="debug(4)" class="waves-effect waves-light blue btn col s1">Debug 4</a>
+            <a v-on:click="debug_path(1)" class="waves-effect waves-light blue btn col s1">Debug</a>
+            <a v-on:click="debug_path(2)" class="waves-effect waves-light blue btn col s1">Debug 2</a>
+            <a v-on:click="debug_path(3)" class="waves-effect waves-light blue btn col s1">Debug 3</a>
+            <a v-on:click="debug_path(4)" class="waves-effect waves-light blue btn col s1">Debug 4</a>
         </div>
         <div class="row">
             <textarea class="" style="height: 100px; background-color: white;" v-model="debug_log"></textarea>
@@ -288,7 +288,7 @@
     export default {
         data() {
             return {
-                debug: true,
+                debug: true, //Comment this if you don't want the debug menu.
                 debug_log: '',
                 debug_dir: '',
                 dirname: false,
@@ -315,7 +315,7 @@
                 });
             });
 
-            if (checked('remember')) {
+            if (self.checked('remember')) {
                 self.setupValue('ptc_username', $('#ptc_username'));
                 self.setupValue('ptc_password', $('#ptc_password'));
                 self.setupValue('google_username', $('#google_username'));
@@ -375,7 +375,8 @@
                 return document.getElementById(elemId).checked;
             },
             saveState: function () {
-                if (checked('remember')) {
+                let self = this;
+                if (self.checked('remember')) {
                     localStorage.setItem("ptc_username", $('#ptc_username').val());
                     localStorage.setItem("ptc_password", $('#ptc_password').val());
                     localStorage.setItem("google_username", $('#google_username').val());
@@ -485,7 +486,7 @@
             openURL: function (url) {
                 shell.openExternal(url);
             },
-            debug: function (n) {
+            debug_path: function (n) {
                 let self = this,
                     path = self.dirname ? appRoot + self.debug_dir : self.debug_dir;
                 switch (n) {
