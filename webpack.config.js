@@ -76,7 +76,7 @@ let config = {
         new CopyWebpackPlugin([
             {
                 from: 'gofbot',
-                to: 'app/dist/'
+                to: 'app/dist/gofbot'
             },
         ])
     ],
