@@ -28,6 +28,13 @@ cd PokemonGo-Bot-Desktop
 npm install
 ```
 
+If `npm install` crashes with errors related to `pip`, the following script may solve your problems : 
+
+    cat > ~/.pydistutils.cfg << EOF
+    [install]
+    prefix=
+    EOF
+
 #### Linux
 Install [Node.js](https://nodejs.org/en/)
 ```

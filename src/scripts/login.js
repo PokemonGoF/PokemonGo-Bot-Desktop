@@ -1,23 +1,23 @@
-var fs = require('fs-extra');
-var url = require('url');
-var request = require('request');
-var querystring = require('querystring');
-var electron = require('electron').remote;
-var BrowserWindow = electron.BrowserWindow;
-var ipcRenderer = require('electron').ipcRenderer;
-var shell = require('electron').shell;
-var remote = require('electron').remote;
-var dialog = require('electron').remote.dialog;
-var path = require('path');
-var os = require('os');
+const fs = require('fs-extra'),
+      url = require('url'),
+      request = require('request'),
+      querystring = require('querystring'),
+      electron = require('electron').remote,
+      BrowserWindow = electron.BrowserWindow,
+      ipcRenderer = require('electron').ipcRenderer,
+      shell = require('electron').shell,
+      remote = require('electron').remote,
+      dialog = require('electron').remote.dialog,
+      path = require('path'),
+      os = require('os');
 
-var ptcJar = request.jar();
-var ptcReq = request.defaults({
-    headers: {'User-Agent': 'niantic'},
-    jar: ptcJar
-});
-
-var geoLocation = "34.0432108, -118.2675059";
+let ptcJar = request.jar(),
+    ptcReq = request.defaults({
+        headers: {'User-Agent': 'niantic'},
+        jar: ptcJar
+    }),
+    geoLocation = "34.0432108, -118.2675059",
+    appRoot = remote.getGlobal('appRoot');
 
 $(document).ready(function() {
     // Show version
