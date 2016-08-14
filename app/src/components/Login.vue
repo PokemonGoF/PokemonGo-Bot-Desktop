@@ -419,7 +419,7 @@
                 self.$dispatch('login', {
                     auth: auth,
                     code: '',
-                    location: self.loginForm.last_locationn,
+                    location: self.loginForm.last_location,
                     options: opts
                 })
             },

@@ -1,4 +1,5 @@
 const   electron = require('electron').remote,
+        dialog   = electron.dialog,
         os       = require('os'),
         fs       = require('fs-extra'),
         path     = require('path'),
@@ -57,19 +58,21 @@ const startPython = function(options) {
   if (options.options.walk_speed != '') {
     settings.walk = parseFloat(options.options.walk_speed);
   }
+
   settings.location = options.location;
 
   let titleWorker = false;
   for(let i = 0 ; i < settings.tasks.length; i ++){
-    if(settings.tasks[i].type == "UpdateTitleStats") {
+    if(settings.tasks[i].type == "UpdateLiveStats") {
       titleWorker = true;
     }
   }
   if(!titleWorker) {
       settings.tasks.unshift({
-            "type": "UpdateTitleStats",
+            "type": "UpdateLiveStats",
             "config": {
                 "min_interval": 1,
+                "enabled": true,
                 "stats": [
                     "login",
                     "uptime",
@@ -84,14 +87,16 @@ const startPython = function(options) {
         });
   }
 
+  self.userInfo = {
+      users : [settings.username],
+      userZoom : true,
+      userFollow : true,
+      imageExt : ".png",
+      gMapsAPIKey : settings.gmapkey
+  }
+
   let userdata_code = [
-      'var userInfo = {',
-      'users : ["' + settings.username + '"],',
-      'userZoom : true,',
-      'userFollow : true,',
-      'imageExt : ".png",',
-      'gMapsAPIKey : "' + settings.gmapkey + '"',
-      '};'
+      'var userInfo = ' + JSON.stringify(self.userInfo)
   ];
 
   // Write userdata for map
@@ -125,13 +130,13 @@ const startPython = function(options) {
 
   // Send bot log to web page
   subpy.stdout.on('data', (data) => {
-    console.log(`Python: ${data}`);
+    //console.log(`Python: ${data}`);
     self.$broadcast('bot_log', {
       'msg': `${data}`
     });
   });
   subpy.stderr.on('data', (data) => {
-    console.log(`Python: ${data}`);
+    //console.log(`Python: ${data}`);
     self.$broadcast('bot_log', {
       'msg': `${data}`
     });

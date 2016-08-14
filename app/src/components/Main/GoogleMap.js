@@ -204,4 +204,9 @@ class GoogleMap {
     }
 }
 
+// Callback for google maps
+function mapCallback() {
+  googleMap.init();
+}
+
 module.exports = GoogleMap;
