@@ -1,7 +1,7 @@
 <template>
     <div class="login-topbar center">
         <h1>
-            <img id="logo" src="../assets/logo.png">
+            <img id="logo" src="../assets/image/icons/logo.png">
             PikaBot
         </h1>
         <small>{{version}}</small>
@@ -177,7 +177,8 @@
           process       = require('process'),
           //            appRoot = path.join(process.cwd(), '/');
           platform      = os.platform(),
-          appRoot       = electron.getGlobal('appRoot');
+          appRoot       = electron.getGlobal('appRoot'),
+          botPath       = electron.getGlobal('botPath');
 
     const LoginMode = {
         GOOGLE: 'google',
@@ -199,7 +200,6 @@
                     jar: request.jar()
                 }),
                 remember: true,
-                activeLoginPanel: "",
                 credentialsForm: {
                     ptc_username: null,
                     ptc_password: null,
@@ -286,23 +286,38 @@
             checkForEncryptionFile: function () {
                 let self     = this,
                     fileName = platform == 'win32' ? 'encrypt.dll' : 'encrypt.so';
-                fs.access('gofbot/' + fileName, fs.constants.R_OK, (err) => {
+                    self.debug_log += 'Trying to access ' + path.join(botPath, fileName) + "\n"
+                fs.access(path.join(botPath, fileName), fs.constants.R_OK, (err) => {
                     console.log(err);
+                    self.debug_log += err + "\n"
+                    self.debug_log += fs.readdirSync(botPath) + "\n"
+
                     if (err === null) {
                         //No error, file exists and is readable.
                         self.encryptionFilePresent = true;
-                    }
-                    else {
+                    } else {
                         //File doesn't exists, let the user select it.
                         self.encryptionFilePresent = false;
+                        self.loginForm.file_path = ""
                     }
                 });
             },
             openFile: function () {
-                let self = this,
-                    path = self.dirname ? appRoot + self.debug_dir : self.debug_dir;
+                let self = this;
+
+                self.debug_log = ''
+                self.debug_log += 'Trying to upload file' + "\n"
+
                 dialog.showOpenDialog(function (fileNames) {
-                    fs.copySync((fileNames[0]), path.join(path + fileNames[0].match(/\.\w+/)[0]));
+                    self.debug_log += fileNames[0] + ' - ' + path.join(botPath, 'encrypt' + fileNames[0].match(/\.\w+/)[0]) + "\n";
+                    try {
+                        fs.copySync(fileNames[0], path.join(botPath, 'encrypt' + fileNames[0].match(/\.\w+/)[0]));
+                    } catch (err) {
+                        self.debug_log += "ERROR COPY :" + JSON.stringify(err) + "\n"
+                    }
+                    self.debug_log += "After copy : " + "\n"
+                    self.debug_log += fs.readdirSync(botPath)+ "\n"
+
                     self.loginForm.file_path = fileNames[0];
                     self.checkForEncryptionFile();
                 });
@@ -405,8 +420,15 @@
                     mode: false
                 };
 
-                console.log("Starting python", auth, self.loginForm.last_location, opts)
-                ipcRenderer.send('startPython', auth, '', self.loginForm.last_location, opts);
+                console.log("Going to home", auth, self.loginForm.last_location, opts)
+
+                self.$dispatch('login', {
+                    auth: auth,
+                    code: '',
+                    location: self.loginForm.last_locationn,
+                    options: opts
+                })
+                //ipcRenderer.send('startPython', auth, '', self.loginForm.last_location, opts);
             },
             openURL: function (url) {
                 shell.openExternal(url);
@@ -437,3 +459,111 @@
         components: {}
     }
 </script>
+
+<style lang="scss">
+    h1 {
+        margin: 0;
+    }
+
+    h4 {
+        color: white;
+    }
+
+    body {
+        background-color: #3E2723;
+    }
+
+    p {
+        font-size: 0.7em;
+        opacity: 0.7;
+    }
+
+    #options > div {
+        min-height: 130px;
+    }
+
+    #logo {
+        height: 50px;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    .btn {
+        background: #FFEB3B;
+        color: #000;
+        width: 100%;
+        font-size: 1.2vw;
+        &:hover {
+            background: #FDD835;
+        }
+    }
+
+    #mode-radio {
+        border-bottom: .5px solid #9e9e9e;
+        margin-top: 15px;
+        padding-bottom: 11px;
+        margin-bottom: 0px;
+    }
+
+    .select-dropdown {
+        color: #d1d1d1;
+    }
+
+    #options > div > div {
+        margin-bottom: 0px;
+        > div > input {
+            margin-bottom: 0px;
+        }
+    }
+
+    .switch {
+        label input[type=checkbox]:checked + .lever {
+            background-color: #f0de23;
+            &:after {
+                background-color: #d7c60f;
+            }
+        }
+        float: right;
+        p {
+            font-size: 12px;
+            color: #fff;
+            margin: 0;
+            margin-bottom: -12px;
+            line-height: 12px;
+        }
+    }
+
+    .collapsible-body {
+        background-color: #fff;
+        padding: 1.2em;
+    }
+
+    .login-topbar {
+        padding: 1em;
+        color: white;
+    }
+
+    #options {
+        padding: 0.7em;
+        margin: 0;
+    }
+
+    .login-footer {
+        padding: 20px;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        a {
+            padding: 10px;
+            color: white;
+            font-size: 12px;
+        }
+    }
+
+    #encryptionFileExistsDiv {
+        display: none;
+    }
+</style>

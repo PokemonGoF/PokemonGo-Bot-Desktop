@@ -24,7 +24,14 @@ function createWindow () {
     width: 1280,
     height: 720,
   })
+
+
   global.appRoot = path.resolve(__dirname);
+  global.botPath = path.join(global.appRoot, 'gofbot')
+  if (process.env.NODE_ENV === 'development') {
+      global.botPath = path.join(global.appRoot, 'dist/app/dist/gofbot')
+  }
+
   mainWindow.loadURL(config.url);
 
   if (process.env.NODE_ENV === 'development') {
