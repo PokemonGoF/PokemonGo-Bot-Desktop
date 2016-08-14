@@ -16,13 +16,13 @@
                         <li>
                             <div class="collapsible-header" id="google-login-title">Google</div>
                             <div class="collapsible-body">
-                                <form id="google_form" v-on:submit="doGoogleLogin">
+                                <form id="google_form" @submit="doGoogleLogin">
                                     <input v-model="credentialsForm.google_username" class="form-control" type="text"
                                            placeholder="Username" required>
                                     <input v-model="credentialsForm.google_password" class="form-control" type="password"
                                            placeholder="Password" required>
-                                    <button class="btn login" :disabled="disableLogin"
-                                            v-on:click="doGoogleLogin">Login with Google
+                                    <button type="submit" class="btn login" :disabled="disableLogin">
+                                        Login with Google
                                     </button>
                                 </form>
                             </div>
@@ -30,13 +30,13 @@
                         <li>
                             <div class="collapsible-header" id="ptc-login-title">PTC</div>
                             <div class="collapsible-body">
-                                <form id="ptc_form" v-on:submit="doPTCLogin">
+                                <form id="ptc_form" @submit="doPTCLogin">
                                     <input v-model="credentialsForm.ptc_username" class="form-control" type="text"
                                            placeholder="Username" required>
                                     <input v-model="credentialsForm.ptc_password" class="form-control" type="password"
                                            placeholder="Password" required>
-                                    <button class="btn login" :disabled="disableLogin"
-                                            v-on:click="doPTCLogin">Login with PTC
+                                    <button type="submit" class="btn login" :disabled="disableLogin">
+                                        Login with PTC
                                     </button>
                                 </form>
                             </div>
@@ -109,7 +109,7 @@
                                 <div v-bind:class="[{hide : encryptionFilePresent}]">
                                     <div class="row">
                                         <div class="">
-                                            <a v-on:click="openFile" class="waves-effect waves-light btn">Select</a>
+                                            <a @click="openFile" class="waves-effect waves-light btn">Select</a>
                                             <p v-show="!!loginForm.file_path && loginForm.file_path.length > 0">{{ loginForm.file_path }}</p>
                                         </div>
                                     </div>
@@ -147,10 +147,10 @@
                 </div>
             </div>
             <input class="col s4" type="text" v-model="debug_dir">
-            <a v-on:click="debug_path(1)" class="waves-effect waves-light blue btn col s1">Debug</a>
-            <a v-on:click="debug_path(2)" class="waves-effect waves-light blue btn col s1">Debug 2</a>
-            <a v-on:click="debug_path(3)" class="waves-effect waves-light blue btn col s1">Debug 3</a>
-            <a v-on:click="debug_path(4)" class="waves-effect waves-light blue btn col s1">Debug 4</a>
+            <a @click="debug_path(1)" class="waves-effect waves-light blue btn col s1">Debug</a>
+            <a @click="debug_path(2)" class="waves-effect waves-light blue btn col s1">Debug 2</a>
+            <a @click="debug_path(3)" class="waves-effect waves-light blue btn col s1">Debug 3</a>
+            <a @click="debug_path(4)" class="waves-effect waves-light blue btn col s1">Debug 4</a>
         </div>
         <div class="row">
             <strong style="color: white;">Path : </strong>
@@ -180,6 +180,11 @@
           platform      = os.platform(),
           appRoot       = electron.getGlobal('appRoot');
 
+    const LoginMode = {
+        GOOGLE: 'google',
+        PTC: 'ptc'
+    }
+
     export default {
         data() {
             return {
@@ -194,7 +199,6 @@
                     headers: {'User-Agent': 'niantic'},
                     jar: request.jar()
                 }),
-                geoLocation: "34.0432108, -118.2675059",
                 remember: true,
                 activeLoginPanel: "",
                 credentialsForm: {
@@ -251,7 +255,7 @@
                 try {
                     loadedData = JSON.parse(localStorage.getItem(itemName))
                 } catch(err) {}
-                
+
                 for (var idx in loadedData) {
                     destination[idx] = loadedData[idx];
                 }
@@ -305,6 +309,8 @@
                 });
             },
             saveForms: function () {
+                let self = this;
+                
                 if (self.remember) {
                     localStorage.setItem('credentialsForm', JSON.stringify(self.credentialsForm))
                 }
@@ -320,7 +326,7 @@
                 // Reset cookie jar
                 self.ptcJar = request.jar();
 
-                self.completeLogin('google', '');
+                self.completeLogin(LoginMode.GOOGLE);
 
                 return false;
             },
@@ -368,7 +374,7 @@
                         function (error, response, body) {
                             if (!error && response.statusCode == 302) {
                                 let rawRedirect = response.headers.location;
-                                self.handlePokemonCallback(rawRedirect);
+                                self.completeLogin(LoginMode.PTC);
                             } else {
                                 self.disableLogin = false;
                                 let errors = null;
@@ -387,29 +393,21 @@
                         }
                 );
             },
-            handlePokemonCallback: function (newUrl) {
+            completeLogin: function (auth) {
                 let self = this;
 
-                // Login by passing in password to prevent timeouts
-                self.completeLogin('ptc', '');
-            },
-            completeLogin: function (auth, code) {
-                let self = this;
-
-                let userLocation = self.loginForm.last_loation;
-                if (userLocation != '') {
-                    self.geoLocation = userLocation;
-                }
-
-                ipcRenderer.send('startPython', auth, code, geoLocation, {
+                let opts = {
                     google_maps_api: self.loginForm.google_maps_api,
                     walk_speed: self.loginForm.walk_speed,
                     ptc_username: self.credentialsForm.ptc_username,
                     ptc_password: self.credentialsForm.ptc_password,
-                    mode: false, // force false because the checkbox doesn't exists..
                     google_username: self.credentialsForm.google_username,
-                    google_password: self.credentialsForm.google_password
-                });
+                    google_password: self.credentialsForm.google_password,
+                    mode: false
+                };
+
+                console.log("Starting python", auth, self.loginForm.last_location, opts)
+                ipcRenderer.send('startPython', auth, '', self.loginForm.last_location, opts);
             },
             openURL: function (url) {
                 shell.openExternal(url);
