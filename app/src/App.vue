@@ -203,7 +203,7 @@
                     google_username: null,
                     google_password: null
                 },
-                loginForm :{
+                loginForm: {
                     google_maps_api: null,
                     walk_speed: null,
                     last_location: null,
@@ -247,7 +247,11 @@
 
             // helper to load data from localStorage to a map
             let _loadDataFromlocalStorage = function (itemName, destination) {
-                let loadedData = JSON.parse(localStorage.getItem(itemName)) || {}
+                let loadedData = {}
+                try {
+                    loadedData = JSON.parse(localStorage.getItem(itemName))
+                } catch(err) {}
+                
                 for (var idx in loadedData) {
                     destination[idx] = loadedData[idx];
                 }
@@ -300,13 +304,11 @@
                     self.checkForEncryptionFile();
                 });
             },
-            saveForms: function (disabled) {
+            saveForms: function () {
                 if (self.remember) {
                     localStorage.setItem('credentialsForm', JSON.stringify(self.credentialsForm))
                 }
                 localStorage.setItem('loginForm', JSON.stringify(self.loginForm))
-
-                self.disableLogin = disableLogin;
             },
             doGoogleLogin: function (event) {
                 let self = this;
