@@ -38,4 +38,4 @@ _This is just a temporary solution. In future versions we will enhance the abili
 4. Follow [this](https://github.com/PokemonGoF/PokemonGo-Bot/blob/dev/docs/configuration_files.md#sniping-movetolocation) guide to edit the `config.json`
 
 #### Windows
-Currently we do not know how to edit the config for Windows; however, in future versions we will add the ability to edit the config in the desktop applicacion. 
+Currently we do not know how to edit the config for Windows; however, in future versions we will add the ability to edit the config in the desktop application. 
