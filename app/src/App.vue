@@ -1,6 +1,6 @@
 <template>
     <login v-if="currentState == AppState.Login"></login>
-    <main v-if="currentState == AppState.Main"></main>
+    <main v-if="currentState == AppState.Main" :user-info="userInfo"></main>
 </template>
 
 <script>
@@ -18,7 +18,8 @@
             return {
                 currentState: null,
                 AppState,
-                botStarted: false
+                botStarted: false,
+                userInfo: {}
             }
         },
         ready() {

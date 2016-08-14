@@ -59,16 +59,11 @@
 </div>
 
 <!-- Bot indicator -->
-<div id="bot-indicator" class="z-depth-1">
-    <b>Bot status</b>
-    <p>Loading</p>
-</div>
+<bot-status class="z-depth-1"></bot-status>
 
 <!-- Bot Stats -->
-<div id="bot-stats" class="z-depth-1">
-    <b>Running Stats</b>
-    <p>Loading</p>
-</div>
+<bot-stats class="z-depth-1"></bot-stats>
+
 
 <!-- Content -->
 <div id="content">
@@ -89,13 +84,7 @@
             <p id="username">Loading...</p>
             <p id="level">...</p>
         </a>
-        <div id="log-container">
-            <h6><i class="material-icons"
-                   style="float: left; line-height: 14px; padding-right: 15px; color: #FFF">list</i>Logs</h6>
-            <div id="log-text">
-                <p id="log"></p>
-            </div>
-        </div>
+        <log></log>
         <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
     </div>
     <div id="map-container">
@@ -109,21 +98,53 @@
 
 const constants = require('./Main/const.js');
 let User = require('./Main/User.js'),
-    Ipc = require('./Main/Ipc.js'),
-    Logger = require('./Main/Logger.js'),
     Materialize = require('./Main/Materialize.js'),
     GoogleMap = require('./Main/GoogleMap.js'),
     ProfileMenu = require('./Main/ProfileMenu.js');
 
+import BotStatus from './Main/BotStatus.vue';
+import BotStats from './Main/BotStats.vue';
+import Log from './Main/Log.vue';
+
     export default {
         data() {
             return {
+                user: null,
+                googleMap: null,
+                omap: null,
+                forts: [],
+                info_windows: [],
+                ipc: null,
+                logger: null,
+                profileMenu: null
             }
         },
+        components: {
+            BotStatus,
+            BotStats,
+            Log
+        },
+        events: {
+        },
+        props: ['userInfo'],
         ready() {
-            console.log(this);
-        }
+          // Init User
+          let user = new User(this.userInfo.users[0]);
+
+          // Init map
+          let googleMap = new GoogleMap(this.userInfo, user);
+
+          // Logout listener
+          $('#logout').click(function() {
+            ipc.send('logout');
+          });
+
+          let profileMenu = new ProfileMenu(user);
+
+          // Materialize init
+          Materialize.init();
     }
+}
 </script>
 
 <style lang="scss">
