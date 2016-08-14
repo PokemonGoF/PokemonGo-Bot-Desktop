@@ -11,8 +11,6 @@ const path = require('path'),
 let config = {
     context: __dirname,
     devServer: {
-        // This is required for webpack-dev-server if using a version <3.0.0.
-        // The path should be an absolute path to your build destination.
         outputPath: path.join(__dirname, 'builds')
     },
     devtool: '#eval-source-map',
@@ -72,13 +70,7 @@ let config = {
             template: './app/main.ejs',
             title: settings.name
         }),
-        new webpack.NoErrorsPlugin(),
-        new CopyWebpackPlugin([
-            {
-                from: 'gofbot',
-                to: 'app/dist/gofbot'
-            },
-        ])
+        new webpack.NoErrorsPlugin()
     ],
     output: {
         filename: '[name].js',

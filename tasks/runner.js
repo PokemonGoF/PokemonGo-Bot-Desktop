@@ -5,6 +5,7 @@
 
 const config = require('../config')
 const exec = require('child_process').exec
+const fs = require('fs-extra')
 
 let YELLOW = '\x1b[33m'
 let BLUE = '\x1b[34m'
@@ -58,4 +59,6 @@ function exit (code) {
 }
 
 console.log(`${YELLOW}Starting webpack-dev-server...\n${END}`)
+
+fs.copySync(__dirname + '/../gofbot', __dirname + '/../app/dist/gofbot');
 run(`webpack-dev-server --inline --hot --colors --port ${config.port} --content-base app/dist`, YELLOW, 'webpack')
