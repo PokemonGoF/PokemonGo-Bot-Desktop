@@ -165,17 +165,11 @@
     const fs            = require('fs-extra'),
           url           = require('url'),
           request       = require('request'),
-          querystring   = require('querystring'),
           electron      = require('electron').remote,
-          BrowserWindow = electron.BrowserWindow,
-          ipcRenderer   = require('electron').ipcRenderer,
           shell         = require('electron').shell,
-          remote        = require('electron').remote,
-          dialog        = require('electron').remote.dialog,
+          dialog        = electron.dialog,
           path          = require('path'),
           os            = require('os'),
-          process       = require('process'),
-          //            appRoot = path.join(process.cwd(), '/');
           platform      = os.platform(),
           appRoot       = electron.getGlobal('appRoot'),
           botPath       = electron.getGlobal('botPath');
@@ -428,7 +422,6 @@
                     location: self.loginForm.last_locationn,
                     options: opts
                 })
-                //ipcRenderer.send('startPython', auth, '', self.loginForm.last_location, opts);
             },
             openURL: function (url) {
                 shell.openExternal(url);
@@ -448,10 +441,6 @@
                     case 3:
                         self.debug_log = '';
                         self.debug_log = appRoot;
-                        break;
-                    case 4:
-                        self.debug_log = path + '\n';
-                        self.debug_log += process.cwd();
                         break;
                 }
             }

@@ -1,11 +1,12 @@
 <template>
     <login v-if="currentState == AppState.Login"></login>
-    <main v-if="currentState == AppState.Main" :login-data="loginData"></main>
+    <main v-if="currentState == AppState.Main"></main>
 </template>
 
 <script>
     import Login from './components/Login'
     import Main from './components/Main'
+    import startBot from './startBot'
 
     const AppState = {
         Login: "Login",
@@ -17,7 +18,7 @@
             return {
                 currentState: null,
                 AppState,
-                loginData: {}
+                botStarted: false
             }
         },
         ready() {
@@ -25,10 +26,22 @@
         },
         events: {
             'login': function (obj) {
-                this.loginData = obj;
+                console.log('this', this);
+                if (!this.botStarted) {
+                    this.startBot(obj);
+                }
+
+                this.botStarted = true
                 this.currentState = AppState.Main
             }
         },
-        components: {Login, Main}
+        components: {Login, Main},
+        methods: {
+            startBot: startBot,
+            'exitBot': function () {
+                this.botStarted = false;
+                this.currentState = AppState.Login
+            }
+        }
     }
 </script>

@@ -120,7 +120,6 @@ let User = require('./Main/User.js'),
             return {
             }
         },
-        props: ['loginData'],
         ready() {
             console.log(this);
         }
