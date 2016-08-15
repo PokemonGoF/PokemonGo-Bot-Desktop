@@ -76,3 +76,9 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+#options {
+  padding: 10px;
+}
+</style>

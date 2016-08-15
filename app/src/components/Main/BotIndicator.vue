@@ -39,3 +39,18 @@
         }
     }
 </script>
+
+<style lang="scss">
+#bot-indicator {
+  z-index: 1;
+  height: 93px;
+  width: 300px;
+  position: absolute;
+  right: 48px;
+  bottom: 24px;
+  background: #FFF;
+  font-size: 12px;
+  padding: 12px;
+  overflow: hidden;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-    <a class="modal-trigger side-account waves-effect waves-light" href="#modal-info" id="btn-info">
+    <a class="side-account waves-effect waves-light" href="#" id="btn-info" @click.prevent="show = true">
         <i class="material-icons"
            style="float: left; line-height: 34px; padding-right: 15px; color: #FFF">person</i>
         <p id="username">{{ user.name }}</p>
@@ -7,19 +7,18 @@
     </a>
 
 
-    <div id="modal-info" class="">
-
+    <modal :show.sync="show" :on-close="close">
         <div class="col s12">
         <ul class="tabs">
-          <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info">Info</a></li>
-          <li class="tab col s3"><a class="waves-effect waves-brown" href="#items">Items ( {{ user.bagItems.length }} )</a></li>
-          <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon">Pokemon ( {{ user.bagPokemon.length }} )</a></li>
-          <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex">Pokedex</a></li>
-          <li class="tab col s3"><a class="waves-effect waves-brown" href="#session">Session</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info" @click.prevent="current_panel = 'info'">Info</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown" href="#items" @click.prevent="current_panel = 'items'">Items ( {{ user.bagItems.length }} )</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon" @click.prevent="current_panel = 'pokemon'">Pokemon ( {{ user.bagPokemon.length }} )</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex" @click.prevent="current_panel = 'pokedex'">Pokedex</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown" href="#session" @click.prevent="current_panel = 'session'">Session</a></li>
         </ul>
         </div>
         <div class="modal-content">
-            <div id="info" class="row">
+            <div v-show="current_panel == 'info'" id="info" class="row">
                 <div class="col s12 center" style="margin-bottom: 25px;">
                     <img v-if="!!user.marker" :src="user.marker.icon">
                     <h5>{{ user.name }}</h5>
@@ -67,7 +66,7 @@
                 </div>
             </div>
 
-            <div id="items" class="row">
+            <div v-show="current_panel == 'items'" id="items" class="row">
                 <div class="row items">
                     <div class="col s12 m4 l3 center" style="float: left; height: 144px;" v-for="item in current_user_bag_items">
                         <img :src="'/assets/image/items/' + item.inventory_item_data.item.item_id + '.png'" class="item_img"><br>
@@ -77,7 +76,7 @@
                 </div>
             </div>
 
-            <div id="pokemon" class="row">
+            <div v-show="current_panel == 'pokemon'" id="pokemon" class="row">
                 <div class="row item-filter">
                     <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
                 </div>
@@ -92,7 +91,7 @@
                 </div>
             </div>
 
-            <div id="pokedex" class="row">
+            <div v-show="current_panel == 'pokedex'" id="pokedex" class="row">
                 <div class="row item-filter">
                     <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
                 </div>
@@ -105,21 +104,18 @@
                 </div>
             </div>
 
-            <div id="session" class="row">
+            <div v-show="current_panel == 'session'" id="session" class="row">
                 {{ session_stats }}
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <a href="#!" class="info-close modal-action modal-close waves-effect waves-brown btn-flat">Close</a>
-    </div>
-
+    </modal>
 </template>
 
 
 <script>
 const constants = require('./const.js'),
-      path      = require('path');
+      path      = require('path'),
+      Modal      = require('../Modal');
 
 
 export default {
@@ -128,7 +124,9 @@ export default {
             current_user_stats: {},
             current_user_bag_items: {},
             constants: constants,
-            filterPokemonName: null
+            filterPokemonName: null,
+            current_panel: 'info',
+            show: false
         }
     },
     props: {
@@ -136,6 +134,7 @@ export default {
             twoWay: true
         }
     },
+    components: {Modal},
     computed: {
         nextLevel: function () {
             return this.current_user_stats.level + 1
@@ -227,12 +226,15 @@ export default {
           out_duration: 0 // Transition out duration
         });
 
-        setTimeout(function() {
-            $('.tabs').tabs();
-        }, 1);
-
     },
     methods: {
+        close () {
+            console.log("close ?")
+            console.log(this)
+            console.log(this.show)
+            this.show = false
+            console.log(this.show)
+        },
         getCandy(p_num) {
             for (var i = 0; i < this.user.bagCandy.length; i++) {
                 var checkCandy = this.user.bagCandy[i].inventory_item_data.candy.family_id;
@@ -243,31 +245,25 @@ export default {
         }
     }
 }
-
-class ProfileMenu {
-    constructor(user) {
-        this.user = user;
-
-        this.pokemonFilterTimer;
-        $('#pokemon .item-filter input').bind('change blur keyup mouseup', function(event) {
-            if (this.pokemonFilterTimer) {
-                clearTimeout(this.pokemonFilterTimer);
-            }
-            var searchTerm = $('#pokemon .item-filter input').val().toLowerCase();
-            if (searchTerm != '') {
-                this.pokemonFilterTimer = setTimeout(function() {
-                    $('#pokemon .pokemon-list-item').each(function(i, e) {
-                        pokemonName = $(e).find('.pokemon-name').text().toLowerCase();
-                        fuzzy_match(pokemonName, searchTerm) && $(e).show() || $(e).hide();
-                    });
-                }, 100);
-            } else {
-                $('#pokemon .pokemon-list-item').each(function(i, e) {
-                    $(e).show();
-                });
-            }
-        });
-    }
-
-}
 </script>
+
+<style lang="scss">
+.item_img {
+  width: 75px;
+  height: auto;
+}
+
+.png_img {
+  width: 96px;
+  height: auto;
+}
+
+#username {
+  color: yellow;
+  margin: 0;
+}
+
+.modal-container {
+    color: black
+}
+</style>
