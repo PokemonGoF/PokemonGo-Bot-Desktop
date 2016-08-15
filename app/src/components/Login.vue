@@ -14,14 +14,17 @@
                     <h4>Login</h4>
                     <ul class="" data-collapsible="accordion">
                         <li>
-                            <div class="collapsible-header" id="google-login-title" @click="showLogin = 'google'">Google</div>
+                            <div class="collapsible-header" id="google-login-title" @click="showLogin = 'google'">
+                                Google
+                            </div>
                             <div class="collapsible-body" v-show="showLogin == 'google'">
                                 <form id="google_form" @submit="doGoogleLogin">
                                     <input v-model="credentialsForm.google_username" class="form-control" type="text"
                                            placeholder="Username" required>
-                                    <input v-model="credentialsForm.google_password" class="form-control" type="password"
+                                    <input v-model="credentialsForm.google_password" class="form-control"
+                                           type="password"
                                            placeholder="Password" required>
-                                    <button type="submit" class="btn login" :disabled="disableLogin">
+                                    <button type="submit" class="btn login"  :disabled="disableLogin || !validateLoginInputs()">
                                         Login with Google
                                     </button>
                                 </form>
@@ -35,7 +38,7 @@
                                            placeholder="Username" required>
                                     <input v-model="credentialsForm.ptc_password" class="form-control" type="password"
                                            placeholder="Password" required>
-                                    <button type="submit" class="btn login" :disabled="disableLogin">
+                                    <button type="submit" class="btn login" :disabled="disableLogin || !validateLoginInputs()">
                                         Login with PTC
                                     </button>
                                 </form>
@@ -81,7 +84,7 @@
                                 <div class="row">
                                     <div class="">
                                         <input v-model="loginForm.google_maps_api" class="form-control"
-                                               type="text" placeholder="Google Maps API">
+                                               type="text" placeholder="Google Maps API" required>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -106,11 +109,12 @@
                             </div>
                             <div class="col s6">
                                 <h6>Encrypt File</h6>
-                                <div v-bind:class="[{hide : encryptionFilePresent}]">
+                                <div :class="[{hide : encryptionFilePresent}]">
                                     <div class="row">
                                         <div class="">
                                             <a @click="openFile" class="waves-effect waves-light btn">Select</a>
-                                            <p v-show="!!loginForm.file_path && loginForm.file_path.length > 0">{{ loginForm.file_path }}</p>
+                                            <p v-show="!!loginForm.file_path && loginForm.file_path.length > 0">{{
+                                                loginForm.file_path }}</p>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -119,7 +123,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div v-bind:class="[{hide : !encryptionFilePresent}]">
+                                <div :class="[{hide : !encryptionFilePresent}]">
                                     <div class="row">
                                         <p>
                                             Encryption file is present. <span class="green-text">✓</span>
@@ -136,17 +140,17 @@
 </template>
 
 <script>
-    const fs            = require('fs-extra'),
-          url           = require('url'),
-          request       = require('request'),
-          electron      = require('electron').remote,
-          shell         = require('electron').shell,
-          dialog        = electron.dialog,
-          path          = require('path'),
-          os            = require('os'),
-          platform      = os.platform(),
-          appRoot       = electron.getGlobal('appRoot'),
-          botPath       = electron.getGlobal('botPath');
+    const fs       = require('fs-extra'),
+          url      = require('url'),
+          request  = require('request'),
+          electron = require('electron').remote,
+          shell    = require('electron').shell,
+          dialog   = electron.dialog,
+          path     = require('path'),
+          os       = require('os'),
+          platform = os.platform(),
+          appRoot  = electron.getGlobal('appRoot'),
+          botPath  = electron.getGlobal('botPath');
 
     const LoginMode = {
         GOOGLE: 'google',
@@ -181,7 +185,7 @@
                 ptc_errors: ""
             }
         },
-        watch : {
+        watch: {
             'remember': (newVal, oldVal) => {
                 // if the user doesn't want his informations to be remembers,
                 // then clear the credentialsForm from localStorage
@@ -216,7 +220,7 @@
 
             // helper to load data from localStorage to a map
             let _loadDataFromlocalStorage = function (itemName, destination) {
-                let loadedData = {}
+                let loadedData = {};
                 try {
                     loadedData = JSON.parse(localStorage.getItem(itemName))
                 } catch(err) {}
@@ -224,7 +228,7 @@
                 for (var idx in loadedData) {
                     destination[idx] = loadedData[idx];
                 }
-            }
+            };
 
             // if remember doesn't exists (== first launch) OR is true,
             // check the checkbox and load credentialsForm from storage
@@ -259,7 +263,7 @@
                     } else {
                         //File doesn't exists, let the user select it.
                         self.encryptionFilePresent = false;
-                        self.loginForm.file_path = ""
+                        self.loginForm.file_path   = "";
                     }
                 });
             },
@@ -304,7 +308,7 @@
                 event.preventDefault();
                 self.saveForms();
                 self.disableLogin = true;
-                self.ptc_errors = "";
+                self.ptc_errors   = "";
 
                 // Reset cookie jar
                 self.ptcReq.jar = request.jar();
@@ -344,7 +348,7 @@
                                 self.completeLogin(LoginMode.PTC);
                             } else {
                                 self.disableLogin = false;
-                                let errors = null;
+                                let errors        = null;
                                 try {
                                     errors = JSON.parse(body).errors;
                                     errors = errors.join(' ');
@@ -379,6 +383,11 @@
                     location: self.loginForm.last_location,
                     options: opts
                 })
+            },
+            validateLoginInputs: function () {
+                let self = this;
+                console.log(self.encryptionFilePresent && self.loginForm.google_maps_api !== "");
+                return self.encryptionFilePresent && self.loginForm.google_maps_api !== "";
             },
             openURL: function (url) {
                 shell.openExternal(url);
