@@ -45,6 +45,9 @@ const startPython = function(options) {
   let data = fs.readFileSync(path.join(botPath, '/configs/config.json'));
   let settings = JSON.parse(data);
 
+  // activate web_socket
+  settings.websocket_server = true;
+
   // Load settings
   settings.auth_service = options.auth;
   if (settings.auth_service == 'google') {
@@ -55,7 +58,7 @@ const startPython = function(options) {
     settings.username = options.options.ptc_username;
   }
   settings.gmapkey = options.options.google_maps_api;
-  if (options.options.walk_speed != '') {
+  if (!!options.options.walk_speed) {
     settings.walk = parseFloat(options.options.walk_speed);
   }
 
@@ -147,6 +150,7 @@ const startPython = function(options) {
 
   // Send bot log to web page
   subpy.stdout.on('data', (data) => {
+    console.log(`Python : ${data}`);
     self.$broadcast('bot_log', {
       'msg': `${data}`
     });
@@ -154,6 +158,7 @@ const startPython = function(options) {
 
   
   subpy.stderr.on('data', (data) => {
+    console.log(`Pythonerr : ${data}`)
     self.$broadcast('bot_log', {
       'msg': `${data}`
     });
@@ -169,6 +174,8 @@ const startPython = function(options) {
   });
 
   subpy.on('exit', () => {
+    console.log('subpy exit');
+    console.log(arguments);
     self.$emit('bot_closed');
   });
 

@@ -60,5 +60,11 @@ function exit (code) {
 
 console.log(`${YELLOW}Starting webpack-dev-server...\n${END}`)
 
+
+fs.removeSync(__dirname + '/../app/dist/gofbot');
 fs.copySync(__dirname + '/../gofbot', __dirname + '/../app/dist/gofbot');
+
+fs.removeSync(__dirname + '/../app/dist/assets');
+fs.copySync(__dirname + '/../app/src/assets', __dirname + '/../app/dist/assets');
+
 run(`webpack-dev-server --inline --hot --colors --port ${config.port} --content-base app/dist`, YELLOW, 'webpack')

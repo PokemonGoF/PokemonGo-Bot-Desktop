@@ -24,22 +24,23 @@ export default {
     },
     ready() {
         this.forts = [];
-        const src = "https://maps.googleapis.com/maps/api/js?key=" + this.userInfo.gMapsAPIKey + "&libraries=drawing&callback=mapCallback";
 
         // Callback for google maps
         window['mapCallback'] = () => this.init();
 
-        let element = document.createElement("script");
-        element.src = src;
-        document.body.appendChild(element);
-        console.log("[ MAP ] Loaded Google Maps");
+        if (document.getElementById("INSERTED_GOOGLE_MAPS") == null) {
+            const src = "https://maps.googleapis.com/maps/api/js?key=" + this.userInfo.gMapsAPIKey + "&libraries=drawing&callback=mapCallback";
+            let element = document.createElement("script");
+            element.id = "INSERTED_GOOGLE_MAPS";
+            element.src = src;
+            document.body.appendChild(element);
+            console.log("[ MAP ] Loaded Google Maps");
+        } else {
+            this.init()
+        }
     },
     methods: {
         init() {
-            if (this.map) {
-                return;
-            }
-
             this.map = new google.maps.Map(document.getElementById('map'), {
                 center: {
                     lat: 37.0902,

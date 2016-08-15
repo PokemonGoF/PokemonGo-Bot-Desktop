@@ -25,7 +25,9 @@
         <logout></logout>
     </div>
 
-    <map :user.sync="user" :user-info.sync="userInfo"></map>
+    <template v-if="user != null && user.loaded == true">
+        <map :user.sync="user" :user-info.sync="userInfo"></map>
+    </template>
 
 </div>
 
@@ -33,9 +35,7 @@
 
 <script>
 
-const constants = require('./Main/const.js'),
-      User = require('./Main/User.js');
-
+import User from './Main/User.js'
 import BotIndicator from './Main/BotIndicator.vue';
 import BotStats from './Main/BotStats.vue';
 import Log from './Main/Log.vue';
@@ -63,10 +63,7 @@ import Map from './Main/Map.vue';
         },
         props: ['userInfo'],
         ready() {
-            let self = this;
-
-            // Init User
-            self.$set('user', new User(this.userInfo.users[0]));
+            this.$set('user', new User(this.userInfo.users[0]));
       }
 }
 </script>

@@ -13,6 +13,7 @@
 <script>
 
     const constants = require('./const.js'),
+          utils     = require('./Utils'),
           path      = require('path');
 
 
@@ -22,7 +23,6 @@
                 logs: ""
             }
         },
-        ready() {},
         events: {
             'bot_log': function (obj) {
                 var lines = obj.msg.split("\n");
@@ -38,11 +38,11 @@
                     if (!bracket_data || bracket_data.length < 3) {
                         return true;
                     }
-                    log.worker = bracket_data[0].replace(/[\[\]]/g, "");
-                    log.type = bracket_data[1].replace(/[\[\]]/g, "");
-                    log.action = bracket_data[2].replace(/[\[\]]/g, "");
+                    log.worker  = bracket_data[0].replace(/[\[\]]/g, "");
+                    log.type    = bracket_data[1].replace(/[\[\]]/g, "");
+                    log.action  = bracket_data[2].replace(/[\[\]]/g, "");
                     log.message = message.split("[" + log.action + "] ")[1];
-                    log.images = [];
+                    log.images  = [];
 
                     if (log.worker == "MoveToFort" || log.worker == "UpdateLiveStats") {
                         return true;
@@ -81,8 +81,8 @@
                     this.logs += log_item
 
                     return true;
+                }
             }
         }
     }
-}
 </script>
