@@ -36,10 +36,12 @@
                 this.currentState = AppState.Main
             },
             'logout': function () {
+                console.log('receiving logout, killing bot')
                 this.killBot();
             },
             'bot_closed': function () {
-                //this.logout();
+                console.log('receiving bot_closed, killing logging out')
+                this.logout();
             }
         },
         components: {Login, Main},

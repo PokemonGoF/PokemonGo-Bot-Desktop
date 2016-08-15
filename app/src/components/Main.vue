@@ -24,18 +24,17 @@
 
         <logout></logout>
     </div>
-    <div id="map-container">
-        <div id="map"></div>
-    </div>
+
+    <map :user.sync="user" :user-info.sync="userInfo"></map>
+
 </div>
 
 </template>
 
 <script>
 
-const constants = require('./Main/const.js');
-let User = require('./Main/User.js'),
-    GoogleMap = require('./Main/GoogleMap.js');
+const constants = require('./Main/const.js'),
+      User = require('./Main/User.js');
 
 import BotIndicator from './Main/BotIndicator.vue';
 import BotStats from './Main/BotStats.vue';
@@ -44,6 +43,7 @@ import Options from './Main/Options.vue';
 import Logo from './Main/Logo.vue';
 import Logout from './Main/Logout.vue';
 import Profile from './Main/Profile.vue';
+import Map from './Main/Map.vue';
 
     export default {
         data() {
@@ -58,7 +58,8 @@ import Profile from './Main/Profile.vue';
             Options,
             Logo,
             Logout,
-            Profile
+            Profile,
+            Map
         },
         props: ['userInfo'],
         ready() {
@@ -66,14 +67,6 @@ import Profile from './Main/Profile.vue';
 
             // Init User
             self.$set('user', new User(this.userInfo.users[0]));
-
-            // Init map
-            let googleMap = new GoogleMap(this.userInfo, this.user);
-
-          // Callback for google maps
-          window['mapCallback'] = function() {
-            googleMap.init();
-          }
       }
 }
 </script>
@@ -121,18 +114,6 @@ html, body {
   margin: 0 25px;
   box-sizing: border-box;
   background-color: #4E342E;
-}
-
-#map-container {
-  height: 100%;
-  padding: 0;
-  width: calc(100vw - 300px);
-  float: left;
-}
-
-#map {
-  width: 100%;
-  height: 100%;
 }
 
 #log {
