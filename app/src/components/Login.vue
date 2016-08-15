@@ -12,10 +12,10 @@
             <div class="row">
                 <div class="col s4">
                     <h4>Login</h4>
-                    <ul class="collapsible" data-collapsible="accordion">
+                    <ul class="" data-collapsible="accordion">
                         <li>
-                            <div class="collapsible-header" id="google-login-title">Google</div>
-                            <div class="collapsible-body">
+                            <div class="collapsible-header" id="google-login-title" @click="showLogin = 'google'">Google</div>
+                            <div class="collapsible-body" v-show="showLogin == 'google'">
                                 <form id="google_form" @submit="doGoogleLogin">
                                     <input v-model="credentialsForm.google_username" class="form-control" type="text"
                                            placeholder="Username" required>
@@ -28,8 +28,8 @@
                             </div>
                         </li>
                         <li>
-                            <div class="collapsible-header" id="ptc-login-title">PTC</div>
-                            <div class="collapsible-body">
+                            <div class="collapsible-header" id="ptc-login-title" @click="showLogin = 'ptc'">PTC</div>
+                            <div class="collapsible-body" v-show="showLogin == 'ptc'">
                                 <form id="ptc_form" @submit="doPTCLogin">
                                     <input v-model="credentialsForm.ptc_username" class="form-control" type="text"
                                            placeholder="Username" required>
@@ -133,32 +133,6 @@
             </div>
         </div>
     </div>
-    <div class="container" v-bind:class="[{hide : !debug}]">
-        <div class="row">
-            <div class="col s2">
-                <div class="switch">
-                    <p>{{dirname}}</p>
-                    <label>
-                        Off
-                        <input checked type="checkbox" v-model="dirname">
-                        <span class="lever"></span>
-                        On
-                    </label>
-                </div>
-            </div>
-            <input class="col s4" type="text" v-model="debug_dir">
-            <a @click="debug_path(1)" class="waves-effect waves-light blue btn col s1">Debug</a>
-            <a @click="debug_path(2)" class="waves-effect waves-light blue btn col s1">Debug 2</a>
-            <a @click="debug_path(3)" class="waves-effect waves-light blue btn col s1">Debug 3</a>
-            <a @click="debug_path(4)" class="waves-effect waves-light blue btn col s1">Debug 4</a>
-        </div>
-        <div class="row">
-            <strong style="color: white;">Path : </strong>
-            <textarea class="" style="height: 100px; background-color: white;" v-model="debug_log"></textarea>
-            <strong style="color: white;">Vue properties : </strong>
-            <textarea class="" style="height: 500px; background-color: white;">{{ $data | json}}</textarea>
-        </div>
-    </div>
 </template>
 
 <script>
@@ -182,10 +156,6 @@
     export default {
         data() {
             return {
-                debug: true, //Comment this if you don't want the debug menu.
-                debug_log: '',
-                debug_dir: '',
-                dirname: false,
                 // Show version
                 version: electron.app.getVersion(),
                 encryptionFilePresent: false,
@@ -207,6 +177,7 @@
                     file_path: null
                 },
                 disableLogin: false,
+                showLogin: null,
                 ptc_errors: ""
             }
         },
@@ -268,9 +239,9 @@
             _loadDataFromlocalStorage('loginForm', self.loginForm)
 
             if (!!self.credentialsForm.ptc_username) {
-                $('#ptc-login-title').addClass("active");
+                self.showLogin = 'ptc'
             } else {
-                $('#google-login-title').addClass("active");
+                self.showLogin = 'google'
             }
 
             // check for encrypt file
@@ -280,11 +251,7 @@
             checkForEncryptionFile: function () {
                 let self     = this,
                     fileName = platform == 'win32' ? 'encrypt.dll' : 'encrypt.so';
-                    self.debug_log += 'Trying to access ' + path.join(botPath, fileName) + "\n"
                 fs.access(path.join(botPath, fileName), fs.constants.R_OK, (err) => {
-                    self.debug_log += err + "\n"
-                    self.debug_log += fs.readdirSync(botPath) + "\n"
-
                     if (err === null) {
                         //No error, file exists and is readable.
                         self.encryptionFilePresent = true;
@@ -298,18 +265,11 @@
             openFile: function () {
                 let self = this;
 
-                self.debug_log = ''
-                self.debug_log += 'Trying to upload file' + "\n"
-
                 dialog.showOpenDialog(function (fileNames) {
-                    self.debug_log += fileNames[0] + ' - ' + path.join(botPath, 'encrypt' + fileNames[0].match(/\.\w+/)[0]) + "\n";
                     try {
                         fs.copySync(fileNames[0], path.join(botPath, 'encrypt' + fileNames[0].match(/\.\w+/)[0]));
                     } catch (err) {
-                        self.debug_log += "ERROR COPY :" + JSON.stringify(err) + "\n"
                     }
-                    self.debug_log += "After copy : " + "\n"
-                    self.debug_log += fs.readdirSync(botPath)+ "\n"
 
                     self.loginForm.file_path = fileNames[0];
                     self.checkForEncryptionFile();
@@ -421,24 +381,6 @@
             },
             openURL: function (url) {
                 shell.openExternal(url);
-            },
-            debug_path: function (n) {
-                let self = this,
-                    path = self.dirname ? appRoot + self.debug_dir : self.debug_dir;
-                switch (n) {
-                    case 1:
-                        self.debug_log = path + '\n';
-                        self.debug_log += fs.readdirSync(path);
-                        break;
-                    case 2:
-                        self.debug_log = '';
-                        self.debug_log = __dirname + __filename;
-                        break;
-                    case 3:
-                        self.debug_log = '';
-                        self.debug_log = appRoot;
-                        break;
-                }
             }
         },
         components: {}
@@ -523,6 +465,7 @@
     .collapsible-body {
         background-color: #fff;
         padding: 1.2em;
+        display: block;
     }
 
     .login-topbar {
