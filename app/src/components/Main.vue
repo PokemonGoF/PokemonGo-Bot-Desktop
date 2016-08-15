@@ -20,6 +20,12 @@
             <profile :user.sync="user"></profile>
         </template>
 
+
+        <button @click.prevent="devsock">Start Socket</button>
+<pre>
+    {{ dev_sock }}
+</pre>
+
         <log></log>
 
         <logout></logout>
@@ -49,6 +55,7 @@ import Map from './Main/Map.vue';
         data() {
             return {
                 user: null,
+                dev_sock: ""
             }
         },
         components: {
@@ -64,7 +71,28 @@ import Map from './Main/Map.vue';
         props: ['userInfo'],
         ready() {
             this.$set('user', new User(this.userInfo.users[0]));
-      }
+        },
+        methods: {
+            devsock() {
+
+                var socket = require('socket.io-client')('http://127.0.0.1:4000');
+
+                socket.io.on('connect', function(){ console.debug('manager connect', JSON.stringify(arguments)) });
+                socket.io.on('connect_error', function(){ console.debug('manager connect_error', JSON.stringify(arguments)) });
+                socket.io.on('connect_timeout', function(){ console.debug('manager connect_timeout', JSON.stringify(arguments)) });
+                socket.io.on('reconnect', function(){ console.debug('manager reconnect', JSON.stringify(arguments)) });
+
+                socket.on('connect', function(){ console.debug('connect', JSON.stringify(arguments)) });
+                socket.on('event', function(data){ console.debug('event', JSON.stringify(arguments)) });
+                socket.on('disconnect', function(){ console.debug('disconnect', JSON.stringify(arguments)) });
+                socket.on('error', function(){ console.debug('error', JSON.stringify(arguments)) });
+                socket.on('reconnect', function(){ console.debug('reconnect', JSON.stringify(arguments)) });
+                socket.on('reconnect_attempt', function(){ console.debug('reconnect_attempt', JSON.stringify(arguments)) });
+                socket.on('reconnecting', function(){ console.debug('reconnecting', JSON.stringify(arguments)) });
+                socket.on('reconnect_error', function(){ console.debug('reconnect_error', JSON.stringify(arguments)) });
+                socket.on('reconnect_failed', function(){ console.debug('reconnect_failed', JSON.stringify(arguments)) });
+            }
+        }
 }
 </script>
 

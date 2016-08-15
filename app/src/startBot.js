@@ -1,12 +1,12 @@
-const   electron = require('electron').remote,
-        dialog   = electron.dialog,
-        os       = require('os'),
-        fs       = require('fs-extra'),
-        path     = require('path'),
-        botPath  = electron.getGlobal('botPath');
+const electron = require('electron').remote,
+      dialog   = electron.dialog,
+      os       = require('os'),
+      fs       = require('fs-extra'),
+      path     = require('path'),
+      botPath  = electron.getGlobal('botPath');
 
 
-const startPython = function(options) {
+const startPython = function (options) {
   let self = this;
 
   let cmdLine = [
@@ -42,11 +42,16 @@ const startPython = function(options) {
   }
 
   // Load user config
-  let data = fs.readFileSync(path.join(botPath, '/configs/config.json'));
+  let data     = fs.readFileSync(path.join(botPath, '/configs/config.json'));
   let settings = JSON.parse(data);
 
   // activate web_socket
   settings.websocket_server = true;
+  settings.websocket = {
+    "start_embedded_server": true,
+    "server_url":            "0.0.0.0:4000",
+    "remote_control":        true
+  };
 
   // Load settings
   settings.auth_service = options.auth;
@@ -65,58 +70,58 @@ const startPython = function(options) {
   settings.location = options.location;
 
   let titleWorker = false;
-  for(let i = 0 ; i < settings.tasks.length; i ++){
-    if(settings.tasks[i].type == "UpdateLiveStats") {
+  for (let i = 0; i < settings.tasks.length; i++) {
+    if (settings.tasks[i].type == "UpdateLiveStats") {
       titleWorker = true;
     }
   }
-  if(!titleWorker) {
-      settings.tasks.unshift({
-            "type": "UpdateLiveStats",
-            "config": {
-                "min_interval": 1,
-                "enabled": true,
-                "stats": [
-                    "login",
-                    "uptime",
-                    "km_walked",
-                    "level_stats",
-                    "xp_earned",
-                    "xp_per_hour"
-                ],
-                "terminal_log": true,
-                "terminal_title": false
-            }
-        });
+  if (!titleWorker) {
+    settings.tasks.unshift({
+      "type":   "UpdateLiveStats",
+      "config": {
+        "min_interval":   1,
+        "enabled":        true,
+        "stats":          [
+          "login",
+          "uptime",
+          "km_walked",
+          "level_stats",
+          "xp_earned",
+          "xp_per_hour"
+        ],
+        "terminal_log":   true,
+        "terminal_title": false
+      }
+    });
   }
 
   self.userInfo = {
-      users : [settings.username],
-      zoom: 16,
-      userZoom : true,
-      userFollow : true,
-      botPath: true,
-      imageExt : ".png",
-      gMapsAPIKey : settings.gmapkey,
-      actionsEnabled: false
+    users:          [settings.username],
+    zoom:           16,
+    userZoom:       true,
+    userFollow:     true,
+    botPath:        true,
+    imageExt:       ".png",
+    gMapsAPIKey:    settings.gmapkey,
+    actionsEnabled: false
   }
 
   let userdata_code = [
-      'var userInfo = {',
-      `    users: ["${settings.username}"],`,
-      `    zoom: 16,`,
-      `    userZoom: true,`,
-      `    userFollow: true,`,
-      `    imageExt: ".png",`,
-      `    gMapsAPIKey: "${settings.gmapkey}",`,
-      `    actionsEnabled: false`,
-      `};`,
-      '',
-      `var dataUpdates = {`,
-      `    updateTrainer: 1000,`,
-      `    addCatchable: 1000,`,
-      `    addInventory: 5000`,
-      `};`
+    'var userInfo = {',
+    `    users: ["${settings.username}"],`,
+    `    zoom: 16,`,
+    `    userZoom: true,`,
+    `    userFollow: true,`,
+    `    imageExt: ".png",`,
+    `    gMapsAPIKey: "${settings.gmapkey}",`,
+    `    actionsEnabled: false`,
+    `};`,
+    '',
+    `var dataUpdates = {`,
+    `    updateTrainer: 1000,`,
+    `    addCatchable: 1000,`,
+    `    addInventory: 5000`,
+    `};`
   ];
 
   // Write userdata for map
@@ -144,7 +149,7 @@ const startPython = function(options) {
 
   // Create python bot process
   let subpy = require('child_process').spawn(pythonCmd, cmdLine, {
-    cwd: botPath,
+    cwd:      botPath,
     detached: true
   });
 
@@ -156,7 +161,7 @@ const startPython = function(options) {
     });
   });
 
-  
+
   subpy.stderr.on('data', (data) => {
     console.log(`Pythonerr : ${data}`)
     self.$broadcast('bot_log', {
@@ -164,10 +169,10 @@ const startPython = function(options) {
     });
     if (data.indexOf("ERROR") > -1) {
       dialog.showMessageBox({
-        type: "error",
-        title: "Whoops",
+        type:    "error",
+        title:   "Whoops",
         message: "Error in python bot",
-        detail: "" + data,
+        detail:  "" + data,
         buttons: ["Yes I read carefully error message"]
       });
     }
