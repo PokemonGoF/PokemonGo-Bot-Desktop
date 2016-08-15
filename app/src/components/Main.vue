@@ -16,7 +16,7 @@
 
         <options :user-info.sync="userInfo"></options>
 
-        <template v-if="user != null">
+        <template v-if="user != null && user.loaded == true">
             <profile :user.sync="user"></profile>
         </template>
 

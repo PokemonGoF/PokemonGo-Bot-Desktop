@@ -11,8 +11,8 @@
         <div class="col s12">
         <ul class="tabs">
           <li class="tab col s3"><a class="waves-effect waves-brown active" href="#info" @click.prevent="current_panel = 'info'">Info</a></li>
-          <li class="tab col s3"><a class="waves-effect waves-brown" href="#items" @click.prevent="current_panel = 'items'">Items ( {{ user.bagItems.length }} )</a></li>
-          <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon" @click.prevent="current_panel = 'pokemon'">Pokemon ( {{ user.bagPokemon.length }} )</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown" href="#items" @click.prevent="current_panel = 'items'">Items ( {{ nbItems }} )</a></li>
+          <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokemon" @click.prevent="current_panel = 'pokemon'">Pokemon ( {{ nbPokemons }} )</a></li>
           <li class="tab col s3"><a class="waves-effect waves-brown" href="#pokedex" @click.prevent="current_panel = 'pokedex'">Pokedex</a></li>
           <li class="tab col s3"><a class="waves-effect waves-brown" href="#session" @click.prevent="current_panel = 'session'">Session</a></li>
         </ul>
@@ -121,8 +121,6 @@ const constants = require('./const.js'),
 export default {
     data() {
         return {
-            current_user_stats: {},
-            current_user_bag_items: {},
             constants: constants,
             filterPokemonName: null,
             current_panel: 'info',
@@ -136,6 +134,12 @@ export default {
     },
     components: {Modal},
     computed: {
+        nbItems: function () {
+            return this.user.bagItems.length;
+        },
+        nbPokemons: function () {
+            return this.user.bagPokemon.length;
+        },
         nextLevel: function () {
             return this.current_user_stats.level + 1
         },
@@ -219,21 +223,9 @@ export default {
             return this.user.bagItems;
         }
     },
-    ready() {
-
-        $('.modal-trigger').leanModal({
-          in_duration: 0, // Transition in duration
-          out_duration: 0 // Transition out duration
-        });
-
-    },
     methods: {
         close () {
-            console.log("close ?")
-            console.log(this)
-            console.log(this.show)
             this.show = false
-            console.log(this.show)
         },
         getCandy(p_num) {
             for (var i = 0; i < this.user.bagCandy.length; i++) {

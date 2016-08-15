@@ -183,13 +183,14 @@
         },
         watch : {
             'remember': (newVal, oldVal) => {
-                localStorage.setItem("remember", "true")
-
                 // if the user doesn't want his informations to be remembers,
                 // then clear the credentialsForm from localStorage
                 if (newVal == false) {
-                    localStorage.setItem('credentialsForm', "{}")
                     localStorage.setItem("remember", "false")
+                    localStorage.setItem('credentialsForm', "{}")
+                } else {
+                    localStorage.setItem("remember", "true")
+                    localStorage.setItem('credentialsForm', JSON.stringify(newVal))
                 }
             },
             'credentialsForm': {

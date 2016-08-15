@@ -71,7 +71,9 @@ export default {
 
             let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
             if (fs.existsSync(locationFile)) {
+                try {
                 this.placeTrainer(fs.readJSONSync(locationFile));
+                } catch (err) {}1
             }
         },
         placeCatchable(data) {
