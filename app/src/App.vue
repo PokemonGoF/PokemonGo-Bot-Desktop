@@ -19,6 +19,7 @@
                 currentState: null,
                 AppState,
                 botStarted: false,
+                proc: null,
                 userInfo: {}
             }
         },
@@ -27,21 +28,41 @@
         },
         events: {
             'login': function (obj) {
-                console.log('this', this);
                 if (!this.botStarted) {
                     this.startBot(obj);
                 }
 
                 this.botStarted = true
                 this.currentState = AppState.Main
+            },
+            'logout': function () {
+                this.killBot();
+            },
+            'bot_closed': function () {
+                //this.logout();
             }
         },
         components: {Login, Main},
         methods: {
-            startBot: startBot,
-            'exitBot': function () {
-                this.botStarted = false;
+            logout() {
                 this.currentState = AppState.Login
+            },
+            startBot: startBot,
+            'killBot': function () {
+                if (this.botStarted && this.proc && this.proc.pid) {
+                    try {
+                        process.kill(-this.proc.pid, 'SIGINT');
+                        process.kill(-this.proc.pid, 'SIGTERM');
+                    } catch (e) {
+                        try {
+                            process.kill(this.proc.pid, 'SIGTERM');
+                        } catch (e) {
+                            console.error("Unable to stop proccess..." + JSON.stringify(e))
+                        }
+                    }
+                }
+                this.proc = null
+                this.botStarted = false;
             }
         }
     }

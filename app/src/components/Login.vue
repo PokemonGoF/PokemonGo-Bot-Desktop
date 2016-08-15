@@ -282,7 +282,6 @@
                     fileName = platform == 'win32' ? 'encrypt.dll' : 'encrypt.so';
                     self.debug_log += 'Trying to access ' + path.join(botPath, fileName) + "\n"
                 fs.access(path.join(botPath, fileName), fs.constants.R_OK, (err) => {
-                    console.log(err);
                     self.debug_log += err + "\n"
                     self.debug_log += fs.readdirSync(botPath) + "\n"
 
@@ -355,7 +354,6 @@
                             if (!error && response.statusCode == 200) {
                                 self.doPTCLoginStep2(self.credentialsForm.ptc_username, self.credentialsForm.ptc_password, JSON.parse(body));
                             } else {
-                                console.log(error);
                                 self.disableLogin = false;
                                 alert('Oops! Something went wrong and we couldn\'t ' +
                                         'log you in. Please try again. Code 6.');
@@ -413,8 +411,6 @@
                     google_password: self.credentialsForm.google_password,
                     mode: false
                 };
-
-                console.log("Going to home", auth, self.loginForm.last_location, opts)
 
                 self.$dispatch('login', {
                     auth: auth,

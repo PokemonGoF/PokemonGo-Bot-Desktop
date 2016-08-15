@@ -12,7 +12,8 @@
 
 <script>
 
-    const constants = require('./const.js');
+    const constants = require('./const.js'),
+          path      = require('path');
 
 
     export default {
@@ -34,8 +35,7 @@
                     let log = {};
 
                     let bracket_data = message.match(/\[(.*?)\]/g);
-                    if (!bracket_data || !bracket_data[0]) {
-                        console.log("Error while parsing message: " + message);
+                    if (!bracket_data || bracket_data.length < 3) {
                         return true;
                     }
                     log.worker = bracket_data[0].replace(/[\[\]]/g, "");
@@ -44,24 +44,25 @@
                     log.message = message.split("[" + log.action + "] ")[1];
                     log.images = [];
 
+                    if (log.worker == "MoveToFort" || log.worker == "UpdateLiveStats") {
+                        return true;
+                    }
+
                     // Check for item words
                     for (var key in constants.itemsArray) {
                         var item_name = constants.itemsArray[key];
-                        if (log.message.indexOf(item_name) > -1) {
-                            log.images.push(`<img src="${path.join(appRoot, assets/image/items/' + key + '.png)}" class="log-img">`)
+                        if (log.message && log.message.indexOf(item_name) > -1) {
+                            log.images.push(`<img src="${path.join('/assets/image/items/' + key + '.png')}" class="log-img">`)
                         }
                     }
 
                     // Check for pokemon words
                     for (var i = 0; i < constants.pokemonArray.length; i++) {
-                        if (log.message.indexOf(constants.pokemonArray[i].Name) > -1) {
-                            log.images.push(`<img src=${path.join(appRoot, 'assets/image/pokemon/' + utils.pad_with_zeroes(i + 1, 3) + '.png')} class="log-img log-pokemon">`)
+                        if (log.message && log.message.indexOf(constants.pokemonArray[i].Name) > -1) {
+                            log.images.push(`<img src=${path.join('/assets/image/pokemon/' + utils.pad_with_zeroes(i + 1, 3) + '.png')} class="log-img log-pokemon">`)
                         }
                     }
                     log.date = new Date();
-                    if (log.worker == "MoveToFort" || log.worker == "UpdateLiveStats") {
-                        return true;
-                    }
 
                     var log_item = "";
                     if (log.images.length > 0) {

@@ -1,91 +1,28 @@
 <template>
 
-<!-- Options Dropdown -->
-<ul id='options' class='dropdown-content'>
-    <li>
-        Pan
-        <div class="switch">
-            <label>
-                Off
-                <input type="checkbox" id="switchPan">
-                <span class="lever"></span>
-                On
-            </label>
-        </div>
-        <br>
-    </li>
-    <li>
-        Zoom
-        <div class="switch">
-            <label>
-                Off
-                <input type="checkbox" id="switchZoom">
-                <span class="lever"></span>
-                On
-            </label>
-        </div>
-        <br>
-    </li>
-    <li>
-        Image Type
-        <div class="switch">
-            <label>
-                png
-                <input type="checkbox" id="imageType">
-                <span class="lever"></span>
-                gif
-            </label>
-        </div>
-        <br>
-    </li>
-    <li>
-        Bot Path
-        <div class="switch">
-            <label>
-                Off
-                <input type="checkbox" id="strokeOn">
-                <span class="lever"></span>
-                On
-            </label>
-        </div>
-        <br>
-    </li>
-    <div class="row" id="trainers">
-    </div>
-</ul>
-
-<!-- Modal -->
-<div id="modal-info" class="modal modal-fixed-footer">
-</div>
 
 <!-- Bot indicator -->
-<bot-status class="z-depth-1"></bot-status>
+<bot-status></bot-status>
 
 <!-- Bot Stats -->
-<bot-stats class="z-depth-1"></bot-stats>
+<bot-stats></bot-stats>
 
 
 <!-- Content -->
 <div id="content">
     <div id="side-nav">
-        <div id="nav-logo" class="valign-wrapper">
-            <img id="logo" src='../assets/image/icons/logo.png'>
-            <p class="center-align valign">
-                PikaBot
-            </p>
-        </div>
-        <a class='dropdown-button btn-settings waves-effect waves-light' href='#' data-activates='options'>
-            <i class="material-icons"
-               style="float: left;color: #FFF; padding-right: 15px; line-height: 24px;">settings</i>Settings
-        </a>
-        <a class="modal-trigger side-account waves-effect waves-light" href="#modal-info" id="btn-info">
-            <i class="material-icons"
-               style="float: left; line-height: 34px; padding-right: 15px; color: #FFF">person</i>
-            <p id="username">Loading...</p>
-            <p id="level">...</p>
-        </a>
+
+        <logo></logo>
+
+        <options :user-info.sync="userInfo"></options>
+
+        <template v-if="user != null">
+            <profile :user.sync="user"></profile>
+        </template>
+
         <log></log>
-        <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
+
+        <logout></logout>
     </div>
     <div id="map-container">
         <div id="map"></div>
@@ -98,52 +35,46 @@
 
 const constants = require('./Main/const.js');
 let User = require('./Main/User.js'),
-    Materialize = require('./Main/Materialize.js'),
-    GoogleMap = require('./Main/GoogleMap.js'),
-    ProfileMenu = require('./Main/ProfileMenu.js');
+    GoogleMap = require('./Main/GoogleMap.js');
 
 import BotStatus from './Main/BotStatus.vue';
 import BotStats from './Main/BotStats.vue';
 import Log from './Main/Log.vue';
+import Options from './Main/Options.vue';
+import Logo from './Main/Logo.vue';
+import Logout from './Main/Logout.vue';
+import Profile from './Main/Profile.vue';
 
     export default {
         data() {
             return {
                 user: null,
-                googleMap: null,
-                omap: null,
-                forts: [],
-                info_windows: [],
-                ipc: null,
-                logger: null,
-                profileMenu: null
             }
         },
         components: {
             BotStatus,
             BotStats,
-            Log
-        },
-        events: {
+            Log,
+            Options,
+            Logo,
+            Logout,
+            Profile
         },
         props: ['userInfo'],
         ready() {
-          // Init User
-          let user = new User(this.userInfo.users[0]);
+            let self = this;
 
-          // Init map
-          let googleMap = new GoogleMap(this.userInfo, user);
+            // Init User
+            self.$set('user', new User(this.userInfo.users[0]));
 
-          // Logout listener
-          $('#logout').click(function() {
-            ipc.send('logout');
-          });
+            // Init map
+            let googleMap = new GoogleMap(this.userInfo, this.user);
 
-          let profileMenu = new ProfileMenu(user);
-
-          // Materialize init
-          Materialize.init();
-    }
+          // Callback for google maps
+          window['mapCallback'] = function() {
+            googleMap.init();
+          }
+      }
 }
 </script>
 

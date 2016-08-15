@@ -89,14 +89,31 @@ const startPython = function(options) {
 
   self.userInfo = {
       users : [settings.username],
+      zoom: 16,
       userZoom : true,
       userFollow : true,
+      botPath: true,
       imageExt : ".png",
-      gMapsAPIKey : settings.gmapkey
+      gMapsAPIKey : settings.gmapkey,
+      actionsEnabled: false
   }
 
   let userdata_code = [
-      'var userInfo = ' + JSON.stringify(self.userInfo)
+      'var userInfo = {',
+      `    users: ["${settings.username}"],`,
+      `    zoom: 16,`,
+      `    userZoom: true,`,
+      `    userFollow: true,`,
+      `    imageExt: ".png",`,
+      `    gMapsAPIKey: "${settings.gmapkey}",`,
+      `    actionsEnabled: false`,
+      `};`,
+      '',
+      `var dataUpdates = {`,
+      `    updateTrainer: 1000,`,
+      `    addCatchable: 1000,`,
+      `    addInventory: 5000`,
+      `};`
   ];
 
   // Write userdata for map
@@ -130,13 +147,13 @@ const startPython = function(options) {
 
   // Send bot log to web page
   subpy.stdout.on('data', (data) => {
-    //console.log(`Python: ${data}`);
     self.$broadcast('bot_log', {
       'msg': `${data}`
     });
   });
+
+  
   subpy.stderr.on('data', (data) => {
-    //console.log(`Python: ${data}`);
     self.$broadcast('bot_log', {
       'msg': `${data}`
     });
@@ -152,8 +169,10 @@ const startPython = function(options) {
   });
 
   subpy.on('exit', () => {
-    self.exitBot()
+    self.$emit('bot_closed');
   });
+
+  self.proc = subpy;
 }
 
 export default startPython

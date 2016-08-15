@@ -20,9 +20,11 @@
                 let message = obj.msg;
 
                 let bracket_data = message.match(/\[(.*?)\]/g);
-                if (!bracket_data || !bracket_data[0]) {
-                    return;
+                if (!bracket_data || bracket_data.length < 3) {
+                    return true;
                 }
+
+
 
                 log.worker = bracket_data[0].replace(/[\[\]]/g, "");
                 log.action = bracket_data[2].replace(/[\[\]]/g, "");

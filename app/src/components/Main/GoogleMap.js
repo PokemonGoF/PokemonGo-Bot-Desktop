@@ -1,6 +1,11 @@
-const constants = require('./const.js');
-const utils = require('./Utils.js');
+const constants = require('./const.js'),
+      utils     = require('./Utils.js'),
+      path      = require('path'),
+      botPath   = require('electron').remote.getGlobal('botPath'),
+      fs   = require('fs-extra');
 
+
+let info_windows= [];
 class GoogleMap {
     constructor(userInfo, user) {
         this.userInfo = userInfo;
@@ -25,11 +30,6 @@ class GoogleMap {
             zoom: 3
         });
 
-        document.getElementById('switchPan').checked = this.userInfo.userFollow;
-        document.getElementById('switchZoom').checked = this.userInfo.userZoom;
-        document.getElementById('imageType').checked = (this.userInfo.imageExt != '.png');
-        document.getElementById('strokeOn').checked = true;
-
         setTimeout(() => {
             this.updateMarkers();
             setTimeout(() => {
@@ -43,11 +43,19 @@ class GoogleMap {
         Object.keys(require.cache).forEach(function(key) {
             delete require.cache[key]
         })
-        this.placeCatchable(require(path.join(appRoot, 'gofbot/web/catchable-' + this.userInfo.users[0] + '.json')));
-        this.placeTrainer(require(path.join(appRoot, 'web/location-' + this.userInfo.users[0] + '.json')));
-        // Update side menu data
-        document.getElementById('username').innerHTML = this.user.name;
-        document.getElementById('level').innerHTML = "Level " + this.user.stats[0].inventory_item_data.player_stats.level;
+
+        let catchableFile = path.join(botPath, '/web/catchable-' + this.userInfo.users[0] + '.json')
+        if (fs.existsSync(catchableFile)) {
+            try {
+                this.placeCatchable(fs.readJSONSync(catchableFile));
+            } catch (err) {}
+        }
+
+
+        let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
+        if (fs.existsSync(locationFile)) {
+            this.placeTrainer(fs.readJSONSync(locationFile));
+        }
     }
 
     placeCatchable(data) {
@@ -64,14 +72,14 @@ class GoogleMap {
                             lat: parseFloat(data.latitude),
                             lng: parseFloat(data.longitude)
                         },
-                        icon: path.join(appRoot, 'assets/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt),
+                        icon: path.join('assets/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + this.userInfo.imageExt),
                         zIndex: 4,
                         optimized: false
                     });
-                    if (userInfo.userZoom === true) {
+                    if (this.userInfo.userZoom === true) {
                         googleMap.map.setZoom(16);
                     }
-                    if (userInfo.userFollow === true) {
+                    if (this.userInfo.userFollow === true) {
                         this.map.panTo({
                             lat: parseFloat(data.latitude),
                             lng: parseFloat(data.longitude)
@@ -82,7 +90,7 @@ class GoogleMap {
                         lat: parseFloat(data.latitude),
                         lng: parseFloat(data.longitude)
                     });
-                    this.user.catchables[data.spawnpoint_id].setIcon(path.join(appRoot, 'assets/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + userInfo.imageExt));
+                    this.user.catchables[data.spawnpoint_id].setIcon(path.join('/assets/image/pokemon/' + utils.pad_with_zeroes(data.pokemon_id, 3) + this.userInfo.imageExt));
                 }
             }
         } else {
@@ -109,7 +117,7 @@ class GoogleMap {
                                     lat: parseFloat(fort.latitude),
                                     lng: parseFloat(fort.longitude)
                                 },
-                                icon: path.join(appRoot, 'assets/image/forts/img_pokestop.png')
+                                icon: path.join('/assets/image/forts/img_pokestop.png')
                             });
                         } else {
                             this.forts[fort.id] = new google.maps.Marker({
@@ -118,7 +126,7 @@ class GoogleMap {
                                     lat: parseFloat(fort.latitude),
                                     lng: parseFloat(fort.longitude)
                                 },
-                                icon: path.join(appRoot, 'assets/image/forts/' + constants.teams[fort.owned_by_team] + '.png')
+                                icon: path.join('/assets/image/forts/' + constants.teams[fort.owned_by_team] + '.png')
                             });
                         }
                         let fortPoints = '';
@@ -170,7 +178,7 @@ class GoogleMap {
                     lat: parseFloat(data.lat),
                     lng: parseFloat(data.lng)
                 },
-                icon: path.join(appRoot, 'assets/image/trainer/' + constants.trainerSex[constants.randomSex] + Math.floor(Math.random() * constants.numTrainers[constants.randomSex]) + '.png'),
+                icon: path.join('/assets/image/trainer/' + constants.trainerSex[constants.randomSex] + Math.floor(Math.random() * constants.numTrainers[constants.randomSex]) + '.png'),
                 zIndex: 2,
                 label: this.user.name
             });
@@ -182,7 +190,7 @@ class GoogleMap {
             if (this.user.pathcoords.length === 2) {
                 this.user.trainerPath = new google.maps.Polyline({
                     map: this.map,
-                    path: user.pathcoords,
+                    path: this.user.pathcoords,
                     geodisc: true,
                     strokeColor: '#FF0000',
                     strokeOpacity: 0.7,
@@ -192,21 +200,16 @@ class GoogleMap {
                 this.user.trainerPath.setPath(this.user.pathcoords);
             }
         }
-        if (userInfo.users.length === 1 && userInfo.userZoom === true) {
+        if (this.userInfo.users.length === 1 && this.userInfo.userZoom === true) {
             this.map.setZoom(16);
         }
-        if (userInfo.users.length === 1 && userInfo.userFollow === true) {
+        if (this.userInfo.users.length === 1 && this.userInfo.userFollow === true) {
             this.map.panTo({
                 lat: parseFloat(data.lat),
                 lng: parseFloat(data.lng)
             });
         }
     }
-}
-
-// Callback for google maps
-function mapCallback() {
-  googleMap.init();
 }
 
 module.exports = GoogleMap;
