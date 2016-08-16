@@ -14,7 +14,9 @@
         },
         ready() {},
         events: {
-            'bot_log': function (obj) {}
+            'log_stats': function (obj) {
+                this.msg = obj.msg;
+            }
         }
     }
 </script>

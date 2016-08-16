@@ -49,7 +49,7 @@ const startPython = function (options) {
   settings.websocket_server = true;
   settings.websocket = {
     "start_embedded_server": true,
-    "server_url":            "0.0.0.0:4000",
+    "server_url":            "0.0.0.0:7894",
     "remote_control":        true
   };
 

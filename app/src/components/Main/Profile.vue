@@ -124,12 +124,18 @@ export default {
             constants: constants,
             filterPokemonName: null,
             current_panel: 'info',
-            show: false
+            show: false,
+            session_stats: null
         }
     },
     props: {
         user: {
             twoWay: true
+        }
+    },
+    events: {
+        'log_stats': function (obj) {
+            this.session_stats = obj.msg;
         }
     },
     components: {Modal},
