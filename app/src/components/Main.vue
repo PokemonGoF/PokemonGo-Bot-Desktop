@@ -144,7 +144,7 @@ html, body {
   color: #50483c;
   text-align: center;
   text-decoration: underline;
-  margin: 10 0 10 0;
+  margin: 10px 0;
 }
 
 .side-nav {
