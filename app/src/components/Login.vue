@@ -24,7 +24,7 @@
                                     <input v-model="credentialsForm.google_password" class="form-control"
                                            type="password"
                                            placeholder="Password" required>
-                                    <button type="submit" class="btn login"  :disabled="disableLogin || !validateLoginInputs()">
+                                    <button type="submit" class="btn login"  :disabled="!validateLoginInputs">
                                         Login with Google
                                     </button>
                                 </form>
@@ -38,7 +38,7 @@
                                            placeholder="Username" required>
                                     <input v-model="credentialsForm.ptc_password" class="form-control" type="password"
                                            placeholder="Password" required>
-                                    <button type="submit" class="btn login" :disabled="disableLogin || !validateLoginInputs()">
+                                    <button type="submit" class="btn login" :disabled="!validateLoginInputs">
                                         Login with PTC
                                     </button>
                                 </form>
@@ -384,13 +384,19 @@
                     options: opts
                 })
             },
-            validateLoginInputs: function () {
-                let self = this;
-                console.log(self.encryptionFilePresent && self.loginForm.google_maps_api !== "");
-                return self.encryptionFilePresent && self.loginForm.google_maps_api !== "";
-            },
             openURL: function (url) {
                 shell.openExternal(url);
+            }
+        },
+        computed: {
+            validateLoginInputs: function () {
+                let self = this;
+                if (self.disableLogin === true) {
+                    return false;
+                }
+                else {
+                    return self.encryptionFilePresent && self.loginForm.google_maps_api !== "";
+                }
             }
         },
         components: {}
