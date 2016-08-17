@@ -16,7 +16,7 @@
 
         <options :user-info.sync="userInfo"></options>
 
-        <template v-if="user != null && user.loaded == true">
+        <template v-if="user != null">
             <profile :user.sync="user"></profile>
         </template>
 
@@ -62,10 +62,24 @@ import io from 'socket.io-client/socket.io';
         },
         props: ['userInfo'],
         ready() {
-            this.$set('user', new User(this.userInfo.users[0]));
+            this.createUser();
             this.startSocket()
         },
         methods: {
+            createUser() {
+                let user = {
+                    name: this.userInfo.users[0],
+                    pathcoords: [],
+                    bagCandy: [],
+                    bagItems: [],
+                    bagPokemon: [],
+                    pokedex: [],
+                    stats: [],
+                };
+
+
+                this.$set('user', user);
+            },
             startSocket() {
                 var self = this;
                 var socket = io('http://127.0.0.1:7894');
@@ -74,26 +88,44 @@ import io from 'socket.io-client/socket.io';
 
                 console.debug('Trying to connect on http://127.0.0.1:7894');
 
-                socket.on("*", function (evt) {
-                    self.$broadcast(evt.data[1].event, evt.data[1].data)
-                    self.$broadcast('websocket_broadcast', evt.data[1])
+                socket.on("*", (evt) => {
+                    console.debug(evt);
+
+                    if (evt.data[1].event) {
+
+                        if (evt.data[1].event == "login_successful") {
+                            // start sending get player info after login_successful or it will fail :(
+                            socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
+                        }
+
+                        self.$broadcast(evt.data[1].event, evt.data[1].data)
+                        self.$broadcast('websocket_broadcast', evt.data[1])
+                    }
                 });
 
-                socket.io.on('connect', function(){ console.debug('manager connect', JSON.stringify(arguments)) });
-                socket.io.on('connect_error', function(){ console.debug('manager connect_error', JSON.stringify(arguments)) });
-                socket.io.on('connect_timeout', function(){ console.debug('manager connect_timeout', JSON.stringify(arguments)) });
-                socket.io.on('reconnect', function(){ console.debug('manager reconnect', JSON.stringify(arguments)) });
+                setInterval(() => {
+                    socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
+                }, 5000);
 
-                socket.on('connect', function(){ console.debug('connect', JSON.stringify(arguments)) });
-                socket.on('event', function(data){ console.debug('event', JSON.stringify(arguments)) });
-                socket.on('disconnect', function(){ console.debug('disconnect', JSON.stringify(arguments)) });
-                socket.on('error', function(){ console.debug('error', JSON.stringify(arguments)) });
-                socket.on('reconnect', function(){ console.debug('reconnect', JSON.stringify(arguments)) });
-                socket.on('reconnect_attempt', function(){ console.debug('reconnect_attempt', JSON.stringify(arguments)) });
-                socket.on('reconnecting', function(){ console.debug('reconnecting', JSON.stringify(arguments)) });
-                socket.on('reconnect_error', function(){ console.debug('reconnect_error', JSON.stringify(arguments)) });
-                socket.on('reconnect_failed', function(){ console.debug('reconnect_failed', JSON.stringify(arguments)) });
+                console.debug("get_player_info:" + this.userInfo.users[0]);
+                socket.on("get_player_info:" + this.userInfo.users[0],  (evt) => {
 
+                    let filter = function (arr, search) {
+                        var filtered = [];
+                        for (var i = 0; i < arr.length; i++) {
+                            if (arr[i].inventory_item_data[search] != undefined) {
+                                filtered.push(arr[i]);
+                            }
+                        }
+                        return filtered;
+                    }
+
+                    this.user.bagCandy = filter(evt.result.inventory.inventory_delta.inventory_items, 'candy');
+                    this.user.bagItems = filter(evt.result.inventory.inventory_delta.inventory_items, 'item');
+                    this.user.bagPokemon = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokemon_data');
+                    this.user.pokedex = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokedex_entry');
+                    this.user.stats = filter(evt.result.inventory.inventory_delta.inventory_items, 'player_stats');
+                });
             }
         }
 }
