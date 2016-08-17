@@ -11,7 +11,7 @@
     const AppState = {
         Login: "Login",
         Main: "Main"
-    }
+    };
 
     export default {
         data() {
@@ -32,15 +32,15 @@
                     this.startBot(obj);
                 }
 
-                this.botStarted = true
+                this.botStarted   = true;
                 this.currentState = AppState.Main
             },
             'logout': function () {
-                console.log('receiving logout, killing bot')
+                console.log('receiving logout, killing bot');
                 this.killBot();
             },
             'bot_closed': function () {
-                console.log('receiving bot_closed, killing logging out')
+                console.log('receiving bot_closed, killing logging out');
                 this.logout();
             }
         },
@@ -63,7 +63,7 @@
                         }
                     }
                 }
-                this.proc = null
+                this.proc       = null;
                 this.botStarted = false;
             }
         }

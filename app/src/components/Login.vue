@@ -155,7 +155,7 @@
     const LoginMode = {
         GOOGLE: 'google',
         PTC: 'ptc'
-    }
+    };
 
     export default {
         data() {
@@ -190,11 +190,11 @@
                 // if the user doesn't want his informations to be remembers,
                 // then clear the credentialsForm from localStorage
                 if (newVal == false) {
-                    localStorage.setItem("remember", "false")
-                    localStorage.setItem('credentialsForm', "{}")
+                    localStorage.setItem("remember", "false");
+                    localStorage.setItem('credentialsForm', "{}");
                 } else {
-                    localStorage.setItem("remember", "true")
-                    localStorage.setItem('credentialsForm', JSON.stringify(newVal))
+                    localStorage.setItem("remember", "true");
+                    localStorage.setItem('credentialsForm', JSON.stringify(newVal));
                 }
             },
             'credentialsForm': {
@@ -204,14 +204,14 @@
 
                     // if the user wants to remember it's credentials
                     if (self.remember) {
-                        localStorage.setItem('credentialsForm', JSON.stringify(newVal))
+                        localStorage.setItem('credentialsForm', JSON.stringify(newVal));
                     }
                 }
             },
             'loginForm': {
                 deep: true,
                 handler: (newVal, oldVal) => {
-                    localStorage.setItem('loginForm', JSON.stringify(newVal))
+                    localStorage.setItem('loginForm', JSON.stringify(newVal));
                 }
             }
         },
@@ -222,7 +222,7 @@
             let _loadDataFromlocalStorage = function (itemName, destination) {
                 let loadedData = {};
                 try {
-                    loadedData = JSON.parse(localStorage.getItem(itemName))
+                    loadedData = JSON.parse(localStorage.getItem(itemName));
                 } catch(err) {}
 
                 for (var idx in loadedData) {
@@ -235,13 +235,13 @@
             let remember = localStorage.getItem('remember');
             if (remember == "true" || remember == null) {
                 self.remember = true;
-                _loadDataFromlocalStorage('credentialsForm', self.credentialsForm)
+                _loadDataFromlocalStorage('credentialsForm', self.credentialsForm);
             } else {
                 self.remember = false;
             }
 
             // load loginForm from storage
-            _loadDataFromlocalStorage('loginForm', self.loginForm)
+            _loadDataFromlocalStorage('loginForm', self.loginForm);
 
             if (!!self.credentialsForm.ptc_username) {
                 self.showLogin = 'ptc'
@@ -284,9 +284,9 @@
                 let self = this;
 
                 if (self.remember) {
-                    localStorage.setItem('credentialsForm', JSON.stringify(self.credentialsForm))
+                    localStorage.setItem('credentialsForm', JSON.stringify(self.credentialsForm));
                 }
-                localStorage.setItem('loginForm', JSON.stringify(self.loginForm))
+                localStorage.setItem('loginForm', JSON.stringify(self.loginForm));
             },
             doGoogleLogin: function (event) {
                 let self = this;
