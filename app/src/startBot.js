@@ -1,20 +1,17 @@
-const   electron = require('electron').remote,
-        dialog   = electron.dialog,
-        os       = require('os'),
-        fs       = require('fs-extra'),
-        path     = require('path'),
-        botPath  = electron.getGlobal('botPath');
+const electron = require('electron').remote,
+      dialog   = electron.dialog,
+      os       = require('os'),
+      fs       = require('fs-extra'),
+      path     = require('path'),
+      botPath  = electron.getGlobal('botPath');
 
 
-const startPython = function(options) {
+const startPython = function (options) {
   let self = this;
 
   let cmdLine = [
     './pokecli.py',
   ];
-
-  self.$broadcast('bot_log', {msg: 'Bot path: ' + botPath});
-  self.$broadcast('bot_log', {msg: 'python ' + cmdLine.join(' ')});
 
   let pythonCmd = 'python';
   if (os.platform() == 'win32') {
@@ -42,8 +39,16 @@ const startPython = function(options) {
   }
 
   // Load user config
-  let data = fs.readFileSync(path.join(botPath, '/configs/config.json'));
+  let data     = fs.readFileSync(path.join(botPath, '/configs/config.json'));
   let settings = JSON.parse(data);
+
+  // activate web_socket
+  settings.websocket_server = true;
+  settings.websocket = {
+    "start_embedded_server": true,
+    "server_url":            "0.0.0.0:7894",
+    "remote_control":        true
+  };
 
   // Load settings
   settings.auth_service = options.auth;
@@ -55,48 +60,65 @@ const startPython = function(options) {
     settings.username = options.options.ptc_username;
   }
   settings.gmapkey = options.options.google_maps_api;
-  if (options.options.walk_speed != '') {
+  if (!!options.options.walk_speed) {
     settings.walk = parseFloat(options.options.walk_speed);
   }
 
   settings.location = options.location;
 
   let titleWorker = false;
-  for(let i = 0 ; i < settings.tasks.length; i ++){
-    if(settings.tasks[i].type == "UpdateLiveStats") {
+  for (let i = 0; i < settings.tasks.length; i++) {
+    if (settings.tasks[i].type == "UpdateLiveStats") {
       titleWorker = true;
     }
   }
-  if(!titleWorker) {
-      settings.tasks.unshift({
-            "type": "UpdateLiveStats",
-            "config": {
-                "min_interval": 1,
-                "enabled": true,
-                "stats": [
-                    "login",
-                    "uptime",
-                    "km_walked",
-                    "level_stats",
-                    "xp_earned",
-                    "xp_per_hour"
-                ],
-                "terminal_log": true,
-                "terminal_title": false
-            }
-        });
+  if (!titleWorker) {
+    settings.tasks.unshift({
+      "type":   "UpdateLiveStats",
+      "config": {
+        "min_interval":   1,
+        "enabled":        true,
+        "stats":          [
+          "login",
+          "uptime",
+          "km_walked",
+          "level_stats",
+          "xp_earned",
+          "xp_per_hour"
+        ],
+        "terminal_log":   true,
+        "terminal_title": false
+      }
+    });
   }
 
   self.userInfo = {
-      users : [settings.username],
-      userZoom : true,
-      userFollow : true,
-      imageExt : ".png",
-      gMapsAPIKey : settings.gmapkey
+    users:          [settings.username],
+    zoom:           16,
+    userZoom:       true,
+    userFollow:     true,
+    botPath:        true,
+    imageExt:       ".png",
+    gMapsAPIKey:    settings.gmapkey,
+    actionsEnabled: false
   }
 
   let userdata_code = [
-      'var userInfo = ' + JSON.stringify(self.userInfo)
+    'var userInfo = {',
+    `    users: ["${settings.username}"],`,
+    `    zoom: 16,`,
+    `    userZoom: true,`,
+    `    userFollow: true,`,
+    `    imageExt: ".png",`,
+    `    gMapsAPIKey: "${settings.gmapkey}",`,
+    `    actionsEnabled: false`,
+    `};`,
+    '',
+    `var dataUpdates = {`,
+    `    updateTrainer: 1000,`,
+    `    addCatchable: 1000,`,
+    `    addInventory: 5000`,
+    `};`
   ];
 
   // Write userdata for map
@@ -124,36 +146,36 @@ const startPython = function(options) {
 
   // Create python bot process
   let subpy = require('child_process').spawn(pythonCmd, cmdLine, {
-    cwd: botPath,
+    cwd:      botPath,
     detached: true
   });
 
   // Send bot log to web page
-  subpy.stdout.on('data', (data) => {
-    //console.log(`Python: ${data}`);
-    self.$broadcast('bot_log', {
-      'msg': `${data}`
-    });
-  });
+  //subpy.stdout.on('data', (data) => {
+  //  console.log(`Python : ${data}`);
+  //});
+
+
   subpy.stderr.on('data', (data) => {
-    //console.log(`Python: ${data}`);
-    self.$broadcast('bot_log', {
-      'msg': `${data}`
-    });
+    //console.log(`Pythonerr : ${data}`)
     if (data.indexOf("ERROR") > -1) {
       dialog.showMessageBox({
-        type: "error",
-        title: "Whoops",
+        type:    "error",
+        title:   "Whoops",
         message: "Error in python bot",
-        detail: "" + data,
+        detail:  "" + data,
         buttons: ["Yes I read carefully error message"]
       });
     }
   });
 
+
   subpy.on('exit', () => {
-    self.exitBot()
+    console.log(arguments);
+    self.$emit('bot_closed');
   });
+
+  self.procs.push(subpy);
 }
 
 export default startPython

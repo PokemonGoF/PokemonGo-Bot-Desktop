@@ -1,12 +1,10 @@
 'use strict'
 
 const path = require('path'),
-    pkg = require('./app/package.json'),
     settings = require('./config.js'),
     webpack = require('webpack'),
     ExtractTextPlugin = require('extract-text-webpack-plugin'),
-    HtmlWebpackPlugin = require('html-webpack-plugin'),
-    CopyWebpackPlugin = require('copy-webpack-plugin');
+    HtmlWebpackPlugin = require('html-webpack-plugin');
 
 let config = {
     context: __dirname,

@@ -1,149 +1,133 @@
 <template>
 
-<!-- Options Dropdown -->
-<ul id='options' class='dropdown-content'>
-    <li>
-        Pan
-        <div class="switch">
-            <label>
-                Off
-                <input type="checkbox" id="switchPan">
-                <span class="lever"></span>
-                On
-            </label>
-        </div>
-        <br>
-    </li>
-    <li>
-        Zoom
-        <div class="switch">
-            <label>
-                Off
-                <input type="checkbox" id="switchZoom">
-                <span class="lever"></span>
-                On
-            </label>
-        </div>
-        <br>
-    </li>
-    <li>
-        Image Type
-        <div class="switch">
-            <label>
-                png
-                <input type="checkbox" id="imageType">
-                <span class="lever"></span>
-                gif
-            </label>
-        </div>
-        <br>
-    </li>
-    <li>
-        Bot Path
-        <div class="switch">
-            <label>
-                Off
-                <input type="checkbox" id="strokeOn">
-                <span class="lever"></span>
-                On
-            </label>
-        </div>
-        <br>
-    </li>
-    <div class="row" id="trainers">
-    </div>
-</ul>
-
-<!-- Modal -->
-<div id="modal-info" class="modal modal-fixed-footer">
-</div>
 
 <!-- Bot indicator -->
-<bot-status class="z-depth-1"></bot-status>
+<bot-indicator></bot-indicator>
 
 <!-- Bot Stats -->
-<bot-stats class="z-depth-1"></bot-stats>
+<bot-stats></bot-stats>
 
 
 <!-- Content -->
 <div id="content">
     <div id="side-nav">
-        <div id="nav-logo" class="valign-wrapper">
-            <img id="logo" src='../assets/image/icons/logo.png'>
-            <p class="center-align valign">
-                PikaBot
-            </p>
-        </div>
-        <a class='dropdown-button btn-settings waves-effect waves-light' href='#' data-activates='options'>
-            <i class="material-icons"
-               style="float: left;color: #FFF; padding-right: 15px; line-height: 24px;">settings</i>Settings
-        </a>
-        <a class="modal-trigger side-account waves-effect waves-light" href="#modal-info" id="btn-info">
-            <i class="material-icons"
-               style="float: left; line-height: 34px; padding-right: 15px; color: #FFF">person</i>
-            <p id="username">Loading...</p>
-            <p id="level">...</p>
-        </a>
+
+        <logo></logo>
+
+        <options :user-info.sync="userInfo"></options>
+
+        <template v-if="user != null">
+            <profile :user.sync="user"></profile>
+        </template>
+
         <log></log>
-        <a class="waves-effect waves-light btn s10 col offset-s1" id="logout">Logout</a>
+
+        <logout></logout>
     </div>
-    <div id="map-container">
-        <div id="map"></div>
-    </div>
+
+    <map :user.sync="user" :user-info.sync="userInfo"></map>
+
 </div>
 
 </template>
 
 <script>
 
-const constants = require('./Main/const.js');
-let User = require('./Main/User.js'),
-    Materialize = require('./Main/Materialize.js'),
-    GoogleMap = require('./Main/GoogleMap.js'),
-    ProfileMenu = require('./Main/ProfileMenu.js');
-
-import BotStatus from './Main/BotStatus.vue';
+import User from './Main/User.js'
+import BotIndicator from './Main/BotIndicator.vue';
 import BotStats from './Main/BotStats.vue';
 import Log from './Main/Log.vue';
+import Options from './Main/Options.vue';
+import Logo from './Main/Logo.vue';
+import Logout from './Main/Logout.vue';
+import Profile from './Main/Profile.vue';
+import Map from './Main/Map.vue';
+import io from 'socket.io-client/socket.io';
 
     export default {
         data() {
             return {
-                user: null,
-                googleMap: null,
-                omap: null,
-                forts: [],
-                info_windows: [],
-                ipc: null,
-                logger: null,
-                profileMenu: null
+                user: null
             }
         },
         components: {
-            BotStatus,
+            BotIndicator,
             BotStats,
-            Log
-        },
-        events: {
+            Log,
+            Options,
+            Logo,
+            Logout,
+            Profile,
+            Map
         },
         props: ['userInfo'],
         ready() {
-          // Init User
-          let user = new User(this.userInfo.users[0]);
+            this.createUser();
+            this.startSocket()
+        },
+        methods: {
+            createUser() {
+                let user = {
+                    name: this.userInfo.users[0],
+                    pathcoords: [],
+                    bagCandy: [],
+                    bagItems: [],
+                    bagPokemon: [],
+                    pokedex: [],
+                    stats: [],
+                };
 
-          // Init map
-          let googleMap = new GoogleMap(this.userInfo, user);
 
-          // Logout listener
-          $('#logout').click(function() {
-            ipc.send('logout');
-          });
+                this.$set('user', user);
+            },
+            startSocket() {
+                var self = this;
+                var socket = io('http://127.0.0.1:7894');
+                var patch = require('socketio-wildcard')(io.Manager);
+                patch(socket);
 
-          let profileMenu = new ProfileMenu(user);
+                console.debug('Trying to connect on http://127.0.0.1:7894');
 
-          // Materialize init
-          Materialize.init();
-    }
+                socket.on("*", (evt) => {
+                    console.debug(evt);
+
+                    if (evt.data[1].event) {
+
+                        if (evt.data[1].event == "login_successful") {
+                            // start sending get player info after login_successful or it will fail :(
+                            socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
+                        }
+
+                        self.$broadcast(evt.data[1].event, evt.data[1].data)
+                        self.$broadcast('websocket_broadcast', evt.data[1])
+                    }
+                });
+
+                setInterval(() => {
+                    socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
+                }, 5000);
+
+                console.debug("get_player_info:" + this.userInfo.users[0]);
+                socket.on("get_player_info:" + this.userInfo.users[0],  (evt) => {
+
+                    let filter = function (arr, search) {
+                        var filtered = [];
+                        for (var i = 0; i < arr.length; i++) {
+                            if (arr[i].inventory_item_data[search] != undefined) {
+                                filtered.push(arr[i]);
+                            }
+                        }
+                        return filtered;
+                    }
+
+                    this.user.bagCandy = filter(evt.result.inventory.inventory_delta.inventory_items, 'candy');
+                    this.user.bagItems = filter(evt.result.inventory.inventory_delta.inventory_items, 'item');
+                    this.user.bagPokemon = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokemon_data');
+                    this.user.pokedex = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokedex_entry');
+                    this.user.stats = filter(evt.result.inventory.inventory_delta.inventory_items, 'player_stats');
+                });
+            }
+        }
 }
 </script>
 
@@ -154,167 +138,7 @@ html, body {
   padding: 0;
 }
 
-.items {}
 
-.pokemon-card {
-  width: calc(100% * (1/4) - 10px - 1px);
-  float: left;
-  margin: 5px;
-  padding: 10px 10px;
-  .moves {
-    text-align: left;
-  }
-  .move-name {
-    font-weight: bold;
-    color: #444444;
-  }
-  .move-type {
-    color: #888888;
-  }
-  .move-damage {
-    float: right;
-    font-weight: bold;
-    color: #444444;
-  }
-  .charged-divisions {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    .move-type {
-      flex-grow: 0;
-    }
-    .move-divisions {
-      display: flex;
-      flex-grow: 1;
-      padding: 7px 0 7px 10px;
-      justify-content: space-between;
-      .move-division {
-        flex-grow: 1;
-        background-color: #43c1fb;
-        border: 2px solid #a5d4ff;
-        border-radius: 10px;
-      }
-    }
-  }
-}
-
-.pokemon-stats {
-  text-align: center;
-  .cp {
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
-    display: inline-block;
-  }
-  .iv {
-    display: inline-block;
-  }
-  .value {
-    display: block;
-    font-size: 20px;
-    padding: 0 10px;
-  }
-  .name {
-    display: block;
-    font-size: 20px;
-    padding: 0 10px;
-    font-size: 12px;
-  }
-}
-
-.pokemon-card .details {
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0.1);
-  border-width: 1px 0 1px;
-  padding: 10px 0;
-  margin: 10px 0;
-}
-
-.item_img {
-  width: 75px;
-  height: auto;
-}
-
-.gif_img {
-  width: 38px;
-  height: auto;
-}
-
-.png_img {
-  width: 96px;
-  height: auto;
-}
-
-#nav-bar {
-  margin: 0;
-  height: 9%;
-}
-
-#nav-logo {
-  height: 70px;
-  background: #3E2723;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
-  padding: 0;
-}
-
-#logo {
-  height: 30px;
-  padding-left: 15px;
-}
-
-#nav-logo > p {
-  color: yellow;
-  font-family: Arial;
-  padding-left: 10px;
-  font-size: 20px;
-}
-
-#nav-menu {
-  padding: 0;
-  height: 100%;
-  background: #4E342E;
-  > div {
-    height: 100%;
-    margin: 0;
-  }
-}
-
-#quick-info {
-  height: 100%;
-  margin: 0;
-  margin-left: 10px;
-  padding: 0;
-  > div {
-    margin: 0;
-    padding: 0;
-    > p {}
-  }
-}
-
-#caught-div {
-  margin: 0;
-  margin-left: 10px;
-  padding: 0;
-  width: 20%;
-}
-
-#nav-options {
-  margin: 0;
-  margin-left: 10px;
-  padding: 0;
-  > div {
-    margin: 0;
-    display: flex;
-    justify-content: space-between;
-    margin-left: 50px;
-    > a {
-      background: #feffff;
-      color: #50483c;
-    }
-  }
-}
-
-#options, #slide-right {
-  padding: 10px;
-}
 
 #content {
   height: 100%;
@@ -345,146 +169,13 @@ html, body {
   border-right: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-#account-option {
-  background: #241d14;
-  height: 70px;
-  padding: 10px;
-  margin: 0;
-  > div > p:nth-child(1) {
-    font-size: 10px;
-    color: white;
-    margin: 0;
-  }
-}
 
-#username {
-  color: yellow;
-  margin: 0;
-}
-
-/* label color */
-
-.input-field {
-  label {
-    color: #000;
-  }
-  input[type=text] {
-    &:focus {
-      + label {
-        color: #000;
-      }
-      border-bottom: 1px solid #000;
-      box-shadow: 0 1px 0 0 #000;
-    }
-    &.valid, &.invalid {
-      border-bottom: 1px solid #000;
-      box-shadow: 0 1px 0 0 #000;
-    }
-  }
-  .prefix.active {
-    color: #000;
-  }
-}
-
-/* label focus color */
-
-/* label underline focus color */
-
-/* valid color */
-
-/* invalid color */
-
-/* icon prefix focus color */
-
-#location, #location-option > label {
-  color: black;
-}
-
-#walk-option {
-  height: 90px;
-  padding: 0;
-  margin: 0;
-  > div {
-    color: black;
-    > label {
-      color: black;
-    }
-  }
-}
-
-#steps-option > {
-  input, label {
-    color: black;
-  }
-}
-
-#mode-option {
-  height: 90px;
-  padding: 0;
-  margin: 0;
-  > div {
-    color: black;
-    > label {
-      color: black;
-    }
-  }
-}
-
-#apply {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  margin-right: 8.333333333%;
-  margin-bottom: 70px;
-  background: #f0de23;
-  color: black;
-  border-width: 1px;
-  border-color: #bdb021;
-  border-style: solid;
-}
-
-#logout {
-  width: 250px;
-  margin: 0 25px;
-  box-sizing: border-box;
-  background-color: #4E342E;
-}
-
-#map-container {
-  height: 100%;
-  padding: 0;
-  width: calc(100vw - 300px);
-  float: left;
-}
-
-#map {
-  width: 100%;
-  height: 100%;
-}
-
-#log {
-  font-size: 12px;
-}
-
-#log-container {
-  height: calc(100% - 320px);
-  margin-bottom: 70px;
-}
-
-#log-text {
-  overflow-y: scroll;
-  width: 100%;
-  height: 100%;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
 
 #side-nav > h5 {
   color: #50483c;
   text-align: center;
   text-decoration: underline;
-  margin: 10 0 10 0;
+  margin: 10px 0;
 }
 
 .side-nav {
@@ -525,10 +216,6 @@ html, body {
 
 #side-nav > a:hover {
   background-color: #4E342E;
-}
-
-a#logout:hover {
-  background-color: #5D4037;
 }
 
 #log-container h6 {
@@ -572,84 +259,11 @@ a#logout:hover {
   }
 }
 
-.log-img {
-  height: 30px;
-  float: right;
-}
-
-.log-date {
-  display: block;
-  opacity: 0.6;
-}
-
-.log-pokemon {
-  height: 60px;
-}
-
-.log-message {
-  margin-top: 0;
-}
-
-.log-item {
-  padding: 5px 15px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
-
-.log-image-container {
-  width: 60px;
-  float: right;
-}
-
-.log-message-narrow {
-  width: 200px;
-  float: left;
-}
-
 #info {
   margin-bottom: 25px;
   > .col {
     padding: 5px;
     min-height: 100px;
   }
-}
-
-#bot-indicator {
-  z-index: 1;
-  height: 93px;
-  width: 300px;
-  position: absolute;
-  right: 48px;
-  bottom: 24px;
-  background: #FFF;
-  font-size: 12px;
-  padding: 12px;
-  overflow: hidden;
-}
-
-#bot-stats {
-  z-index: 1;
-  height: 93px;
-  width: 300px;
-  position: absolute;
-  right: 350px;
-  bottom: 24px;
-  background: #FFF;
-  font-size: 12px;
-  padding: 12px;
-  overflow: hidden;
-}
-
-#indicator #stats {
-  height: 10px;
-  width: 10px;
-  border-radius: 50%;
-  background-color: #eee;
-  display: inline-block;
-  margin-right: 5px;
 }
 </style>

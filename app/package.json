@@ -6,6 +6,8 @@
   "dependencies": {
     "fs-extra": "^0.30.0",
     "materialize-css": "^0.97.7",
+    "socket.io": "^1.4.8",
+    "socketio-wildcard": "^0.3.0",
     "vue": "^1.0.24",
     "vue-electron": "^1.0.0",
     "vue-resource": "^0.7.0"

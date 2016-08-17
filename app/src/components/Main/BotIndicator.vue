@@ -1,6 +1,7 @@
 <template>
-    <div id="bot-stats" class="z-depth-1">
-        <b>Running Stats</b>
+<!-- Bot indicator -->
+    <div id="bot-indicator" class="z-depth-1">
+        <b>Bot status</b>
         <p>{{ msg }}</p>
     </div>
 </template>
@@ -9,26 +10,26 @@
     export default {
         data() {
             return {
-                msg: "Not working yet"
+                msg: "Loading"
             }
         },
         ready() {},
         events: {
-            'log_stats': function (obj) {
+            'moving_to_fort': function (obj) {
                 this.msg = obj.msg;
                 return true;
-            }
+            },
         }
     }
 </script>
 
 <style lang="scss">
-#bot-stats {
+#bot-indicator {
   z-index: 1;
   height: 93px;
   width: 300px;
   position: absolute;
-  right: 350px;
+  right: 48px;
   bottom: 24px;
   background: #FFF;
   font-size: 12px;

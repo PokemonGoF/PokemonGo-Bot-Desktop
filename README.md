@@ -1,6 +1,6 @@
 ![screenshot](http://i.imgur.com/tzMaWv4.png)
 <p align="center">
-  <a href="https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/download/v0.0.2-alpha/PikaBot-0.2-alpha-mac.zip"><img src="http://i.imgur.com/pRNJGt6.png"></a> 
+  <a href="https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/download/v0.0.2-alpha/PikaBot-0.2-alpha-mac.zip"><img src="http://i.imgur.com/pRNJGt6.png"></a>
   <a href="https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/releases/download/v0.0.2-alpha/PikaBot-0.2-alpha-win.zip"><img src="http://i.imgur.com/CSz91B9.png"></a>
 </p>
 # Pokemon GO Bot Desktop
@@ -28,7 +28,7 @@ cd PokemonGo-Bot-Desktop
 npm install
 ```
 
-If `npm install` crashes with errors related to `pip`, the following script may solve your problems : 
+If `npm install` crashes with errors related to `pip`, the following script may solve your problems :
 
     cat > ~/.pydistutils.cfg << EOF
     [install]
@@ -79,14 +79,16 @@ We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Deskto
 
 ## Contributors
 JVenberg  
-ProjectBarks 
+ProjectBarks
 solderzzc  
 JacerOmri  
 ariestiyansyah  
 GodLesZ  
 sniok  
 mmnsgo  
-Outpox
+Outpox  
+JulienTant
+
 
 *Don't forget to add yourself when doing PR*
 
