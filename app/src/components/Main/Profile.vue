@@ -136,6 +136,7 @@ export default {
     events: {
         'log_stats': function (obj) {
             this.session_stats = obj.msg;
+            return true;
         }
     },
     components: {Modal},

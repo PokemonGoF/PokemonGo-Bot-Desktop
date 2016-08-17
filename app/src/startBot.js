@@ -13,9 +13,6 @@ const startPython = function (options) {
     './pokecli.py',
   ];
 
-  self.$broadcast('bot_log', {msg: 'Bot path: ' + botPath});
-  self.$broadcast('bot_log', {msg: 'python ' + cmdLine.join(' ')});
-
   let pythonCmd = 'python';
   if (os.platform() == 'win32') {
     pythonCmd = path.join(appRoot, 'pywin', 'python.exe');
@@ -154,19 +151,13 @@ const startPython = function (options) {
   });
 
   // Send bot log to web page
-  subpy.stdout.on('data', (data) => {
-    console.log(`Python : ${data}`);
-    self.$broadcast('bot_log', {
-      'msg': `${data}`
-    });
-  });
+  //subpy.stdout.on('data', (data) => {
+  //  console.log(`Python : ${data}`);
+  //});
 
 
   subpy.stderr.on('data', (data) => {
-    console.log(`Pythonerr : ${data}`)
-    self.$broadcast('bot_log', {
-      'msg': `${data}`
-    });
+    //console.log(`Pythonerr : ${data}`)
     if (data.indexOf("ERROR") > -1) {
       dialog.showMessageBox({
         type:    "error",
@@ -178,13 +169,13 @@ const startPython = function (options) {
     }
   });
 
+
   subpy.on('exit', () => {
-    console.log('subpy exit');
     console.log(arguments);
     self.$emit('bot_closed');
   });
 
-  self.proc = subpy;
+  self.procs.push(subpy);
 }
 
 export default startPython

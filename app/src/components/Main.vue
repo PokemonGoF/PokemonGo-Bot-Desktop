@@ -75,7 +75,6 @@ import io from 'socket.io-client/socket.io';
                 console.debug('Trying to connect on http://127.0.0.1:7894');
 
                 socket.on("*", function (evt) {
-                    console.debug(evt.data[1].event, evt.data[1].data);
                     self.$broadcast(evt.data[1].event, evt.data[1].data)
                     self.$broadcast('websocket_broadcast', evt.data[1])
                 });

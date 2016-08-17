@@ -16,6 +16,7 @@
         events: {
             'log_stats': function (obj) {
                 this.msg = obj.msg;
+                return true;
             }
         }
     }

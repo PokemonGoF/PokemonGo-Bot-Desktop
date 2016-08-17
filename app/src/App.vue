@@ -18,8 +18,7 @@
             return {
                 currentState: null,
                 AppState,
-                botStarted: false,
-                proc: null,
+                procs: [],
                 userInfo: {}
             }
         },
@@ -50,21 +49,25 @@
                 this.currentState = AppState.Login
             },
             startBot: startBot,
-            'killBot': function () {
-                if (this.botStarted && this.proc && this.proc.pid) {
-                    try {
-                        process.kill(-this.proc.pid, 'SIGINT');
-                        process.kill(-this.proc.pid, 'SIGTERM');
-                    } catch (e) {
-                        try {
-                            process.kill(this.proc.pid, 'SIGTERM');
-                        } catch (e) {
-                            console.error("Unable to stop proccess..." + JSON.stringify(e))
+            killBot: function () {
+                if (this.procs.length > 0) {
+                    for (var i in this.procs) {
+                        let proc = this.procs[i]
+                        if (proc.pid) {
+                            try {
+                                process.kill(-proc.pid, 'SIGINT');
+                                process.kill(-proc.pid, 'SIGTERM');
+                            } catch (e) {
+                                try {
+                                    process.kill(proc.pid, 'SIGTERM');
+                                } catch (e) {
+                                    console.error("Unable to stop proccess..." + JSON.stringify(e))
+                                }
+                            }
                         }
+                        this.procs.$remove(proc)
                     }
                 }
-                this.proc       = null;
-                this.botStarted = false;
             }
         }
     }

@@ -15,27 +15,10 @@
         },
         ready() {},
         events: {
-            'bot_log': function (obj) {
-                let log = {};
-                let message = obj.msg;
-
-                let bracket_data = message.match(/\[(.*?)\]/g);
-                if (!bracket_data || bracket_data.length < 3) {
-                    return true;
-                }
-
-
-
-                log.worker = bracket_data[0].replace(/[\[\]]/g, "");
-                log.action = bracket_data[2].replace(/[\[\]]/g, "");
-                log.message = message.split("[" + log.action + "] ")[1];
-
-                if (log.worker == "MoveToFort") {
-                    this.msg = log.message
-                }
-
+            'moving_to_fort': function (obj) {
+                this.msg = obj.msg;
                 return true;
-            }
+            },
         }
     }
 </script>

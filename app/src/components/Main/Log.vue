@@ -1,18 +1,38 @@
 <template>
     <div id="log-container">
-        <h6><i class="material-icons"
-               style="float: left; line-height: 14px; padding-right: 15px; color: #FFF">list</i>Logs</h6>
+        <a class='dropdown-button-logsettings waves-effect waves-light' href='#' data-activates='logsettings'>
+            <h6>
+                <i class="material-icons" style="float: left; line-height: 14px; padding-right: 15px; color: #FFF">list</i>Logs
+            </h6>
+        </a>
+
+        <ul id='logsettings' class='dropdown-content'>
+            <li v-for="type in types">
+                {{ $key }}
+                <div class="switch">
+                    <label>
+                        Off
+                        <input type="checkbox" v-model="type.active">
+                        <span class="lever"></span>
+                        On
+                    </label>
+                </div>
+                <br>
+            </li>
+        </ul>
+
         <div id="log-text">
             <p id="log">
-                <template v-for="log in logs | orderBy 'date' desc">
-                    <div class="log-item" v-if="log.images.length > 0">
+                <template v-for="log in logs | orderBy 'date' -1" >
+
+                    <div class="log-item" v-if="log.images.length > 0" v-show="types[log.type].active">
                         <span class="log-date">{{ log.date.toTimeString().split(" ")[0] }}</span>
                         <p class='log-message log-message-narrow'>{{  log.message }} </p>
                         <div class='log-image-container'>
                             {{{  log.images.join("") }}}
                         </div>
                     </div>
-                    <div class="log-item" v-else>
+                    <div class="log-item" v-else v-show="types[log.type].active">
                         <span class="log-date">{{ log.date.toTimeString().split(" ")[0] }}</span>
                         <p class='log-message'>{{ log.message }}</p>
                     </div>
@@ -32,14 +52,37 @@
     export default {
         data() {
             return {
-                logs: []
+                logs: [],
+                types: {}
             }
+        },
+        ready() {
+
+            $('.dropdown-button-logsettings').dropdown({
+                inDuration: 300,
+                outDuration: 225,
+                constrain_width: true, // Does not change width of dropdown to that of the activator
+                hover: true, // Activate on hover
+                gutter: 0, // Spacing from edge
+                belowOrigin: true, // Displays dropdown below the button
+                alignment: 'left' // Displays dropdown with edge aligned to the left of button
+            });
+
         },
         events: {
             'websocket_broadcast': function (obj) {
 
+                if (!obj.data.msg || obj.data.msg.trim().length == 0) {
+                    return true;
+                }
+
+                if (!this.types[obj.event]) {
+                    this.$set('types.' + obj.event, {active: true});
+                }
+
                 let log = {
                     message: obj.data.msg,
+                    type: obj.event,
                     date: new Date(),
                     images: [],
                 };
@@ -127,4 +170,9 @@
         float: left;
     }
 
+
+    #logsettings {
+        width: 100%!important;
+        padding: 11px!important;
+    }
 </style>
