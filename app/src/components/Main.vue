@@ -25,9 +25,7 @@
         <logout></logout>
     </div>
 
-    <template v-if="user != null && user.loaded == true">
-        <map :user.sync="user" :user-info.sync="userInfo"></map>
-    </template>
+    <map :user.sync="user" :user-info.sync="userInfo"></map>
 
 </div>
 
@@ -140,30 +138,7 @@ html, body {
   border-right: 1px solid rgba(0, 0, 0, 0.3);
 }
 
-#logout {
-  width: 250px;
-  margin: 0 25px;
-  box-sizing: border-box;
-  background-color: #4E342E;
-}
 
-#log {
-  font-size: 12px;
-}
-
-#log-container {
-  height: calc(100% - 320px);
-  margin-bottom: 70px;
-}
-
-#log-text {
-  overflow-y: scroll;
-  width: 100%;
-  height: 100%;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
 
 #side-nav > h5 {
   color: #50483c;
@@ -212,10 +187,6 @@ html, body {
   background-color: #4E342E;
 }
 
-a#logout:hover {
-  background-color: #5D4037;
-}
-
 #log-container h6 {
   padding: 15px;
 }
@@ -255,44 +226,6 @@ a#logout:hover {
   .modal-footer {
     background: #FFF;
   }
-}
-
-.log-img {
-  height: 30px;
-  float: right;
-}
-
-.log-date {
-  display: block;
-  opacity: 0.6;
-}
-
-.log-pokemon {
-  height: 60px;
-}
-
-.log-message {
-  margin-top: 0;
-}
-
-.log-item {
-  padding: 5px 15px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-}
-
-.log-image-container {
-  width: 60px;
-  float: right;
-}
-
-.log-message-narrow {
-  width: 200px;
-  float: left;
 }
 
 #info {

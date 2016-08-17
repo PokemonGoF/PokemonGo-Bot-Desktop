@@ -68,3 +68,63 @@
         }
     }
 </script>
+
+
+<style lang="scss">
+    #log {
+        font-size: 12px;
+    }
+
+    #log-container {
+        height: calc(100% - 320px);
+        margin-bottom: 70px;
+    }
+
+    #log-text {
+        overflow-y: scroll;
+        width: 100%;
+        height: 100%;
+    &::-webkit-scrollbar {
+         display: none;
+     }
+    }
+
+    .log-img {
+        height: 30px;
+        float: right;
+    }
+
+    .log-date {
+        display: block;
+        opacity: 0.6;
+    }
+
+    .log-pokemon {
+        height: 60px;
+    }
+
+    .log-message {
+        margin-top: 0;
+    }
+
+    .log-item {
+        padding: 5px 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    &:after {
+         content: "";
+         display: table;
+         clear: both;
+     }
+    }
+
+    .log-image-container {
+        width: 60px;
+        float: right;
+    }
+
+    .log-message-narrow {
+        width: 200px;
+        float: left;
+    }
+
+</style>
