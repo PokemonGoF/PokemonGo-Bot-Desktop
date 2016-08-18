@@ -83,7 +83,7 @@ const socketAdress = 'http://127.0.0.1:7894';
                     bagItems: [],
                     bagPokemon: [],
                     pokedex: [],
-                    stats: [],
+                    stats: []
                 };
 
 
