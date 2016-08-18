@@ -12,9 +12,6 @@ let config = {
         outputPath: path.join(__dirname, 'builds')
     },
     devtool: '#eval-source-map',
-    eslint: {
-        formatter: require('eslint-friendly-formatter')
-    },
     entry: {
         build: path.join(__dirname, 'app/src/main.js')
     },
@@ -95,26 +92,7 @@ let config = {
             scss: 'vue-style-loader!css-loader!sass-loader'
         }
     }
-}
-
-if (process.env.NODE_ENV !== 'production') {
-    /**
-     * Apply ESLint
-     */
-    if (settings.eslint) {
-        config.module.preLoaders.push(
-            {
-                test: /\.js$/,
-                loader: 'eslint-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.vue$/,
-                loader: 'eslint-loader'
-            }
-        )
-    }
-}
+};
 
 /**
  * Adjust config for production settings
@@ -135,4 +113,4 @@ if (process.env.NODE_ENV === 'production') {
     )
 }
 
-module.exports = config
+module.exports = config;
