@@ -137,7 +137,8 @@ const startBot = function (botPath, options) {
       botPath:        true,
       imageExt:       ".png",
       gMapsAPIKey:    settings.gmapkey,
-      actionsEnabled: false
+      actionsEnabled: false,
+      strokeOn:       true,
     },
     process:   subpy
   }

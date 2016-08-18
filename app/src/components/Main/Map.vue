@@ -91,6 +91,7 @@
                         });
                     } else {
                         this.user.trainerPath.setPath(this.user.pathcoords);
+                        this.user.trainerPath.setMap(this.userInfo.strokeOn ? this.map : null);
                     }
                 }
 
@@ -135,15 +136,22 @@
                 }, 1000);
 
                 setInterval(() => {
-                    let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
-                    if (fs.existsSync(locationFile)) {
+                    let catchableFile = path.join(botPath, '/web/catchable-' + this.userInfo.users[0] + '.json')
+                    if (fs.existsSync(catchableFile)) {
                         try {
-                            this.placeTrainer(fs.readJSONSync(locationFile));
+                            this.placeCatchable(fs.readJSONSync(catchableFile));
                         } catch (err) {
                         }
                     }
                 }, 5000);
 
+                let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
+                if (fs.existsSync(locationFile)) {
+                    try {
+                        this.placeTrainer(fs.readJSONSync(locationFile));
+                    } catch (err) {
+                    }
+                }
             },
             placeCatchable(data) {
                 if (data !== undefined && Object.keys(data).length > 0) {

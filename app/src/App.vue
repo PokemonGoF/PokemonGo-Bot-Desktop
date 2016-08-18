@@ -31,9 +31,11 @@
 
             ipcRenderer.on('bot-started', (event, userInfo) => {
                 console.log('bot started received, logging in');
+
                 this.$set('userInfo', userInfo);
                 this.currentState = AppState.Main
             });
+
             ipcRenderer.on('bot-killed', () => {
                 console.log('bot killed receive, logging out');
                 this.logout();
