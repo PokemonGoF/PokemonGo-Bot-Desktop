@@ -84,6 +84,15 @@ const startBot = function (botPath, options) {
     });
   }
 
+  // force enabling of update live stat and force terminal title to false
+  for (let i = 0; i < settings.tasks.length; i++) {
+    if (settings.tasks[i].type == "UpdateLiveStats") {
+      settings.tasks[i].config.enabled = true;
+      settings.tasks[i].config.terminal_title = false;
+    }
+  }
+
+
   // Save user config
   fs.writeFileSync(path.join(botPath, '/configs/config.json'), JSON.stringify(settings, null, 4), 'utf-8');
 
