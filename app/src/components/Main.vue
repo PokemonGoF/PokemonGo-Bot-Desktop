@@ -68,9 +68,8 @@ const socketAdress = 'http://127.0.0.1:7894';
             this.startSocket()
         },
         events: {
-            'logout': function (evt) {
-                let self = this;
-                self.stopSocket();
+            'logout': function () {
+                this.socket.disconnect();
                 return true;
             }
         },
@@ -135,10 +134,6 @@ const socketAdress = 'http://127.0.0.1:7894';
                     this.user.pokedex    = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokedex_entry');
                     this.user.stats      = filter(evt.result.inventory.inventory_delta.inventory_items, 'player_stats');
                 });
-            },
-            stopSocket() {
-                let self = this;
-                self.socket.removeAllListeners('*');
             }
         }
 }
