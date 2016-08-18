@@ -1,0 +1,4 @@
+.idea
+.gitignore
+**/*config.json
+**/*userdata.js
