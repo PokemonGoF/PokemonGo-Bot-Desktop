@@ -23,7 +23,7 @@
 
         <div id="log-text">
             <p id="log">
-                <template v-for="log in logs | orderBy 'date' -1" >
+                <template v-for="log in logs | orderBy 'date' -1"  track-by="$index">
 
                     <div class="log-item" v-if="log.images.length > 0" v-show="types[log.type].active">
                         <span class="log-date">{{ log.date.toTimeString().split(" ")[0] }}</span>

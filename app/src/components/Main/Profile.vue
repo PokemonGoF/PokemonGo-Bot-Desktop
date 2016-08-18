@@ -76,7 +76,7 @@
             <div v-show="current_panel == 'items'" id="items" class="row">
                 <div class="row items">
                     <div class="col s12 m4 l3 center" style="float: left; height: 144px;"
-                         v-for="item in current_user_bag_items">
+                         v-for="item in current_user_bag_items" track-by="inventory_item_data.item.item_id">
                         <img :src="'/assets/image/items/' + item.inventory_item_data.item.item_id + '.png'"
                              class="item_img"><br>
                         <b>{{ constants.itemsArray[item.inventory_item_data.item.item_id] }}</b><br>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="row items">
                     <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;"
-                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name' | orderBy orderByPokemon.what orderByPokemon.order">
+                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name' | orderBy orderByPokemon.what orderByPokemon.order" track-by="Id">
                         <img :src="'/assets/image/pokemon/'+  pokemon.Image + '.png'" class="png_img"><br>
                         <b><span class="pokemon-name">{{ pokemon.Name }}</span></b><br>
                         <b>CP: </b>{{ pokemon.CP }} | <b>IV:</b> {{ pokemon.IV }}<br>
@@ -113,7 +113,7 @@
                 <div class="row item-filter">
                     <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
                 </div>
-                <div class="col s6 m6 l3 center" v-for="pokemon in pokedex | filterBy filterPokemonName in 'Name' | orderBy orderByPokedex.what orderByPokedex.order"">
+                <div class="col s6 m6 l3 center" v-for="pokemon in pokedex | filterBy filterPokemonName in 'Name' | orderBy orderByPokedex.what orderByPokedex.order" track-by="Id">
                     <img :src="'/assets/image/pokemon/' + pokemon.Image +'.png'" class="png_img"><br>
                     <b>{{ pokemon.Num }} {{ pokemon.Name }}</b><br>
                     Times Seen: {{ pokemon.Enc }}<br>
@@ -195,6 +195,7 @@
                             IV  = ((IVA + IVD + IVS) / 45.0).toFixed(2);
 
                         pokemons.push({
+                            Id:   parseInt(current_pokemon_data.pokemon_id, 10),
                             Num:   current_pokemon_data.pokemon_id,
                             Image: require('./Utils').pad_with_zeroes(current_pokemon_data.pokemon_id, 3),
                             Name:  constants.pokemonArray[current_pokemon_data.pokemon_id - 1].Name,
