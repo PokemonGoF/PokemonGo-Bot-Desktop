@@ -1,42 +1,34 @@
-const electron = require('electron').remote,
-      dialog   = electron.dialog,
-      os       = require('os'),
-      fs       = require('fs-extra'),
-      path     = require('path'),
-      botPath  = electron.getGlobal('botPath');
+const os   = require('os'),
+      fs   = require('fs-extra'),
+      path = require('path');
 
 
-const startPython = function (options) {
-  let self = this;
+function ensureConfigFilePresent() {
 
-  let cmdLine = [
-    './pokecli.py',
-  ];
-
-  let pythonCmd = 'python';
-  if (os.platform() == 'win32') {
-    pythonCmd = path.join(appRoot, 'pywin', 'python.exe');
-  }
-
-  // Rename config.json if needed
-  let setting_path = ""
+  let setting_path = path.join(botPath, '/configs/config.json');
   try {
     //test to see if settings exist
-    setting_path = path.join(botPath, '/configs/config.json');
     fs.openSync(setting_path, 'r+');
   } catch (err) {
     fs.renameSync(path.join(botPath, '/configs/config.json.example'), setting_path);
   }
 
-  // Rename userdata.js if needed
-  let user_path = ""
+}
+
+function ensureUserdataFilePresent() {
+  let user_path = path.join(botPath, '/web/config/userdata.js');
   try {
-    //test to see if settings exist
-    user_path = path.join(botPath, '/web/config/userdata.js');
     fs.openSync(user_path, 'r+');
   } catch (err) {
     fs.renameSync(path.join(botPath, '/web/config/userdata.js.example'), user_path);
   }
+}
+
+
+const startBot = function (botPath, options) {
+  // Rename config.json if needed
+  ensureConfigFilePresent();
+
 
   // Load user config
   let data     = fs.readFileSync(path.join(botPath, '/configs/config.json'));
@@ -44,7 +36,7 @@ const startPython = function (options) {
 
   // activate web_socket
   settings.websocket_server = true;
-  settings.websocket = {
+  settings.websocket        = {
     "start_embedded_server": true,
     "server_url":            "0.0.0.0:7894",
     "remote_control":        true
@@ -92,16 +84,12 @@ const startPython = function (options) {
     });
   }
 
-  self.userInfo = {
-    users:          [settings.username],
-    zoom:           16,
-    userZoom:       true,
-    userFollow:     true,
-    botPath:        true,
-    imageExt:       ".png",
-    gMapsAPIKey:    settings.gmapkey,
-    actionsEnabled: false
-  }
+  // Save user config
+  fs.writeFileSync(path.join(botPath, '/configs/config.json'), JSON.stringify(settings, null, 4), 'utf-8');
+
+  // Rename userdata.js if needed
+  ensureUserdataFilePresent();
+
 
   let userdata_code = [
     'var userInfo = {',
@@ -124,25 +112,15 @@ const startPython = function (options) {
   // Write userdata for map
   fs.writeFileSync(path.join(botPath, '/web/config/userdata.js'), userdata_code.join('\n'), 'utf-8');
 
-  //temporary fix for location/catchable bug in PokemonGo-Bot
-  let location_path = ""
-  try {
-    //test to see if settings exist
-    location_path = path.join(botPath, '/web/location-' + settings.username + '.json');
-    fs.openSync(location_path, 'r+');
-  } catch (err) {
-    fs.writeFileSync(location_path, "{}");
-  }
-  try {
-    //test to see if settings exist
-    let location_path = path.join(botPath, '/web/catchable-' + settings.username + '.json');
-    fs.openSync(location_path, 'r+');
-  } catch (err) {
-    fs.writeFileSync(location_path, "{}");
-  }
 
-  // Save user config
-  fs.writeFileSync(path.join(botPath, '/configs/config.json'), JSON.stringify(settings, null, 4), 'utf-8');
+  let cmdLine = [
+    './pokecli.py',
+  ];
+
+  let pythonCmd = 'python';
+  if (os.platform() == 'win32') {
+    pythonCmd = path.join(appRoot, 'pywin', 'python.exe');
+  }
 
   // Create python bot process
   let subpy = require('child_process').spawn(pythonCmd, cmdLine, {
@@ -150,32 +128,19 @@ const startPython = function (options) {
     detached: true
   });
 
-  // Send bot log to web page
-  //subpy.stdout.on('data', (data) => {
-  //  console.log(`Python : ${data}`);
-  //});
+  return {
+    userInfos: {
+      users:          [settings.username],
+      zoom:           16,
+      userZoom:       true,
+      userFollow:     true,
+      botPath:        true,
+      imageExt:       ".png",
+      gMapsAPIKey:    settings.gmapkey,
+      actionsEnabled: false
+    },
+    process:   subpy
+  }
+};
 
-
-  subpy.stderr.on('data', (data) => {
-    //console.log(`Pythonerr : ${data}`)
-    if (data.indexOf("ERROR") > -1) {
-      dialog.showMessageBox({
-        type:    "error",
-        title:   "Whoops",
-        message: "Error in python bot",
-        detail:  "" + data,
-        buttons: ["Yes I read carefully error message"]
-      });
-    }
-  });
-
-
-  subpy.on('exit', () => {
-    console.log(arguments);
-    self.$emit('bot_closed');
-  });
-
-  self.procs.push(subpy);
-}
-
-export default startPython
+module.exports = startBot

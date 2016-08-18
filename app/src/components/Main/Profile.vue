@@ -99,7 +99,8 @@
                 </div>
                 <div class="row items">
                     <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;"
-                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name' | orderBy orderByPokemon.what orderByPokemon.order" track-by="Id">
+                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name' | orderBy orderByPokemon.what orderByPokemon.order">
+                        {{ pokemon.TechId }}
                         <img :src="'/assets/image/pokemon/'+  pokemon.Image + '.png'" class="png_img"><br>
                         <b><span class="pokemon-name">{{ pokemon.Name }}</span></b><br>
                         <b>CP: </b>{{ pokemon.CP }} | <b>IV:</b> {{ pokemon.IV }}<br>
@@ -217,6 +218,7 @@
                 if (!!this.user.pokedex) {
                     for (var i = 0; i < this.user.pokedex.length; i++) {
                         pokedex.push({
+                            TechId:   parseInt(this.user.pokedex[i].inventory_item_data.pokedex_entry.id, 10),
                             Id:   parseInt(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 10),
                             Num:   require('./Utils').pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
                             Image: require('./Utils').pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
