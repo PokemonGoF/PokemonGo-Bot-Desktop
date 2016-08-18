@@ -139,7 +139,7 @@
     </div>
 </template>
 
-<script lang="babel">
+<script>
     const fs       = require('fs-extra'),
           url      = require('url'),
           request  = require('request'),
