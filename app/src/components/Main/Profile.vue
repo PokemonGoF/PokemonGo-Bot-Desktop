@@ -87,11 +87,19 @@
 
             <div v-show="current_panel == 'pokemon'" id="pokemon" class="row">
                 <div class="row item-filter">
-                    <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
+                    <div class="col s12 m8 l10">
+                        <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
+                    </div>
+                    <div class="col s12 m4 l2">
+                        <select v-model="orderByPokemon" style="display: block">
+                            <option :value="{ what: 'CP', order: -1 }">CP</option>
+                            <option :value="{ what: 'IV', order: -1 }">IV</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="row items">
                     <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;"
-                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name'">
+                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name' | orderBy orderByPokemon.what orderByPokemon.order">
                         <img :src="'/assets/image/pokemon/'+  pokemon.Image + '.png'" class="png_img"><br>
                         <b><span class="pokemon-name">{{ pokemon.Name }}</span></b><br>
                         <b>CP: </b>{{ pokemon.CP }} | <b>IV:</b> {{ pokemon.IV }}<br>
@@ -105,7 +113,7 @@
                 <div class="row item-filter">
                     <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
                 </div>
-                <div class="col s6 m6 l3 center" v-for="pokemon in pokedex | filterBy filterPokemonName in 'Name'">
+                <div class="col s6 m6 l3 center" v-for="pokemon in pokedex | filterBy filterPokemonName in 'Name' | orderBy orderByPokedex.what orderByPokedex.order"">
                     <img :src="'/assets/image/pokemon/' + pokemon.Image +'.png'" class="png_img"><br>
                     <b>{{ pokemon.Num }} {{ pokemon.Name }}</b><br>
                     Times Seen: {{ pokemon.Enc }}<br>
@@ -133,6 +141,14 @@
             return {
                 constants:         constants,
                 filterPokemonName: null,
+                orderByPokemon: {
+                    what: 'CP',
+                    order: -1
+                },
+                orderByPokedex: {
+                    what: 'Id',
+                    order: 1
+                },
                 current_panel:     'info',
                 show:              false,
                 session_stats:     null
@@ -161,81 +177,52 @@
                 return this.current_user_stats.level + 1
             },
             pokemons:   function () {
+                let pokemons = [];
+
                 if (!this.user.bagPokemon) {
-                    return [];
+                    return pokemons;
                 }
 
-                this.user.bagPokemon.sort(function (a, b) {
-                    return parseInt(b.inventory_item_data.pokemon_data.cp, 10) - parseInt(a.inventory_item_data.pokemon_data.cp, 10);
-                });
+                for (var i = 0; i < this.user.bagPokemon.length; i++) {
+                    var current_pokemon_data = this.user.bagPokemon[i].inventory_item_data.pokemon_data;
+                    if (current_pokemon_data.is_egg) {
+                        continue;
+                    } else {
 
-                let pokemons = [];
-                if (!!this.user.bagPokemon) {
-                    for (var i = 0; i < this.user.bagPokemon.length; i++) {
-                        var current_pokemon_data = this.user.bagPokemon[i].inventory_item_data.pokemon_data;
-                        if (current_pokemon_data.is_egg) {
-                            continue;
-                        } else {
+                        let IVA = current_pokemon_data.individual_attack || 0,
+                            IVD = current_pokemon_data.individual_defense || 0,
+                            IVS = current_pokemon_data.individual_stamina || 0,
+                            IV  = ((IVA + IVD + IVS) / 45.0).toFixed(2);
 
-                            let IVA = current_pokemon_data.individual_attack || 0,
-                                IVD = current_pokemon_data.individual_defense || 0,
-                                IVS = current_pokemon_data.individual_stamina || 0,
-                                IV  = ((IVA + IVD + IVS) / 45.0).toFixed(2);
-
-                            pokemons.push({
-                                Num:   current_pokemon_data.pokemon_id,
-                                Image: require('./Utils').pad_with_zeroes(current_pokemon_data.pokemon_id, 3),
-                                Name:  constants.pokemonArray[current_pokemon_data.pokemon_id - 1].Name,
-                                CP:    current_pokemon_data.cp,
-                                IVA:   IVA,
-                                IVD:   IVD,
-                                IVS:   IVS,
-                                IV:    IV,
-                                IV:    IV,
-                                Candy: this.getCandy(current_pokemon_data.pokemon_id),
-                            })
-                        }
+                        pokemons.push({
+                            Num:   current_pokemon_data.pokemon_id,
+                            Image: require('./Utils').pad_with_zeroes(current_pokemon_data.pokemon_id, 3),
+                            Name:  constants.pokemonArray[current_pokemon_data.pokemon_id - 1].Name,
+                            CP:    parseInt(current_pokemon_data.cp, 10),
+                            IVA:   IVA,
+                            IVD:   IVD,
+                            IVS:   IVS,
+                            IV:    parseFloat(IV),
+                            Candy: this.getCandy(current_pokemon_data.pokemon_id),
+                        })
                     }
                 }
 
                 return pokemons
             },
             pokedex:    function () {
-                let sortedPokedex = [];
                 let pokedex       = [];
 
                 if (!!this.user.pokedex) {
-                    for (i = 0; i < this.user.pokedex.length; i++) {
-                        var pkmID    = this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id,
-                            pkmnName = constants.pokemonArray[pkmID - 1].Name,
-                            pkmEnc   = this.user.pokedex[i].inventory_item_data.pokedex_entry.times_encountered,
-                            pkmCap   = this.user.pokedex[i].inventory_item_data.pokedex_entry.times_captured;
-                        sortedPokedex.push({
-                            "name": pkmnName,
-                            "id":   pkmID,
-                            "cap":  (pkmEnc || 0),
-                            "enc":  (pkmCap || 0)
-                        });
-                    }
-
-                    sortedPokedex.sort(function (a, b) {
-                        if (a.id < b.id) {
-                            return -1;
-                        } else if (a.id > b.id) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    });
-
-                    for (var i = 0; i < sortedPokedex.length; i++) {
+                    for (var i = 0; i < this.user.pokedex.length; i++) {
                         pokedex.push({
-                            Num:   require('./Utils').pad_with_zeroes(sortedPokedex[i].id, 3),
-                            Image: require('./Utils').pad_with_zeroes(sortedPokedex[i].id, 3),
-                            Name:  constants.pokemonArray[sortedPokedex[i].id - 1].Name,
-                            Enc:   sortedPokedex[i].enc,
-                            Cap:   sortedPokedex[i].cap,
-                            Candy: this.getCandy(sortedPokedex[i].id)
+                            Id:   parseInt(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 10),
+                            Num:   require('./Utils').pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
+                            Image: require('./Utils').pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
+                            Name:  constants.pokemonArray[this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id - 1].Name,
+                            Enc:   this.user.pokedex[i].inventory_item_data.pokedex_entry.times_encountered,
+                            Cap:   this.user.pokedex[i].inventory_item_data.pokedex_entry.times_captured,
+                            Candy: this.getCandy(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id)
                         })
                     }
                 }
@@ -243,7 +230,9 @@
                 return pokedex
             },
             current_user_stats () {
-                if (this.user.stats.length == 0) return [];
+                if (this.user.stats.length == 0) {
+                    return [];
+                }
 
                 return this.user.stats[0].inventory_item_data.player_stats;
             },
