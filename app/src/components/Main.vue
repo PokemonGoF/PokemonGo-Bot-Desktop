@@ -31,17 +31,17 @@
 
 </template>
 
-<script>
+<script lang="babel">
 
-import User from './Main/User.js'
-import BotIndicator from './Main/BotIndicator.vue';
-import BotStats from './Main/BotStats.vue';
-import Log from './Main/Log.vue';
-import Options from './Main/Options.vue';
-import Logo from './Main/Logo.vue';
-import Logout from './Main/Logout.vue';
-import Profile from './Main/Profile.vue';
-import Map from './Main/Map.vue';
+//import User from './main/User.js'
+import BotIndicator from './main/BotIndicator.vue';
+import BotStats from './main/BotStats.vue';
+import Log from './main/Log.vue';
+import Options from './main/Options.vue';
+import Logo from './main/Logo.vue';
+import Logout from './main/Logout.vue';
+import Profile from './main/Profile.vue';
+import Map from './main/Map.vue';
 import io from 'socket.io-client/socket.io';
 
     export default {
@@ -74,7 +74,7 @@ import io from 'socket.io-client/socket.io';
                     bagItems: [],
                     bagPokemon: [],
                     pokedex: [],
-                    stats: [],
+                    stats: []
                 };
 
 
