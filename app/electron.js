@@ -59,11 +59,16 @@ app.on('window-all-closed', () => {
   if (botProcess != null) {
     killBot()
   }
+  app.quit()
+});
 
-  if (process.platform !== 'darwin') {
-    app.quit()
+app.on('will-quit', () => {
+  if (botProcess != null) {
+    killBot()
   }
 });
+
+
 
 app.on('activate', () => {
   if (mainWindow === null) {
@@ -114,7 +119,9 @@ let killBot = () => {
   }
 
   botProcess = null;
-  mainWindow.webContents.send('bot-killed')
+  try {
+    mainWindow.webContents.send('bot-killed')
+  } catch (err) {}
 }
 
 
