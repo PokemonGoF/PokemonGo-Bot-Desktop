@@ -243,7 +243,7 @@
                 return pokedex
             },
             current_user_stats () {
-                if (!this.user.stats) return [];
+                if (this.user.stats.length == 0) return [];
 
                 return this.user.stats[0].inventory_item_data.player_stats;
             },
@@ -284,6 +284,8 @@
     }
 
     .modal-container {
-        color: black
+        color: black;
+        max-width: 100%;
+        overflow-y: auto;
     }
 </style>

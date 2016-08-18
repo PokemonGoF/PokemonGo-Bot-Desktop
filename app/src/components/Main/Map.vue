@@ -120,37 +120,30 @@
                     });
                 }
 
-
-                setTimeout(() => {
-                    this.updateMarkers();
-                    setTimeout(() => {
-                        setInterval(this.updateMarkers.bind(this), 1000);
-                    }, 100);
-                }, 1000);
+                this.updateMarkers()
             },
             updateMarkers() {
-                // Clearing cache
-                Object.keys(require.cache).forEach(function (key) {
-                    delete require.cache[key]
-                })
 
-                let catchableFile = path.join(botPath, '/web/catchable-' + this.userInfo.users[0] + '.json')
-                if (fs.existsSync(catchableFile)) {
-                    try {
-                        this.placeCatchable(fs.readJSONSync(catchableFile));
-                    } catch (err) {
+                setInterval(() => {
+                    let catchableFile = path.join(botPath, '/web/catchable-' + this.userInfo.users[0] + '.json')
+                    if (fs.existsSync(catchableFile)) {
+                        try {
+                            this.placeCatchable(fs.readJSONSync(catchableFile));
+                        } catch (err) {
+                        }
                     }
-                }
+                }, 1000);
 
-
-                let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
-                if (fs.existsSync(locationFile)) {
-                    try {
-                        this.placeTrainer(fs.readJSONSync(locationFile));
-                    } catch (err) {
+                setInterval(() => {
+                    let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
+                    if (fs.existsSync(locationFile)) {
+                        try {
+                            this.placeTrainer(fs.readJSONSync(locationFile));
+                        } catch (err) {
+                        }
                     }
-                    1
-                }
+                }, 5000);
+
             },
             placeCatchable(data) {
                 if (data !== undefined && Object.keys(data).length > 0) {

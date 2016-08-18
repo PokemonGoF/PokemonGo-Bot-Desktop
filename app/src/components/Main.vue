@@ -33,7 +33,6 @@
 
 <script>
 
-import User from './Main/User.js'
 import BotIndicator from './Main/BotIndicator.vue';
 import BotStats from './Main/BotStats.vue';
 import Log from './Main/Log.vue';
@@ -89,17 +88,14 @@ import io from 'socket.io-client/socket.io';
                 console.debug('Trying to connect on http://127.0.0.1:7894');
 
                 socket.on("*", (evt) => {
-                    console.debug(evt);
-
                     if (evt.data[1].event) {
+                        self.$broadcast(evt.data[1].event, evt.data[1].data)
+                        self.$broadcast('websocket_broadcast', evt.data[1])
 
                         if (evt.data[1].event == "login_successful") {
                             // start sending get player info after login_successful or it will fail :(
                             socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
                         }
-
-                        self.$broadcast(evt.data[1].event, evt.data[1].data)
-                        self.$broadcast('websocket_broadcast', evt.data[1])
                     }
                 });
 
