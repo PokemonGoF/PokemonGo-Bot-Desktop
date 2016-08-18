@@ -31,23 +31,25 @@
 
 </template>
 
-<script lang="babel">
+<script>
 
-//import User from './main/User.js'
-import BotIndicator from './main/BotIndicator.vue';
-import BotStats from './main/BotStats.vue';
-import Log from './main/Log.vue';
-import Options from './main/Options.vue';
-import Logo from './main/Logo.vue';
-import Logout from './main/Logout.vue';
-import Profile from './main/Profile.vue';
-import Map from './main/Map.vue';
+import BotIndicator from './Main/BotIndicator.vue';
+import BotStats from './Main/BotStats.vue';
+import Log from './Main/Log.vue';
+import Options from './Main/Options.vue';
+import Logo from './Main/Logo.vue';
+import Logout from './Main/Logout.vue';
+import Profile from './Main/Profile.vue';
+import Map from './Main/Map.vue';
 import io from 'socket.io-client/socket.io';
+
+const socketAdress = 'http://127.0.0.1:7894';
 
     export default {
         data() {
             return {
-                user: null
+                user: null,
+                socket: null
             }
         },
         components: {
@@ -65,6 +67,13 @@ import io from 'socket.io-client/socket.io';
             this.createUser();
             this.startSocket()
         },
+        events: {
+            'logout': function (evt) {
+                let self = this;
+                self.stopSocket();
+                return true;
+            }
+        },
         methods: {
             createUser() {
                 let user = {
@@ -81,34 +90,34 @@ import io from 'socket.io-client/socket.io';
                 this.$set('user', user);
             },
             startSocket() {
-                var self = this;
-                var socket = io('http://127.0.0.1:7894');
-                var patch = require('socketio-wildcard')(io.Manager);
-                patch(socket);
+                let self    = this,
+                    patch   = require('socketio-wildcard')(io.Manager);
+                self.socket = io(socketAdress);
+                patch(self.socket);
 
-                console.debug('Trying to connect on http://127.0.0.1:7894');
+                console.debug('Trying to connect on ' + socketAdress);
 
-                socket.on("*", (evt) => {
-                    console.debug(evt);
-
+                self.socket.on("*", (evt) => {
                     if (evt.data[1].event) {
+                        self.$broadcast(evt.data[1].event, evt.data[1].data);
+                        self.$broadcast('websocket_broadcast', evt.data[1]);
 
                         if (evt.data[1].event == "login_successful") {
                             // start sending get player info after login_successful or it will fail :(
-                            socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
+                            self.socket.emit('remote:send_request', {
+                                "name": "get_player_info",
+                                "account": this.userInfo.users[0]
+                            })
                         }
-
-                        self.$broadcast(evt.data[1].event, evt.data[1].data)
-                        self.$broadcast('websocket_broadcast', evt.data[1])
                     }
                 });
 
                 setInterval(() => {
-                    socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
+                    self.socket.emit('remote:send_request', {"name": "get_player_info", "account": this.userInfo.users[0]})
                 }, 5000);
 
                 console.debug("get_player_info:" + this.userInfo.users[0]);
-                socket.on("get_player_info:" + this.userInfo.users[0],  (evt) => {
+                self.socket.on("get_player_info:" + this.userInfo.users[0], (evt) => {
 
                     let filter = function (arr, search) {
                         var filtered = [];
@@ -118,14 +127,18 @@ import io from 'socket.io-client/socket.io';
                             }
                         }
                         return filtered;
-                    }
+                    };
 
-                    this.user.bagCandy = filter(evt.result.inventory.inventory_delta.inventory_items, 'candy');
-                    this.user.bagItems = filter(evt.result.inventory.inventory_delta.inventory_items, 'item');
+                    this.user.bagCandy   = filter(evt.result.inventory.inventory_delta.inventory_items, 'candy');
+                    this.user.bagItems   = filter(evt.result.inventory.inventory_delta.inventory_items, 'item');
                     this.user.bagPokemon = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokemon_data');
-                    this.user.pokedex = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokedex_entry');
-                    this.user.stats = filter(evt.result.inventory.inventory_delta.inventory_items, 'player_stats');
+                    this.user.pokedex    = filter(evt.result.inventory.inventory_delta.inventory_items, 'pokedex_entry');
+                    this.user.stats      = filter(evt.result.inventory.inventory_delta.inventory_items, 'player_stats');
                 });
+            },
+            stopSocket() {
+                let self = this;
+                self.socket.removeAllListeners('*');
             }
         }
 }

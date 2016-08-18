@@ -148,6 +148,7 @@
 
     .log-message {
         margin-top: 0;
+        font-size: 14px;
     }
 
     .log-item {
