@@ -1,8 +1,9 @@
 'use strict';
 
-const electron      = require('electron'),
-      path          = require('path'),
-      app           = electron.app,
+import electron from 'electron';
+import path from 'path';
+
+const app           = electron.app,
       dialog        = electron.dialog,
       BrowserWindow = electron.BrowserWindow,
       ipcMain       = electron.ipcMain;
