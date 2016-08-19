@@ -8,11 +8,12 @@ const electron      = require('electron'),
       ipcMain       = electron.ipcMain;
 
 let mainWindow,
-    config = {};
+    config = {
+        port: 8080
+    };
 
 if (process.env.NODE_ENV === 'development') {
-  config     = require('../config');
-  config.url = `http://localhost:${config.port}`;
+    config.url = `http://localhost:${config.port}`;
 } else {
   config.devtron = false;
   config.url     = `file://${__dirname}/dist/index.html`;

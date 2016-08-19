@@ -3,17 +3,6 @@
   "version": "1.0.0",
   "main": "electron.js",
   "description": "Your GoF Bot On Desktop",
-  "scripts": {
-    "build": "node tasks/release.js",
-    "build:clean": "cross-env PLATFORM_TARGET=clean node tasks/release.js",
-    "build:darwin": "cross-env PLATFORM_TARGET=darwin node tasks/release.js",
-    "build:linux": "cross-env PLATFORM_TARGET=linux node tasks/release.js",
-    "build:mas": "cross-env PLATFORM_TARGET=mas node tasks/release.js",
-    "build:win32": "cross-env PLATFORM_TARGET=win32 node tasks/release.js",
-    "dev": "node tasks/runner.js",
-    "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter app",
-    "pack": "cross-env NODE_ENV=production webpack -p --progress --colors"
-  },
   "author": "PokemonGof-Desktop-Team",
   "license": "MIT",
   "dependencies": {
@@ -23,29 +12,5 @@
     "vue": "^1.0.24",
     "vue-electron": "^1.0.0",
     "vue-resource": "^0.7.0"
-  },
-  "devDependencies": {
-    "async": "^0.9.2",
-    "bower": "^1.7.9",
-    "command-exists": "^1.0.2",
-    "electron-compile": "^3.3.5",
-    "electron-connect": "^0.4.4",
-    "electron-prebuilt": "*",
-    "gulp": "^3.9.1",
-    "gulp-atom-electron": "^1.9.0",
-    "gulp-debug": "^2.1.2",
-    "gulp-git": "^1.11.0",
-    "gulp-imagemin": "^3.0.2",
-    "gulp-rimraf": "^0.2.0",
-    "gulp-run-electron": "^2.0.0",
-    "gulp-sass": "^2.3.2",
-    "gulp-symdest": "latest",
-    "gulp-util": "^3.0.7",
-    "gulp-vueify": "0.0.3",
-    "gulp-zip": "^3.2.0",
-    "merge2": "^1.0.2",
-    "rimraf": "^2.5.4",
-    "run-sequence": "^1.2.2",
-    "vinyl-fs": "^2.4.3"
   }
 }

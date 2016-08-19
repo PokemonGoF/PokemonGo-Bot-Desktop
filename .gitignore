@@ -1,7 +1,4 @@
 .DS_Store
-app/dist/*
-!app/dist/imgs
-!app/dist/fonts
 builds/*
 node_modules
 npm-debug.log
@@ -10,3 +7,6 @@ thumbs.db
 !.gitkeep
 .idea
 app/dist
+build/*
+!build/gofbot
+!build/pywin
