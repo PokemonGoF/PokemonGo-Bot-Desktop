@@ -16,13 +16,25 @@ Join us at #desktop-porting channel at [our slack chat](https://pokemongo-bot.he
  - Currently no linux build. If someone with linux wants to work to try to package the application, that would be great
  - To Linux users: Many are having issues getting the bot running. As of right now, it does not seem to be supported, but it eventually will
 
-### Get encrypt.so
-Create a new separate folder somwhere  
+
+## Installing from binaries
+Extract the application from the .zip file for your platform.
+Start the app and select the location of your `encrypt` file.
+
+You can also rename and move the encrypt file to the `gofbot` folder inside the app (windows: `resources/app/gofbot/encrypt.dll` / OSX: `Resources/app/gofbot/encrypt.so`).
+
+### Obtaining encrypt file
+You can find the pre-compiled file for your platform [here](https://github.com/PokemonGoMap/PokemonGo-Map/tree/develop/pogom/libencrypt).
+
+### Building encrypt yourself
 Run  
 ```
 wget http://pgoapi.com/pgoencrypt.tar.gz && tar -xf pgoencrypt.tar.gz && cd pgoencrypt/src/ && make
 ```
-Then copy libencrypt.so to the gofbot folder and rename to encrypt.so
+Then copy `libencrypt.so` to the `gofbot` folder and rename to encrypt.so
+
+## FAQ
+Refer to [this issue](https://github.com/PokemonGoF/PokemonGo-Bot-Desktop/issues/138).
 
 ## Waffle Channel
 We sync the status in [Waffle](https://waffle.io/PokemonGoF/PokemonGo-Bot-Desktop)
