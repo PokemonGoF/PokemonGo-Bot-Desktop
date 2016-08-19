@@ -4,9 +4,8 @@
 </template>
 
 <script>
-    import Login from './components/login'
-    import Main from './components/main'
-    import startBot from './start-bot'
+    import Login from './components/Login'
+    import Main from './components/Main'
 
     const AppState = {
         Login: "Login",

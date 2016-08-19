@@ -7,21 +7,23 @@ const gulp = require('gulp'),
     browserify = require('browserify'),
     babelify = require('babelify'),
     vueify = require('vueify'),
-    editJson = require("gulp-json-editor");
+    editJson = require("gulp-json-editor"),
+    config = require('./config'),
+    fs = require('fs');
 
-gulp.task('build:clean', () => vfs.src([`${BUILD_DIR}/*`, `!${BUILD_DIR}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
+gulp.task('build:clean', () => vfs.src([`${config.paths.build}/*`, `!${config.paths.build}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
 gulp.task('build:node', () => {
     const getNodeModules = () => Object.keys(JSON.parse(fs.readFileSync('package.json').toString()).dependencies).map(_ => `node_modules/${_}/**/*`);
     return merge(
         vfs.src(getNodeModules(), {base: '.'})
-            .pipe(gulp.dest(BUILD_DIR)),
+            .pipe(gulp.dest(config.paths.build)),
         gulp.src('package.json')
             .pipe(editJson(json => {
                 delete json['devDependencies'];
                 return json;
             }))
-            .pipe(gulp.dest(BUILD_DIR))
+            .pipe(gulp.dest(config.paths.build))
     );
 });
 
@@ -41,6 +43,6 @@ gulp.task('build:js', callback => {
 
 });
 
-gulp.task('build:assets', () => gulp.src('app/src/assets/**/*', {base: 'app/src'}).pipe(gulp.dest(BUILD_DIR)));
+gulp.task('build:assets', () => gulp.src('app/src/assets/**/*', {base: 'app/src'}).pipe(gulp.dest(config.paths.build)));
 
 gulp.task('build', _ => rseq('build:clean', ['gofbot', 'build:node', 'build:assets'], _));

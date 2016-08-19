@@ -5,7 +5,8 @@ const gulp = require('gulp'),
     util = require('gulp-util'),
     git = require('gulp-git'),
     exec = require('child_process').exec,
-    config = require('./config');
+    config = require('./config'),
+    rseq = require('run-sequence');
 
 const isCommand = (command, callback) => require('command-exists')(command, (err, exists) => {
     if (err) callback(err);
@@ -15,12 +16,12 @@ const isCommand = (command, callback) => require('command-exists')(command, (err
 gulp.task('gofbot:install', callback => {
     isCommand('pip', callback);
     async.waterfall([
-        cb => rimraf(PACKAGES_DIR, cb),
+        cb => rimraf(config.paths.packages, cb),
         cb => async.concat(fs.readFileSync(`${config.paths.bot}/requirements.txt`)
             .toString()
             .split('\n')
             .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${config.paths.packages}`, _), err => cb(err)),
-        cb => fs.open(`${config.paths.bot}/google/__init__.py`, 'wx', cb),
+        cb => fs.open(`${config.paths.packages}/google/__init__.py`, 'wx', cb),
         (file, cb) => fs.close(file, cb)
     ], callback);
 });
