@@ -8,13 +8,14 @@ console.log("Starting");
 process.env.NODE_ENV = 'development';
 const browserConfig = {
     entries: 'app/src/main.js',
-    extension: ['', '.js', '.vue'],
+    extension: ['.js', '.vue'],
     ignoreMissing: true,
     detectGlobals: false,
     bare: true
 };
 browserify(browserConfig)
     .transform(vueify, {babel: {presets: ["es2015"], plugins: ["transform-runtime"]}})
+    .transform(babelify, {presets: ["es2015"]})
     .bundle()
     .pipe(fs.createWriteStream('build/bundle.js'));
 

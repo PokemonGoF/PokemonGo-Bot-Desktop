@@ -1,11 +1,6 @@
-/**
- * PokemonGo-Bot-Desktop | Utils.js
- *
- * @author Kelvin De Moya <http://github.com/kdemoya>.
- */
 'use strict';
 
-module.exports = {
+export default {
   pad_with_zeroes: function (number, length) {
     var my_string = '' + number;
 

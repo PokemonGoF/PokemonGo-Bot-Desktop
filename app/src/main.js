@@ -1,16 +1,16 @@
-const Vue = require('vue'),
-    Electron = require('vue-electron'),
-    Resource = require('vue-resource'),
-    App = require('./app'),
-    Materialize = require('materialize-css');
+import Vue from 'vue';
+import electron from 'vue-electron';
+import resource from 'vue-resource';
+import app from './app.vue';
+import 'materialize-css';
 
-Vue.use(Electron);
-Vue.use(Resource);
+Vue.use(electron);
+Vue.use(resource);
 Vue.config.debug = true;
 
 
 /* eslint-disable no-new */
 new Vue({
     el: 'body',
-    components: {App}
+    components: {app}
 });

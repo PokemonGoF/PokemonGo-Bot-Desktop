@@ -1,7 +1,6 @@
-const os   = require('os'),
-      fs   = require('fs-extra'),
-      path = require('path');
-
+import os from 'os';
+import fs from 'fs-extra';
+import path from 'path';
 
 function ensureConfigFilePresent() {
 
@@ -153,4 +152,6 @@ const startBot = function (botPath, options) {
   }
 };
 
-module.exports = startBot
+export default startBot
+
+
