@@ -156,6 +156,7 @@
     import {remote as electron, shell} from 'electron';
     import path from 'path';
     import os from 'os';
+
     import Config from './login/config.vue';
 
     const electron.dialog,
