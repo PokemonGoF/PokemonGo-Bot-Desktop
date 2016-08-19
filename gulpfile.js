@@ -129,18 +129,10 @@ gulp.task('build:node', () => {
     );
 });
 
-gulp.task('build:src', () => {
-    return merge(
-        gulp.src(['src/**/*', '!src/{styles,styles/**}'])
-            .pipe(gulp.dest(BUILD_DIR)),
-        gulp.src('src/**/*.{scss,sass}')
-            .pipe(sass({ includePaths: ['node_modules/materialize-css/sass'] }).on('error', sass.logError))
-            .pipe(gulp.dest(BUILD_DIR))
-    );
-});
+gulp.task('build:assets', () => gulp.src('app/assets/**/*').pipe(gulp.dest(BUILD_DIR)));
 
 gulp.task('run', () => SERVER.start());
 
-gulp.task('build', _ => rseq('clean', ['gofbot', 'build:node', 'build:src'], _));
+gulp.task('build', _ => rseq('clean', ['gofbot', 'build:node', 'build:assets'], _));
 gulp.task('develop', _ => rseq('build', 'run', _));
 gulp.task('release', _ => rseq('build', 'electron', _));

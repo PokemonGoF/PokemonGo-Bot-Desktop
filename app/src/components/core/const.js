@@ -45,6 +45,6 @@ module.exports = {
         'm',
         'f'
     ],
-    pokemoncandyArray: require('./pokemoncandy.json'),
-    pokemonArray: require('./pokemondata.json')
+    pokemoncandyArray: require('assets/data/pokemoncandy.json'),
+    pokemonArray: require('assets/data/pokemondata.json')
 };

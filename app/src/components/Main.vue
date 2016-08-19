@@ -33,14 +33,14 @@
 
 <script>
 
-import BotIndicator from './Main/bot-indicator.vue';
-import BotStats from './Main/bot-stats.vue';
-import Log from './Main/log.vue';
-import Options from './Main/options.vue';
-import Logo from './Main/logo.vue';
-import Logout from './Main/logout.vue';
-import Profile from './Main/profile.vue';
-import Map from './Main/map.vue';
+import BotIndicator from 'core/bot-indicator.vue';
+import BotStats from 'core/bot-stats.vue';
+import Log from 'core/log.vue';
+import Options from 'core/options.vue';
+import Logo from 'core/logo.vue';
+import Logout from 'core/logout.vue';
+import Profile from 'core/profile.vue';
+import Map from 'core/map.vue';
 import io from 'socket.io-client/socket.io';
 
 const socketAdress = 'http://127.0.0.1:7894';
