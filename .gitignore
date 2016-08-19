@@ -6,7 +6,7 @@ npm-debug.log.*
 thumbs.db
 !.gitkeep
 .idea
-app/dist
+dist
 build/*
 !build/gofbot
 !build/pywin

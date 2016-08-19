@@ -120,17 +120,18 @@ gulp.task('build:node', () => {
 
 gulp.task('build:js', callback => {
     const browserConfig = {
-        entries: ['app/electron.js', 'app/src/main.js'],
-        extensions: ['.js', '.vue'],
+        entries: ['app/electron.js', 'app/src/**/*.js', 'app/src/**/*.vue'],
+        extension: ['.js', '.vue'],
         ignoreMissing: true,
         detectGlobals: false,
         bare: true
     };
     return browserify(browserConfig)
-        .transform(vueify, {autoprefixer: { browsers: ['last 2 Chrome versions']}})
-        .transform(babelify, {presets: ["es2015"]})
+        .transform(vueify)
+        .transform(babelify, {presets: ["es2015", "react"]})
         .bundle()
         .pipe(fs.createWriteStream(`${BUILD_DIR}/bundle.js`))
+        .on('end', callback)
 });
 
 gulp.task('build:assets', () => gulp.src('app/src/assets/**/*', {base: 'app/src'}).pipe(gulp.dest(BUILD_DIR)));
