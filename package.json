@@ -55,6 +55,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
+    "codemirror": "^5.17.0",
     "request": "^2.74.0"
   }
 }

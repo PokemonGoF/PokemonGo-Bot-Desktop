@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col s10 offset-s1">
             <br>
-            <div class="row">
+            <div class="row" v-show="loginstate != 'config'">
                 <div class="col s4">
                     <h4>Login</h4>
                     <ul class="" data-collapsible="accordion">
@@ -131,13 +131,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col s6">
+                                <h6>Update config file</h6>
+                                <div class="row">
+                                    <a @click="goToConfig()" class="waves-effect waves-light btn" style="width: auto;">Update</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <config :loginstate.sync="loginstate" v-if="loginstate == 'config'"></config>
         </div>
     </div>
 </template>
+
 
 <script>
     const fs       = require('fs-extra'),
@@ -182,7 +191,8 @@
                 },
                 disableLogin: false,
                 showLogin: null,
-                ptc_errors: ""
+                ptc_errors: "",
+                loginstate: "login"
             }
         },
         watch: {
@@ -253,6 +263,9 @@
             self.checkForEncryptionFile();
         },
         methods: {
+            goToConfig: function () {
+                this.loginstate = 'config';
+            },
             checkForEncryptionFile: function () {
                 let self     = this,
                     fileName = platform == 'win32' ? 'encrypt.dll' : 'encrypt.so';
@@ -399,7 +412,9 @@
                 }
             }
         },
-        components: {}
+        components: {
+            Config: require("./Login/Config"),
+        }
     }
 </script>
 
@@ -443,17 +458,6 @@
         }
     }
 
-    #mode-radio {
-        border-bottom: .5px solid #9e9e9e;
-        margin-top: 15px;
-        padding-bottom: 11px;
-        margin-bottom: 0px;
-    }
-
-    .select-dropdown {
-        color: #d1d1d1;
-    }
-
     #options > div > div {
         margin-bottom: 0px;
         > div > input {
@@ -492,22 +496,5 @@
     #options {
         padding: 0.7em;
         margin: 0;
-    }
-
-    .login-footer {
-        padding: 20px;
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        a {
-            padding: 10px;
-            color: white;
-            font-size: 12px;
-        }
-    }
-
-    #encryptionFileExistsDiv {
-        display: none;
     }
 </style>
