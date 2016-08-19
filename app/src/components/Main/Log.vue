@@ -72,9 +72,22 @@
         events: {
             'websocket_broadcast': function (obj) {
 
+                // don't show event which doesn't have message
                 if (!obj.data.msg || obj.data.msg.trim().length == 0) {
                     return true;
                 }
+
+                // don't show those types of events
+                const neverShow = [
+                    "moving_to_fort",
+                    "no_cached_forts",
+                    "bot_start",
+                    "log_stats"
+                ];
+                if (neverShow.indexOf(obj.event) != -1) {
+                    return true;
+                }
+
 
                 if (!this.types[obj.event]) {
                     this.$set('types.' + obj.event, {active: true});

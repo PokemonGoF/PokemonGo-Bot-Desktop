@@ -41,68 +41,62 @@
         },
         events:  {
             'position_update': function (data) {
-                let lat = data.current_position[0],
-                    lng = data.current_position[1];
+                let lat = parseFloat(data.current_position[0]),
+                    lng = parseFloat(data.current_position[1]);
 
-                if (this.user.pathcoords[this.user.pathcoords.length] > 1) {
-                    var tempcoords = [{
-                        lat: parseFloat(lat),
-                        lng: parseFloat(lng)
-                    }];
-                    if (tempcoords.lat != this.user.pathcoords[this.user.pathcoords.length - 1].lat && tempcoords.lng != this.user.pathcoords[this.user.pathcoords.length - 1].lng || this.user.pathcoords.length === 1) {
-                        this.user.pathcoords.push({
-                            lat: parseFloat(lat),
-                            lng: parseFloat(lng)
-                        })
-                    }
-                } else {
-                    this.user.pathcoords.push({
-                        lat: parseFloat(lat),
-                        lng: parseFloat(lng)
-                    })
-                }
 
-                if (this.user.hasOwnProperty('marker') === false) {
+                if (!this.user.marker) {
                     constants.randomSex = Math.round(Math.random());
                     this.user.marker    = new google.maps.Marker({
                         map:      this.map,
                         position: {
-                            lat: parseFloat(lat),
-                            lng: parseFloat(lng)
+                            lat: lat,
+                            lng: lng
                         },
                         icon:     path.join('/assets/image/trainer/' + constants.trainerSex[constants.randomSex] + Math.floor(Math.random() * constants.numTrainers[constants.randomSex]) + '.png'),
                         zIndex:   2,
                         label:    this.user.name
                     });
-                } else {
-                    this.user.marker.setPosition({
-                        lat: parseFloat(lat),
-                        lng: parseFloat(lng)
-                    });
+                }
+                this.user.marker.setPosition({
+                    lat: lat,
+                    lng: lng
+                });
 
-                    if (this.user.pathcoords.length === 2) {
-                        this.user.trainerPath = new google.maps.Polyline({
-                            map:           this.map,
-                            path:          this.user.pathcoords,
-                            geodisc:       true,
-                            strokeColor:   '#FF0000',
-                            strokeOpacity: 0.7,
-                            strokeWeight:  2
-                        });
-                    } else {
-                        this.user.trainerPath.setPath(this.user.pathcoords);
-                        this.user.trainerPath.setMap(this.userInfo.strokeOn ? this.map : null);
-                    }
+
+                if (!this.user.pathcoords) {
+                    this.user.pathcoords = [];
+                }
+                // avoid avoid two point at the same place
+                if (this.user.pathcoords.length == 0 || (lat != this.user.pathcoords[this.user.pathcoords.length-1].lat && lng != this.user.pathcoords[this.user.pathcoords.length-1].lng)) {
+                    this.user.pathcoords.push({
+                        lat: lat,
+                        lng: lng
+                    })
                 }
 
-                if (this.userInfo.users.length === 1 && this.userInfo.userZoom === true) {
+
+                if (!this.user.trainerPath) {
+                    this.user.trainerPath = new google.maps.Polyline({
+                        map:           this.map,
+                        path:          this.user.pathcoords,
+                        geodisc:       true,
+                        strokeColor:   '#FF0000',
+                        strokeOpacity: 0.7,
+                        strokeWeight:  2
+                    });
+                }
+                this.user.trainerPath.setPath(this.user.pathcoords);
+                this.user.trainerPath.setMap(this.userInfo.strokeOn ? this.map : null);
+
+                if (this.userInfo.userZoom === true) {
                     this.map.setZoom(16);
                 }
 
-                if (this.userInfo.users.length === 1 && this.userInfo.userFollow === true) {
+                if (this.userInfo.userFollow === true) {
                     this.map.panTo({
-                        lat: parseFloat(lat),
-                        lng: parseFloat(lng)
+                        lat: lat,
+                        lng: lng
                     });
                 }
 
@@ -136,22 +130,14 @@
                 }, 1000);
 
                 setInterval(() => {
-                    let catchableFile = path.join(botPath, '/web/catchable-' + this.userInfo.users[0] + '.json')
-                    if (fs.existsSync(catchableFile)) {
+                    let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
+                    if (fs.existsSync(locationFile)) {
                         try {
-                            this.placeCatchable(fs.readJSONSync(catchableFile));
+                            this.placeTrainer(fs.readJSONSync(locationFile));
                         } catch (err) {
                         }
                     }
                 }, 5000);
-
-                let locationFile = path.join(botPath, '/web/location-' + this.userInfo.users[0] + '.json')
-                if (fs.existsSync(locationFile)) {
-                    try {
-                        this.placeTrainer(fs.readJSONSync(locationFile));
-                    } catch (err) {
-                    }
-                }
             },
             placeCatchable(data) {
                 if (data !== undefined && Object.keys(data).length > 0) {
@@ -225,6 +211,7 @@
                                         icon:     path.join('/assets/image/forts/' + constants.teams[fort.owned_by_team] + '.png')
                                     });
                                 }
+
                                 let fortPoints   = '';
                                 let fortTeam     = '';
                                 let fortType     = 'PokeStop';
