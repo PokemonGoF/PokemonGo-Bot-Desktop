@@ -7,7 +7,7 @@
 <script>
 
     const constants = require('./const.js'),
-          utils     = require('./Utils.js'),
+          utils     = require('./utils.js'),
           path      = require('path'),
           botPath   = require('electron').remote.getGlobal('botPath'),
           fs        = require('fs-extra');

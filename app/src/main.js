@@ -9,7 +9,7 @@ Vue.use(Electron);
 Vue.use(Resource);
 Vue.config.debug = true;
 
-import App from './App'
+import App from './app'
 
 /* eslint-disable no-new */
 new Vue({

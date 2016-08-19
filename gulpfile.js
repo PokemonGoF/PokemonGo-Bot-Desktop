@@ -17,7 +17,11 @@ const gulp = require('gulp'),
     sass = require('gulp-sass'),
     rseq = require('run-sequence'),
     merge = require('merge2'),
-    electron = require('electron-connect');
+    electron = require('electron-connect'),
+    isCommand = (command, callback) => require('command-exists')(command, (err, exists) => {
+        if (err) callback(err);
+        else if (!exists) callback(util.PluginError('Command', `Please install ${command}`))
+    });
 
 
 //CONFIG
@@ -29,9 +33,10 @@ const BUILD_DIR = 'build',
     SERVER = electron.server.create({path: BUILD_DIR, verbose: true});
 
 gulp.task('python:install', callback => {
+    isCommand('pip', callback);
     async.waterfall([
         cb => rimraf(PACKAGES_DIR, cb),
-        cb => async.concat(fs.readFileSync('build/gofbot/requirements.txt')
+        cb => async.concat(fs.readFileSync(`${BOT_DIR}/requirements.txt`)
             .toString()
             .split('\n')
             .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${PACKAGES_DIR}`, _), err => cb(err)),
@@ -89,6 +94,7 @@ gulp.task('electron:windows', () => {
 gulp.task('electron', ['electron:windows', 'electron:osx']);
 
 gulp.task('gofbot:update', (callback) => {
+    isCommand('git', callback);
     async.series([
         _ => git.exec({args: `submodule deinit -f ${BOT_DIR}`}, _),
         _ => git.updateSubmodule({ args: '--init --recursive' }, _)
@@ -101,8 +107,10 @@ gulp.task('gofbot:prune', (callback) => {
         _ => rimraf(`${BOT_DIR}/docs`, _),
         _ => rimraf(`${BOT_DIR}/.github`, _),
         _ => rimraf(`${BOT_DIR}/tests`, _),
-        _ => async.concat(['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'run.bat',
-            'LICENSE', 'Dockerfile', 'install.sh', 'CONTRIBUTORS.md', 'docker-compose.yml', '.travis.yml', '.styles.yapf',
+        _ => rimraf(`${BOT_DIR}/web`, _),
+        _ => rimraf(`${BOT_DIR}/windows_bat`, _),
+        _ => async.concat(['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'Procfile', 'LICENSE', 'json-validate.py',
+            'Dockerfile', 'CONTRIBUTORS.md', 'docker-compose.yml', 'docker-compose_tor.yml', '.travis.yml', '.styles.yapf',
             '.pylintrc', '.mention-bot', '.pullapprove.yml', '.dockerignore', '.gitignore'].map(x => `${BOT_DIR}/${x}`), fs.unlink, _)
     ], callback);
 });
@@ -131,7 +139,7 @@ gulp.task('build:src', () => {
     );
 });
 
-gulp.task('run', () => server.start());
+gulp.task('run', () => SERVER.start());
 
 gulp.task('build', _ => rseq('clean', ['gofbot', 'build:node', 'build:src'], _));
 gulp.task('develop', _ => rseq('build', 'run', _));

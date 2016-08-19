@@ -45,7 +45,7 @@
 <script>
 
     const constants = require('./const.js'),
-          utils     = require('./Utils'),
+          utils     = require('./utils'),
           path      = require('path');
 
 
