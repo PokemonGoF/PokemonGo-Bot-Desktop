@@ -82,7 +82,7 @@ let botProcess = null;
 
 ipcMain.on('start-bot', function (event, loginInfos) {
   console.log('start bot received, starting the bot...');
-  let infos = require('./startBot')(global.botPath, loginInfos);
+  let infos = require('./start-bot')(global.botPath, loginInfos);
 
   botProcess = infos.process;
 
