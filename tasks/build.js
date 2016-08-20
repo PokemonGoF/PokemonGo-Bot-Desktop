@@ -7,9 +7,7 @@ const gulp = require('gulp'),
     browserify = require('browserify'),
     babelify = require('babelify'),
     vueify = require('vueify'),
-    editJson = require("gulp-json-editor"),
-    config = require('./config'),
-    fs = require('fs');
+    editJson = require("gulp-json-editor");
 
 gulp.task('build:clean', () => vfs.src([`${config.paths.build}/*`, `!${config.paths.build}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
@@ -27,9 +25,9 @@ gulp.task('build:node', () => {
     );
 });
 
-gulp.task('build:js', callback => {
+gulp.task('build:js', () => {
     const browserConfig = {
-        entries: ['app/electron.js', 'app/src/main.js'],
+        entries: [`${config.paths.app}/electron.js`, `${config.paths.app}/main.js`],
         extension: ['.js', '.vue'],
         ignoreMissing: true,
         detectGlobals: false,
@@ -40,9 +38,12 @@ gulp.task('build:js', callback => {
         .transform(babelify, {presets: ["es2015"]})
         .bundle()
         .pipe(fs.createWriteStream('build/bundle.js'));
-
 });
 
-gulp.task('build:assets', () => gulp.src('app/src/assets/**/*', {base: 'app/src'}).pipe(gulp.dest(config.paths.build)));
 
-gulp.task('build', _ => rseq('build:clean', ['gofbot', 'build:node', 'build:assets'], _));
+gulp.task('build:assets', () => merge(
+    gulp.src(`${config.paths.src}/assets/**/*`, {base: config.paths.src})
+        .pipe(gulp.dest(config.paths.release))
+));
+
+gulp.task('build', _ => rseq('build:clean', ['gofbot', 'build:node', 'build:assets', 'build:js'], _));

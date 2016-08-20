@@ -5,27 +5,27 @@ const gulp = require('gulp'),
     config = require('./config');
 
 gulp.task('electron:osx', () => {
-    return gulp.src(PACKAGE_SRC, {base: 'build'})
+    return gulp.src(config.electron.osx_packages, {base: config.paths.build})
         .pipe(packageElectron({
             version: config.version,
             platform: 'darwin',
-            darwinIcon: 'src/assets/resources/image/icons/pokemon.icns',
+            darwinIcon: `${config.paths.build}/pokemon.icns`,
             darwinBundleIdentifier: 'com.github.pokemongof'
-        })).pipe(symdest(RELEASE_DIR));
+        })).pipe(symdest(config.paths.relrease));
 });
 
 gulp.task('electron:windows', () => {
-    return gulp.src(PACKAGE_SRC.concat(), {base: 'build'})
+    return gulp.src(config.electron.win_packages, {base: config.paths.build})
         .pipe(packageElectron({
             version: config.version,
             platform: 'win32',
             arch: 'ia32',
-            winIcon: 'src/assets/resources/image/icons/pokemon.ico',
+            winIcon: `${config.paths.build}/pokemon.ico`,
             companyName: config.company,
             copyright: '2016 , All Rights Reserved.'
         }))
         .pipe(zip('app-windows.exe'))
-        .pipe(gulp.dest(RELEASE_DIR));
+        .pipe(gulp.dest(config.paths.relrease));
 });
 
 gulp.task('electron', ['electron:windows', 'electron:osx']);

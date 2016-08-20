@@ -5,8 +5,7 @@ const gulp = require('gulp'),
     util = require('gulp-util'),
     git = require('gulp-git'),
     exec = require('child_process').exec,
-    config = require('./config'),
-    rseq = require('run-sequence');
+    config = require('./config');
 
 const isCommand = (command, callback) => require('command-exists')(command, (err, exists) => {
     if (err) callback(err);
@@ -21,7 +20,7 @@ gulp.task('gofbot:install', callback => {
             .toString()
             .split('\n')
             .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${config.paths.packages}`, _), err => cb(err)),
-        cb => fs.open(`${config.paths.packages}/google/__init__.py`, 'wx', cb),
+        cb => fs.open(`${config.paths.bot}/google/__init__.py`, 'wx', cb),
         (file, cb) => fs.close(file, cb)
     ], callback);
 });
