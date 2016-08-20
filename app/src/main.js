@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import electron from 'vue-electron';
 import resource from 'vue-resource';
-import app from './app.vue';
+import App from './app.vue';
 import 'materialize-css';
 
 Vue.use(electron);
@@ -12,5 +12,5 @@ Vue.config.debug = true;
 /* eslint-disable no-new */
 new Vue({
     el: 'body',
-    components: {app}
+    components: {App}
 });

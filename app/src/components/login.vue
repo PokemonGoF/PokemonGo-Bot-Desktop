@@ -148,18 +148,20 @@
 </template>
 
 
-<script>
-    const fs       = require('fs-extra'),
-          url      = require('url'),
-          request  = require('request'),
-          electron = require('electron').remote,
-          shell    = require('electron').shell,
-          dialog   = electron.dialog,
-          path     = require('path'),
-          os       = require('os'),
-          platform = os.platform(),
-          appRoot  = electron.getGlobal('appRoot'),
-          botPath  = electron.getGlobal('botPath');
+<script lang="babel">
+
+    import fs from 'fs-extra';
+    import url from 'url';
+    import request from 'request';
+    import {remote as electron, shell} from 'electron';
+    import path from 'path';
+    import os from 'os';
+
+    import Config from './login/config.vue';
+
+    const platform = os.platform(),
+            appRoot  = electron.getGlobal('appRoot'),
+            botPath  = electron.getGlobal('botPath');
 
     const LoginMode = {
         GOOGLE: 'google',
@@ -196,7 +198,7 @@
             }
         },
         watch: {
-            'remember': (newVal, oldVal) => {
+            'remember': (newVal) => {
                 // if the user doesn't want his informations to be remembers,
                 // then clear the credentialsForm from localStorage
                 if (newVal == false) {
@@ -209,7 +211,7 @@
             },
             'credentialsForm': {
                 deep: true,
-                handler: function (newVal, oldVal) { // using classic function to access `this`
+                handler: function (newVal) { // using classic function to access `this`
                     let self = this;
 
                     // if the user wants to remember it's credentials
@@ -220,7 +222,7 @@
             },
             'loginForm': {
                 deep: true,
-                handler: (newVal, oldVal) => {
+                handler: (newVal) => {
                     localStorage.setItem('loginForm', JSON.stringify(newVal));
                 }
             }
@@ -413,7 +415,7 @@
             }
         },
         components: {
-            Config: require("./Login/Config"),
+            Config,
         }
     }
 </script>
@@ -453,33 +455,33 @@
         color: #000;
         width: 100%;
         font-size: 1.2vw;
-        &:hover {
-            background: #FDD835;
-        }
+    &:hover {
+         background: #FDD835;
+     }
     }
 
     #options > div > div {
         margin-bottom: 0px;
-        > div > input {
-            margin-bottom: 0px;
-        }
+    > div > input {
+          margin-bottom: 0px;
+      }
     }
 
     .switch {
-        label input[type=checkbox]:checked + .lever {
-            background-color: #f0de23;
-            &:after {
-                background-color: #d7c60f;
-            }
-        }
-        float: right;
-        p {
-            font-size: 12px;
-            color: #fff;
-            margin: 0;
-            margin-bottom: -12px;
-            line-height: 12px;
-        }
+    label input[type=checkbox]:checked + .lever {
+        background-color: #f0de23;
+    &:after {
+         background-color: #d7c60f;
+     }
+    }
+    float: right;
+    p {
+        font-size: 12px;
+        color: #fff;
+        margin: 0;
+        margin-bottom: -12px;
+        line-height: 12px;
+    }
     }
 
     .collapsible-body {

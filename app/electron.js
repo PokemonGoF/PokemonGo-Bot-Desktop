@@ -1,8 +1,9 @@
 'use strict';
 
-const electron      = require('electron'),
-      path          = require('path'),
-      app           = electron.app,
+import electron from 'electron';
+import path from 'path';
+
+const app           = electron.app,
       dialog        = electron.dialog,
       BrowserWindow = electron.BrowserWindow,
       ipcMain       = electron.ipcMain;
@@ -16,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
     config.url = `http://localhost:${config.port}`;
 } else {
   config.devtron = false;
-  config.url     = `file://${__dirname}/dist/index.html`;
+  config.url     = `file://${__dirname}/index.html`;
 }
 
 function createWindow() {
@@ -81,7 +82,7 @@ let botProcess = null;
 
 ipcMain.on('start-bot', function (event, loginInfos) {
   console.log('start bot received, starting the bot...');
-  let infos = require('./startBot')(global.botPath, loginInfos);
+  let infos = require('./start-bot')(global.botPath, loginInfos);
 
   botProcess = infos.process;
 

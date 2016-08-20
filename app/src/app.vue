@@ -4,9 +4,8 @@
 </template>
 
 <script>
-    import Login from './components/login'
-    import Main from './components/main'
-    import startBot from './start-bot'
+    import Login from './components/login.vue'
+    import Main from './components/main.vue'
 
     const AppState = {
         Login: "Login",
