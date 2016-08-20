@@ -148,7 +148,7 @@
 </template>
 
 
-<script>
+<script lang="babel">
 
     import fs from 'fs-extra';
     import url from 'url';
@@ -159,10 +159,7 @@
 
     import Config from './login/config.vue';
 
-    const electron.dialog,
-            path     = require('path'),
-            os       = require('os'),
-            platform = os.platform(),
+    const platform = os.platform(),
             appRoot  = electron.getGlobal('appRoot'),
             botPath  = electron.getGlobal('botPath');
 

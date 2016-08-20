@@ -14,7 +14,7 @@
     </div>
 </template>
 
-<script>
+<script lang="babel">
     const fs       = require('fs-extra'),
           electron = require('electron').remote,
           path     = require('path'),
@@ -23,7 +23,7 @@
     export default {
         data() {
             return {
-                config: "",
+                config: ""
             }
         },
         props: {
@@ -62,14 +62,14 @@
                 try {
                     configObject = JSON.parse(this.editor.getValue());
                 } catch (err) {
-                    alert(`Your config file is invalid : ${err}`)
+                    alert(`Your config file is invalid : ${err}`);
                     return;
                 }
 
                 try {
                     fs.writeFileSync(path.join(botPath, '/configs/config.json'), JSON.stringify(configObject, null, 4), 'utf-8');
                 } catch (err) {
-                    alert(`Unable to write config file : ${err}`)
+                    alert(`Unable to write config file : ${err}`);
                     return;
                 }
 

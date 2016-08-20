@@ -9,6 +9,8 @@ const config = {
     get name() { return pckg.name },
     get version() { return pckg.version },
     get company() { return pckg.author },
+    get main() { return 'electron.js'},
+    get app() { return 'app.js'},
     gofbot_ignore: {
         get folders() { return ['docs', 'windows_bat', '.github', 'tests', 'web'] },
         get files() {

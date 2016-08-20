@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
     config.url = `http://localhost:${config.port}`;
 } else {
   config.devtron = false;
-  config.url     = `file://${__dirname}/dist/index.html`;
+  config.url     = `file://${__dirname}/index.html`;
 }
 
 function createWindow() {
