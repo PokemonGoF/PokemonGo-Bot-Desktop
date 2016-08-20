@@ -132,10 +132,9 @@
 
 
 <script>
-    const constants = require('./const.js'),
-          path      = require('path'),
-          Modal     = require('../Modal');
-
+    import utils from './utils.js'
+    import constants from 'constants.js'
+    import Modal from '../modal.vue'
 
     export default {
         data() {
@@ -198,7 +197,7 @@
                         pokemons.push({
                             Id:   parseInt(current_pokemon_data.pokemon_id, 10),
                             Num:   current_pokemon_data.pokemon_id,
-                            Image: require('./Utils').pad_with_zeroes(current_pokemon_data.pokemon_id, 3),
+                            Image: utils.pad_with_zeroes(current_pokemon_data.pokemon_id, 3),
                             Name:  constants.pokemonArray[current_pokemon_data.pokemon_id - 1].Name,
                             CP:    parseInt(current_pokemon_data.cp, 10),
                             IVA:   IVA,
@@ -220,8 +219,8 @@
                         pokedex.push({
                             TechId:   parseInt(this.user.pokedex[i].inventory_item_data.pokedex_entry.id, 10),
                             Id:   parseInt(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 10),
-                            Num:   require('./Utils').pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
-                            Image: require('./Utils').pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
+                            Num:   utils.pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
+                            Image: utils.pad_with_zeroes(this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id, 3),
                             Name:  constants.pokemonArray[this.user.pokedex[i].inventory_item_data.pokedex_entry.pokemon_id - 1].Name,
                             Enc:   this.user.pokedex[i].inventory_item_data.pokedex_entry.times_encountered,
                             Cap:   this.user.pokedex[i].inventory_item_data.pokedex_entry.times_captured,

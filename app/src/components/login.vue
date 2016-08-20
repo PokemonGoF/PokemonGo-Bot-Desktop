@@ -150,7 +150,8 @@
 
 <script>
 
-    import fs from 'fs-extra';
+    //import fs from 'fs-extra';
+    const fs = null;
     import url from 'url';
     import request from 'request';
     import {remote as electron, shell} from 'electron';

@@ -6,13 +6,10 @@
 <script>
     import Login from './components/login.vue'
     import Main from './components/main.vue'
+    import electron from 'electron';
 
-    const AppState = {
-        Login: "Login",
-        Main: "Main"
-    };
-
-    const ipcRenderer = require('electron').ipcRenderer;
+    const AppState = { Login: "Login", Main: "Main" },
+        ipcRenderer = electron.ipcRenderer;
 
 
     export default {

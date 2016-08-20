@@ -43,11 +43,9 @@
 </template>
 
 <script>
-
-    const constants = require('./const.js'),
-          utils     = require('./utils'),
-          path      = require('path');
-
+    import constants from 'const.js'
+    import utils from 'utils.js'
+    import path from 'path'
 
     export default {
         data() {

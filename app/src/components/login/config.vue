@@ -15,9 +15,10 @@
 </template>
 
 <script>
-    const fs       = require('fs-extra'),
-          electron = require('electron').remote,
-          path     = require('path'),
+    import fs from 'fs-extra'
+    import path from 'path';
+
+    const electron = require('electron').remote,
           botPath  = electron.getGlobal('botPath');
 
     export default {

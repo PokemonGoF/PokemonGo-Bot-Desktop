@@ -5,13 +5,13 @@
 </template>
 
 <script>
+    import constants from 'const.js'
+    import utils from 'utils.js'
+    import path from 'path'
+    import electron from 'electron'
+    import fs from 'fs-extra'
 
-    const constants = require('./const.js'),
-          utils     = require('./utils.js'),
-          path      = require('path'),
-          botPath   = require('electron').remote.getGlobal('botPath'),
-          fs        = require('fs-extra');
-
+    const botPath   = electron.remote.getGlobal('botPath');
 
     export default {
         props:   {
