@@ -42,11 +42,19 @@ gulp.task('build:js', () => {
         detectGlobals: false,
         bare: true
     };
-    return  browserify(appConfig)
-        .transform(vueify, {babel: {presets: ['es2015'], plugins: ['transform-runtime']}})
-        .transform(babelify, {presets: ['es2015']})
-        .bundle()
-        .pipe(fs.createWriteStream("bundle.js"))
+    return merge(
+        browserify(appConfig)
+            .transform(vueify, {babel: {presets: ['es2015'], plugins: ['transform-runtime']}})
+            .transform(babelify, {presets: ['es2015']})
+            .bundle()
+            .pipe(source(config.app))
+            .pipe(gulp.dest(config.paths.build)),
+        browserify(electronConfig)
+            .transform(babelify, {presets: ['es2015']})
+            .bundle()
+            .pipe(source(config.main))
+            .pipe(gulp.dest(config.paths.build))
+    );
 });
 
 
