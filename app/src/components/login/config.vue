@@ -14,7 +14,7 @@
     </div>
 </template>
 
-<script lang="babel">
+<script>
     const fs       = require('fs-extra'),
           electron = require('electron').remote,
           path     = require('path'),

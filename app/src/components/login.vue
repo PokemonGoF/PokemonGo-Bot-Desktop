@@ -148,7 +148,7 @@
 </template>
 
 
-<script lang="babel">
+<script>
 
     import fs from 'fs-extra';
     import url from 'url';
