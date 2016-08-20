@@ -29,16 +29,20 @@ gulp.task('build:node', () => {
 });
 
 gulp.task('build:js', () => {
-    const appConfig = { entries: `${config.paths.src}/main.js`, extension: ['.js', '.vue'], ignoreMissing: true};
-    const electronConfig = { entries: `${config.paths.app}/electron.js`, ignoreMissing: true,  detectGlobals: false, bare: true };
-    /**
-      browserify(electronConfig)
-     .transform(babelify, {presets: ['es2015']})
-     .bundle()
-     .pipe(source(config.main))
-     .pipe(gulp.dest(config.paths.build))
-     **/
-    return browserify(appConfig)
+    const appConfig = {
+        entries: `${config.paths.src}/main.js`,
+        extension: ['.js', '.vue'],
+        ignoreMissing: true,
+        detectGlobals: false,
+        bare: true
+    };
+    const electronConfig = {
+        entries: `${config.paths.app}/electron.js`,
+        ignoreMissing: true,
+        detectGlobals: false,
+        bare: true
+    };
+    return  browserify(appConfig)
         .transform(vueify, {babel: {presets: ['es2015'], plugins: ['transform-runtime']}})
         .transform(babelify, {presets: ['es2015']})
         .bundle()
