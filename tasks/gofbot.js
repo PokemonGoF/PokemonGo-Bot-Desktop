@@ -2,6 +2,7 @@ const gulp = require('gulp'),
     async = require('async'),
     fs = require('fs'),
     rimraf = require('rimraf'),
+    rseq = require('run-sequence'),
     util = require('gulp-util'),
     git = require('gulp-git'),
     exec = require('child_process').exec,
@@ -20,7 +21,7 @@ gulp.task('gofbot:install', callback => {
             .toString()
             .split('\n')
             .map(dep => dep.trim().replace('-e ', '')), (cmd, _) => exec(`pip install ${cmd} --target ${config.paths.packages}`, _), err => cb(err)),
-        cb => fs.open(`${config.paths.bot}/google/__init__.py`, 'wx', cb),
+        cb => fs.open(`${config.paths.packages}/google/__init__.py`, 'wx', cb),
         (file, cb) => fs.close(file, cb)
     ], callback);
 });
@@ -56,7 +57,7 @@ gulp.task('gofbot:update', (callback) => {
 gulp.task('gofbot:prune', (callback) => {
     //TODO - Switch to grimraf
     const tasks = [_ => async.concat(config.gofbot_ignore.files.map(x => `${config.paths.bot}/${x}`), fs.unlink, _)];
-    config.gofbot_ignore.folders.forEach(folder => tasks.append(_ => rimraf(`${config.paths.bot}/${folder}`)));
+    config.gofbot_ignore.folders.forEach(folder => tasks.push(_ => rimraf(`${config.paths.bot}/${folder}`, _)));
     async.parallel(tasks, callback);
 });
 

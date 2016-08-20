@@ -1,26 +1,34 @@
 const pckg = require('../package.json');
 
+/**
+ * Authors Note ~ Listen I know this prbably is not the best structure for a config but it looks pretty good to me and
+ * it's the best I can do especially if I want the ability to combine paths. Sorry :T
+ **/
+
 const config = {
-    name: pckg.name,
-    version: pckg.version,
-    company: pckg.author,
+    get name() { return pckg.name },
+    get version() { return pckg.version },
+    get company() { return pckg.author },
     gofbot_ignore: {
-        folders: [],
-        files: ['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'Procfile', 'LICENSE',
-    'json-validate.py', 'Dockerfile', 'CONTRIBUTORS.md', 'docker-compose.yml', 'docker-compose_tor.yml', '.travis.yml',
-    '.styles.yapf', '.pylintrc', '.mention-bot', '.pullapprove.yml', '.dockerignore', '.gitignore']
+        get folders() { return ['docs', 'windows_bat', '.github', 'tests', 'web'] },
+        get files() {
+            return ['ws_server.py', 'run.sh', 'setup.sh', 'README.md', 'pylint-recursive.py', 'Procfile', 'LICENSE',
+                'json-validate.py', 'Dockerfile', 'CONTRIBUTORS.md', 'docker-compose.yml', 'docker-compose_tor.yml',
+                '.travis.yml', '.styles.yapf', '.pylintrc', '.mention-bot', '.pullapprove.yml', '.dockerignore',
+                '.gitignore', '.gitmodules']
+        }
     },
     paths: {
-        build: 'build',
-        relrease: 'release',
-        bot: `${config.paths.build}/gofbot`,
-        packages: `${config.paths.bot}/packages`,
-        app: 'app',
-        src: `${config.paths.app}/src`
+        get build() { return 'build' },
+        get release() { return 'release'},
+        get bot() { return `${config.paths.build}/gofbot`},
+        get packages() { return `${config.paths.bot}/packages`},
+        get app() { return 'app' },
+        get src() { return `${config.paths.app}/src` }
     },
     electron: {
-        mac_packages: [`${config.paths.build}/**/*`, `!${config.paths.build}/pywin/**/*`, `!${config.paths.build}/pywin`],
-        osx_packages: [`${config.paths.build}/**/*`]
+        get win_packages() { return [`${config.paths.build}/**/*`, `!${config.paths.build}/pywin/**/*`, `!${config.paths.build}/pywin`] },
+        get osx_packages() { return [`${config.paths.build}/**/*`] }
     }
 };
 

@@ -1,5 +1,6 @@
 'use strict';
-const electron = require('electron-connect');
+const gulp = require('gulp'),
+    electron = require('electron-connect');
 
 require('require-dir')('tasks', {recursive: true});
 

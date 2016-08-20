@@ -1,7 +1,6 @@
 {
   "name": "pikabot",
   "version": "1.0.0",
-  "main": "electron.js",
   "description": "Your GoF Bot On Desktop",
   "author": "PokemonGof-Desktop-Team",
   "license": "MIT",

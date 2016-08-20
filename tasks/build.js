@@ -2,12 +2,14 @@ const gulp = require('gulp'),
     rimraf = require('rimraf'),
     grimraf = require('gulp-rimraf'),
     vfs = require('vinyl-fs'),
+    fs = require('fs'),
     rseq = require('run-sequence'),
     merge = require('merge2'),
     browserify = require('browserify'),
     babelify = require('babelify'),
     vueify = require('vueify'),
-    editJson = require("gulp-json-editor");
+    editJson = require('gulp-json-editor'),
+    config = require('./config');
 
 gulp.task('build:clean', () => vfs.src([`${config.paths.build}/*`, `!${config.paths.build}/{gofbot,gofbot/*,pywin,pywin/*}`]).pipe(grimraf()));
 
@@ -34,8 +36,8 @@ gulp.task('build:js', () => {
         bare: true
     };
     return browserify(browserConfig)
-        .transform(vueify, {babel: {presets: ["es2015"], plugins: ["transform-runtime"]}})
-        .transform(babelify, {presets: ["es2015"]})
+        .transform(vueify, {babel: {presets: ['es2015'], plugins: ['transform-runtime']}})
+        .transform(babelify, {presets: ['es2015']})
         .bundle()
         .pipe(fs.createWriteStream('build/bundle.js'));
 });
