@@ -1,5 +1,4 @@
 <template>
-<!-- Bot indicator -->
     <div id="bot-indicator" class="z-depth-1">
         <b>Bot status</b>
         <p>{{ msg }}</p>

@@ -1,6 +1,7 @@
 'use strict';
 
 import electron from 'electron';
+import startBot from './start-bot.js';
 import path from 'path';
 
 const app           = electron.app,
@@ -82,7 +83,7 @@ let botProcess = null;
 
 ipcMain.on('start-bot', function (event, loginInfos) {
   console.log('start bot received, starting the bot...');
-  let infos = require('./start-bot')(global.botPath, loginInfos);
+  let infos = startBot(global.botPath, loginInfos);
 
   botProcess = infos.process;
 

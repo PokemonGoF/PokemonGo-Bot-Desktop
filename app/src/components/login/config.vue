@@ -44,8 +44,9 @@
             this.config = `${fs.readFileSync(setting_path)}`;
 
             this.$nextTick(() => {
-                require("codemirror/mode/javascript/javascript");
-                require("codemirror/lib/codemirror.css");
+                //TODO FIX
+                //require("codemirror/mode/javascript/javascript");
+                //require("codemirror/lib/codemirror.css");
                 this.editor = require("codemirror").fromTextArea(document.getElementById("config"), {
                     lineNumbers: true,
                     mode: "application/json",

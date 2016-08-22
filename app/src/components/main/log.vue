@@ -23,13 +23,12 @@
 
         <div id="log-text">
             <p id="log">
-                <template v-for="log in logs | orderBy 'date' -1"  track-by="$index">
-
+                <template v-for="log in logs.sort((a, b) => b.date - a.date).reverse()"  track-by="$index">
                     <div class="log-item" v-if="log.images.length > 0" v-show="types[log.type].active">
                         <span class="log-date">{{ log.date.toTimeString().split(" ")[0] }}</span>
                         <p class='log-message log-message-narrow'>{{  log.message }} </p>
                         <div class='log-image-container'>
-                            {{{  log.images.join("") }}}
+                            {{  log.images.join("") }}
                         </div>
                     </div>
                     <div class="log-item" v-else v-show="types[log.type].active">
@@ -95,7 +94,7 @@
                     message: obj.data.msg,
                     type: obj.event,
                     date: new Date(),
-                    images: [],
+                    images: []
                 };
 
                 // Check for item words

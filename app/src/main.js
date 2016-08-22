@@ -2,7 +2,6 @@ import Vue from 'vue';
 import electron from 'vue-electron';
 import resource from 'vue-resource';
 import App from './app.vue';
-import 'materialize-css';
 
 Vue.use(electron);
 Vue.use(resource);

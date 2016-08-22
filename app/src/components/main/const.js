@@ -45,6 +45,6 @@ export default {
         'm',
         'f'
     ],
-    pokemoncandyArray: require('assets/data/pokemoncandy.json'),
-    pokemonArray: require('assets/data/pokemondata.json')
+    pokemoncandyArray: require('../../assets/data/pokemoncandy.json'),
+    pokemonArray: require('../../assets/data/pokemondata.json')
 };

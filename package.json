@@ -10,6 +10,7 @@
     "materialize-css": "^0.97.7",
     "request": "^2.74.0",
     "socket.io-client": "^1.4.8",
+    "socketio-wildcard": "^0.3.0",
     "vue": "^2.0.0-rc.3",
     "vue-electron": "^1.0.0",
     "vue-resource": "^0.7.0"
@@ -41,6 +42,7 @@
     "gulp-util": "^3.0.7",
     "gulp-zip": "^3.2.0",
     "merge2": "^1.0.2",
+    "node-sass": "^3.8.0",
     "require-dir": "^0.3.0",
     "rimraf": "^2.5.4",
     "run-sequence": "^1.2.2",

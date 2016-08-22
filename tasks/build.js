@@ -29,32 +29,30 @@ gulp.task('build:node', () => {
 });
 
 gulp.task('build:js', () => {
+    const browserConfig = {
+        entries: 'app/src/main.js',
+        extension: ['.js', '.vue'],
+        debug: true
+    };
+
     const appConfig = {
         entries: `${config.paths.src}/main.js`,
         extension: ['.js', '.vue'],
-        ignoreMissing: true,
-        detectGlobals: false,
-        bare: true
+        debug: true
     };
-    const electronConfig = {
-        entries: `${config.paths.app}/electron.js`,
-        ignoreMissing: true,
-        detectGlobals: false,
-        bare: true
-    };
-    return merge(
-        browserify(appConfig)
-            .transform(vueify, {babel: {presets: ['es2015'], plugins: ['transform-runtime']}})
-            .transform(babelify, {presets: ['es2015']})
-            .bundle()
-            .pipe(source(config.app))
-            .pipe(gulp.dest(config.paths.build)),
-        browserify(electronConfig)
-            .transform(babelify, {presets: ['es2015']})
-            .bundle()
-            .pipe(source(config.main))
-            .pipe(gulp.dest(config.paths.build))
-    );
+    browserify(`${config.paths.app}/electron.js`)
+        .ignore('electron')
+        .transform(babelify, {presets: ['es2015']})
+        .bundle()
+        .pipe(source(config.main))
+        .pipe(gulp.dest(config.paths.build));
+
+    return browserify(browserConfig)
+        .ignore('electron')
+        .transform(vueify, {babel: {presets: ["es2015"]}})
+        .transform(babelify, {presets: ["es2015"]})
+        .bundle()
+        .pipe(fs.createWriteStream('build/bundle.js'));
 });
 
 

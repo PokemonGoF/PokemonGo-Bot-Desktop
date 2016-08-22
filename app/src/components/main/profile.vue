@@ -1,4 +1,5 @@
 <template>
+<div>
     <a class="side-account waves-effect waves-light" href="#" id="btn-info" @click.prevent="show = true">
         <i class="material-icons"
            style="float: left; line-height: 34px; padding-right: 15px; color: #FFF">person</i>
@@ -99,7 +100,7 @@
                 </div>
                 <div class="row items">
                     <div class="col s12 m4 l3 center pokemon-list-item" style="float: left;"
-                         v-for="pokemon in pokemons | filterBy filterPokemonName in 'Name' | orderBy orderByPokemon.what orderByPokemon.order">
+                         v-for="pokemon in pokemons.filter(_ => _.Name.includes(filterPokemonName))">
                         {{ pokemon.TechId }}
                         <img :src="'/assets/image/pokemon/'+  pokemon.Image + '.png'" class="png_img"><br>
                         <b><span class="pokemon-name">{{ pokemon.Name }}</span></b><br>
@@ -114,7 +115,7 @@
                 <div class="row item-filter">
                     <input type="text" placeholder="Search Pokemons" v-model="filterPokemonName"/>
                 </div>
-                <div class="col s6 m6 l3 center" v-for="pokemon in pokedex | filterBy filterPokemonName in 'Name' | orderBy orderByPokedex.what orderByPokedex.order" track-by="Id">
+                <div class="col s6 m6 l3 center" v-for="pokemon in pokemons.filter(_ => _.Name.includes(filterPokemonName))" track-by="Id">
                     <img :src="'/assets/image/pokemon/' + pokemon.Image +'.png'" class="png_img"><br>
                     <b>{{ pokemon.Num }} {{ pokemon.Name }}</b><br>
                     Times Seen: {{ pokemon.Enc }}<br>
@@ -128,12 +129,13 @@
             </div>
         </div>
     </modal>
+</div>
 </template>
 
 
 <script>
     import utils from './utils.js'
-    import constants from './constants.js'
+    import constants from './const.js'
     import Modal from '../modal.vue'
 
     export default {

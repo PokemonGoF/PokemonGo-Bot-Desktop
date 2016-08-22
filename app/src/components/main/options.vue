@@ -1,4 +1,5 @@
 <template>
+<div>
     <a class='dropdown-button btn-settings waves-effect waves-light' href='#' data-activates='options'>
         <i class="material-icons"
            style="float: left;color: #FFF; padding-right: 15px; line-height: 24px;">settings</i>Settings
@@ -54,6 +55,7 @@
             <br>
         </li>
     </ul>
+</div>
 </template>
 
 <script>

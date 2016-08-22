@@ -3,10 +3,8 @@ const babelify = require("babelify");
 const vueify = require("vueify");
 const fs = require("fs");
 const debug = require("gulp-debug");
-const aliasify = require("aliasify");
 
 console.log("Starting");
-process.env.NODE_ENV = 'development';
 const browserConfig = {
     entries: 'app/src/main.js',
     extension: ['.js', '.vue'],
