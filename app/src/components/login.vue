@@ -1,150 +1,152 @@
 <template>
-    <div class="login-topbar center">
-        <h1>
-            <img id="logo" src="../assets/image/icons/logo.png">
-            PikaBot
-        </h1>
-        <small>{{version}}</small>
-    </div>
-    <div class="row">
-        <div class="col s10 offset-s1">
-            <br>
-            <div class="row" v-show="loginstate != 'config'">
-                <div class="col s4">
-                    <h4>Login</h4>
-                    <ul class="" data-collapsible="accordion">
-                        <li>
-                            <div class="collapsible-header" id="google-login-title" @click="showLogin = 'google'">
-                                Google
-                            </div>
-                            <div class="collapsible-body" v-show="showLogin == 'google'">
-                                <form id="google_form" @submit="doGoogleLogin">
-                                    <input v-model="credentialsForm.google_username" class="form-control" type="text"
-                                           placeholder="Username" required>
-                                    <input v-model="credentialsForm.google_password" class="form-control"
-                                           type="password"
-                                           placeholder="Password" required>
-                                    <button type="submit" class="btn login"  :disabled="!validateLoginInputs">
-                                        Login with Google
-                                    </button>
-                                </form>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="collapsible-header" id="ptc-login-title" @click="showLogin = 'ptc'">PTC</div>
-                            <div class="collapsible-body" v-show="showLogin == 'ptc'">
-                                <form id="ptc_form" @submit="doPTCLogin">
-                                    <input v-model="credentialsForm.ptc_username" class="form-control" type="text"
-                                           placeholder="Username" required>
-                                    <input v-model="credentialsForm.ptc_password" class="form-control" type="password"
-                                           placeholder="Password" required>
-                                    <button type="submit" class="btn login" :disabled="!validateLoginInputs">
-                                        Login with PTC
-                                    </button>
-                                </form>
-                            </div>
-                        </li>
-                    </ul>
+<div>
+<div class="login-topbar center">
+    <h1>
+        <img id="logo" src="../assets/image/icons/logo.png">
+        PikaBot
+    </h1>
+    <small>{{version}}</small>
+</div>
+<div class="row">
+    <div class="col s10 offset-s1">
+        <br>
+        <div class="row" v-show="loginstate != 'config'">
+            <div class="col s4">
+                <h4>Login</h4>
+                <ul class="" data-collapsible="accordion">
+                    <li>
+                        <div class="collapsible-header" id="google-login-title" @click="showLogin = 'google'">
+                            Google
+                        </div>
+                        <div class="collapsible-body" v-show="showLogin == 'google'">
+                            <form id="google_form" @submit="doGoogleLogin">
+                                <input v-model="credentialsForm.google_username" class="form-control" type="text"
+                                       placeholder="Username" required>
+                                <input v-model="credentialsForm.google_password" class="form-control"
+                                       type="password"
+                                       placeholder="Password" required>
+                                <button type="submit" class="btn login"  :disabled="!validateLoginInputs">
+                                    Login with Google
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="collapsible-header" id="ptc-login-title" @click="showLogin = 'ptc'">PTC</div>
+                        <div class="collapsible-body" v-show="showLogin == 'ptc'">
+                            <form id="ptc_form" @submit="doPTCLogin">
+                                <input v-model="credentialsForm.ptc_username" class="form-control" type="text"
+                                       placeholder="Username" required>
+                                <input v-model="credentialsForm.ptc_password" class="form-control" type="password"
+                                       placeholder="Password" required>
+                                <button type="submit" class="btn login" :disabled="!validateLoginInputs">
+                                    Login with PTC
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
 
-                    <br>
-                    <span id="ptc_errors" style="color: #f00" v-if="ptc_errors != ''">{{ ptc_errors }}</span>
-                    <br>
-                </div>
-                <div class="col s8">
-                    <div class="row">
-                        <h4>Options
-                            <div class="switch">
-                                <p>Remember Info</p>
-                                <label>
-                                    Off
-                                    <input v-model="remember" checked type="checkbox">
-                                    <span class="lever"></span>
-                                    On
-                                </label>
+                <br>
+                <span id="ptc_errors" style="color: #f00" v-if="ptc_errors != ''">{{ ptc_errors }}</span>
+                <br>
+            </div>
+            <div class="col s8">
+                <div class="row">
+                    <h4>Options
+                        <div class="switch">
+                            <p>Remember Info</p>
+                            <label>
+                                Off
+                                <input v-model="remember" value="checked" type="checkbox">
+                                <span class="lever"></span>
+                                On
+                            </label>
 
+                        </div>
+                    </h4>
+                    <div id="options" class="card col s12">
+                        <div class="col s6">
+                            <h6>Location</h6>
+                            <div class="row">
+                                <div class="">
+                                    <input v-model="loginForm.last_location" class="form-control"
+                                           type="text" placeholder="Location">
+                                </div>
                             </div>
-                        </h4>
-                        <div id="options" class="card col s12">
-                            <div class="col s6">
-                                <h6>Location</h6>
+                            <div class="row">
+                                <p>
+                                    Set to override, leave blank to use Geolocation
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            <h6>Google Maps API</h6>
+                            <div class="row">
+                                <div class="">
+                                    <input v-model="loginForm.google_maps_api" class="form-control"
+                                           type="text" placeholder="Google Maps API" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p>
+                                    Insert your personal Google Maps API key
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            <h6>Walk Speed</h6>
+                            <div class="row">
+                                <div class="">
+                                    <input v-model="loginForm.walk_speed" class="form-control"
+                                           type="text" placeholder="Walk Speed (m/s)">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p>
+                                    Larger numbers mean faster walking
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col s6">
+                            <h6>Encrypt File</h6>
+                            <div :class="[{hide : encryptionFilePresent}]">
                                 <div class="row">
                                     <div class="">
-                                        <input v-model="loginForm.last_location" class="form-control"
-                                               type="text" placeholder="Location">
+                                        <a @click="openFile" class="waves-effect waves-light btn">Select</a>
+                                        <p v-show="!!loginForm.file_path && loginForm.file_path.length > 0">{{
+                                            loginForm.file_path }}</p>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <p>
-                                        Set to override, leave blank to use Geolocation
+                                        Choose encrypt file.
                                     </p>
                                 </div>
                             </div>
-                            <div class="col s6">
-                                <h6>Google Maps API</h6>
-                                <div class="row">
-                                    <div class="">
-                                        <input v-model="loginForm.google_maps_api" class="form-control"
-                                               type="text" placeholder="Google Maps API" required>
-                                    </div>
-                                </div>
+                            <div :class="[{hide : !encryptionFilePresent}]">
                                 <div class="row">
                                     <p>
-                                        Insert your personal Google Maps API key
+                                        Encryption file is present. <span class="green-text">✓</span>
                                     </p>
                                 </div>
                             </div>
-                            <div class="col s6">
-                                <h6>Walk Speed</h6>
-                                <div class="row">
-                                    <div class="">
-                                        <input v-model="loginForm.walk_speed" class="form-control"
-                                               type="text" placeholder="Walk Speed (m/s)">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <p>
-                                        Larger numbers mean faster walking
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col s6">
-                                <h6>Encrypt File</h6>
-                                <div :class="[{hide : encryptionFilePresent}]">
-                                    <div class="row">
-                                        <div class="">
-                                            <a @click="openFile" class="waves-effect waves-light btn">Select</a>
-                                            <p v-show="!!loginForm.file_path && loginForm.file_path.length > 0">{{
-                                                loginForm.file_path }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <p>
-                                            Choose encrypt file.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div :class="[{hide : !encryptionFilePresent}]">
-                                    <div class="row">
-                                        <p>
-                                            Encryption file is present. <span class="green-text">✓</span>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col s6">
-                                <h6>Update config file</h6>
-                                <div class="row">
-                                    <a @click="goToConfig()" class="waves-effect waves-light btn" style="width: auto;">Update</a>
-                                </div>
+                        </div>
+                        <div class="col s6">
+                            <h6>Update config file</h6>
+                            <div class="row">
+                                <a @click="goToConfig()" class="waves-effect waves-light btn" style="width: auto;">Update</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <config :loginstate.sync="loginstate" v-if="loginstate == 'config'"></config>
         </div>
+
+        <config :loginstate.sync="loginstate" v-if="loginstate == 'config'"></config>
     </div>
+</div>
+</div>
 </template>
 
 

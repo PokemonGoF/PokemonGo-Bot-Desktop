@@ -1,6 +1,8 @@
 <template>
-    <login v-if="currentState == AppState.Login"></login>
-    <main v-if="currentState == AppState.Main" :user-info="userInfo"></main>
+    <div>
+        <login v-if="currentState == AppState.Login"></login>
+        <main v-if="currentState == AppState.Main" :user-info="userInfo"></main>
+    </div>
 </template>
 
 <script>

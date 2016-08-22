@@ -1,34 +1,33 @@
 <template>
+<div>
+    <!-- Bot indicator -->
+    <bot-indicator></bot-indicator>
+
+    <!-- Bot Stats -->
+    <bot-stats></bot-stats>
 
 
-<!-- Bot indicator -->
-<bot-indicator></bot-indicator>
+    <!-- Content -->
+    <div id="content">
+        <div id="side-nav">
 
-<!-- Bot Stats -->
-<bot-stats></bot-stats>
+            <logo></logo>
 
+            <options :user-info.sync="userInfo"></options>
 
-<!-- Content -->
-<div id="content">
-    <div id="side-nav">
+            <template v-if="user != null">
+                <profile :user.sync="user"></profile>
+            </template>
 
-        <logo></logo>
+            <log></log>
 
-        <options :user-info.sync="userInfo"></options>
+            <logout></logout>
+        </div>
 
-        <template v-if="user != null">
-            <profile :user.sync="user"></profile>
-        </template>
+        <map :user.sync="user" :user-info.sync="userInfo"></map>
 
-        <log></log>
-
-        <logout></logout>
     </div>
-
-    <map :user.sync="user" :user-info.sync="userInfo"></map>
-
 </div>
-
 </template>
 
 <script>
