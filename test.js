@@ -9,12 +9,11 @@ process.env.NODE_ENV = 'development';
 const browserConfig = {
     entries: 'app/src/main.js',
     extension: ['.js', '.vue'],
-    ignoreMissing: true,
-    detectGlobals: false,
-    bare: true
+    debug: true
 };
 browserify(browserConfig)
-    .transform(vueify, {babel: {presets: ["es2015"], plugins: ["transform-runtime"]}})
+    .ignore('electron')
+    .transform(vueify, {babel: {presets: ["es2015"]}})
     .transform(babelify, {presets: ["es2015"]})
     .bundle()
     .pipe(fs.createWriteStream('build/bundle.js'));

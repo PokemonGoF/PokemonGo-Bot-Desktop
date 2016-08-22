@@ -133,7 +133,7 @@
 
 <script>
     import utils from './utils.js'
-    import constants from 'constants.js'
+    import constants from './constants.js'
     import Modal from '../modal.vue'
 
     export default {

@@ -43,8 +43,8 @@
 </template>
 
 <script>
-    import constants from 'const.js'
-    import utils from 'utils.js'
+    import constants from './const.js'
+    import utils from './utils.js'
     import path from 'path'
 
     export default {
