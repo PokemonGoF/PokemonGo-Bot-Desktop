@@ -20,5 +20,3 @@ browserify(browserConfig)
     .pipe(fs.createWriteStream('build/bundle.js'));
 
 console.log("Done");
-
-//
