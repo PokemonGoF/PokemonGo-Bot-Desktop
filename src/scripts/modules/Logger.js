@@ -17,14 +17,36 @@ class Logger {
         log.type = bracket_data[1].replace(/[\[\]]/g, "");
         log.action = bracket_data[2].replace(/[\[\]]/g, "");
         log.message = message.split("[" + log.action + "] ")[1];
+        // Transform typical json strings into user friendly text
+        log.message = log.message.replace(/\[?{(?:'item_id': [0-9]+, 'name': )?(u'[^}]*)}\]?/g, 
+            function(m,x) { return x.replace(/u'([^']*)'(?:, 'item_count') ?: ([0-9]+)/g,'$2x $1'); });
         log.images = [];
 
         // Check for item words
-        for (var key in constants.itemsArray) {
-            var item_name = constants.itemsArray[key];
-            if (log.message.indexOf(item_name) > -1) {
+        // (by descending length : because 'Super Potion' contains 'Potion', and we want to prevent both from showing)
+        if (!constants.itemsSorted)
+            constants.itemsSorted = Object.keys(constants.itemsArray)
+                .map(function(x) { return { "key":x, "name":constants.itemsArray[x]};})
+                .sort(function(a,b) { return b.name.length-a.name.length;});
+        var msg = log.message;
+        for (var item in constants.itemsSorted) {
+            var key = constants.itemsSorted[item].key;
+            var item_name = constants.itemsSorted[item].name;
+            if (msg.indexOf(item_name) < 0)  continue;
+            // Item found, now try to parse its quantity
+            var item_count = 1;
+            var item_data = new RegExp("([0-9]+)x " + item_name,"g").exec(msg);
+            if (item_data && item_data[0]) item_count = parseInt(item_data[1]);
+            if (log.action == "item_discarded") item_count = -item_count;
+            if (item_count < 0 || item_count > 1)
+            {
+                log.images.push(`<div class="log-img-count"><img src="${path.join(appRoot, assets/image/items/' + key + '.png)}"><div>'+item_count+'x</div></div>`)
+            }
+            else if (item_count == 1)
+            {
                 log.images.push(`<img src="${path.join(appRoot, assets/image/items/' + key + '.png)}" class="log-img">`)
             }
+            msg = msg.replace(new RegExp(item_name,"g"),""); // marked as done
         }
 
         // Check for pokemon words
@@ -33,6 +55,17 @@ class Logger {
                 log.images.push(`<img src=${path.join(appRoot, 'assets/image/pokemon/' + utils.pad_with_zeroes(i + 1, 3) + '.png')} class="log-img log-pokemon">`)
             }
         }
+        
+        // Specific icons for specific actions
+        if (log.action == "egg_hatched")
+        {
+            log.images.push(`<img src="${path.join(appRoot, assets/image/items/Egg.png)}" class="log-img">`)
+        }
+        else if (log.action == "incubate")
+        {
+            log.images.push(`<img src="${path.join(appRoot, assets/image/items/EggIncubator.png)}" class="log-img">`)
+        }
+          
         log.date = new Date();
         if (log.worker == "MoveToFort") {
             $("#bot-indicator").html("<b><div id='indicator'></div>Bot Status</b><br>" + log.message);
