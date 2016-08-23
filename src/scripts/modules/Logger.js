@@ -40,11 +40,11 @@ class Logger {
             if (log.action == "item_discarded") item_count = -item_count;
             if (item_count < 0 || item_count > 1)
             {
-                log.images.push('<div class="log-img-count"><img src="${path.join(appRoot, assets/image/items/' + key + '.png)}"><div>'+item_count+'x</div></div>')
+                log.images.push(`<div class="log-img-count"><img src="${path.join(appRoot, assets/image/items/' + key + '.png)}"><div>'+item_count+'x</div></div>`)
             }
             else if (item_count == 1)
             {
-                log.images.push('<img src="${path.join(appRoot, assets/image/items/' + key + '.png)}" class="log-img">')
+                log.images.push(`<img src="${path.join(appRoot, assets/image/items/' + key + '.png)}" class="log-img">`)
             }
             msg = msg.replace(new RegExp(item_name,"g"),""); // marked as done
         }
@@ -59,11 +59,11 @@ class Logger {
         // Specific icons for specific actions
         if (log.action == "egg_hatched")
         {
-            log.images.push('<img src="${path.join(appRoot, assets/image/items/Egg.png)}" class="log-img">')
+            log.images.push(`<img src="${path.join(appRoot, assets/image/items/Egg.png)}" class="log-img">`)
         }
         else if (log.action == "incubate")
         {
-            log.images.push('<img src="${path.join(appRoot, assets/image/items/EggIncubator.png)}" class="log-img">')
+            log.images.push(`<img src="${path.join(appRoot, assets/image/items/EggIncubator.png)}" class="log-img">`)
         }
           
         log.date = new Date();
