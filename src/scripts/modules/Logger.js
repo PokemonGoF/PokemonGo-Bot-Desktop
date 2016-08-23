@@ -23,12 +23,12 @@ class Logger {
 
         // Check for item words
         // ... by descending length (because 'Super Potion' contains 'Potion')
-        if (!itemsSorted)
-            itemsSorted = Object.keys(itemsArray).map( function(x) { return { "key":x, "name":itemsArray[x]};}).sort(function(a,b) { return b.name.length-a.name.length;});
+        if (!constants.itemsSorted)
+            constants.itemsSorted = Object.keys(constants.itemsArray).map( function(x) { return { "key":x, "name":constants.itemsArray[x]};}).sort(function(a,b) { return b.name.length-a.name.length;});
         var msg = log.message;
-        for (var item in itemsSorted) {
-            var key = itemsSorted[item].key;
-            var item_name = itemsSorted[item].name;
+        for (var item in constants.itemsSorted) {
+            var key = constants.itemsSorted[item].key;
+            var item_name = constants.itemsSorted[item].name;
             if (msg.indexOf(item_name) < 0)  continue;
             var item_count = 1;
             var item_data = new RegExp("([0-9]+)x " + item_name,"g").exec(msg);
