@@ -22,7 +22,7 @@ class Logger {
         log.images = [];
 
         // Check for item words
-        // ... by descending length (because 'Super Potion' contains 'Potion')
+        // (by descending length : because 'Super Potion' contains 'Potion', and we want to prevent both from showing)
         if (!constants.itemsSorted)
             constants.itemsSorted = Object.keys(constants.itemsArray).map( function(x) { return { "key":x, "name":constants.itemsArray[x]};}).sort(function(a,b) { return b.name.length-a.name.length;});
         var msg = log.message;
@@ -30,6 +30,7 @@ class Logger {
             var key = constants.itemsSorted[item].key;
             var item_name = constants.itemsSorted[item].name;
             if (msg.indexOf(item_name) < 0)  continue;
+            // Item found, now try to parse its quantity
             var item_count = 1;
             var item_data = new RegExp("([0-9]+)x " + item_name,"g").exec(msg);
             if (item_data && item_data[0]) item_count = parseInt(item_data[1]);
@@ -42,7 +43,7 @@ class Logger {
             {
                 log.images.push('<img src="${path.join(appRoot, assets/image/items/' + key + '.png)}" class="log-img">')
             }
-            msg = msg.replace(new RegExp(item_name,"g"),""); // .. marked as done
+            msg = msg.replace(new RegExp(item_name,"g"),""); // marked as done
         }
 
         // Check for pokemon words
