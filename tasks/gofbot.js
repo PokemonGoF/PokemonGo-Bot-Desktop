@@ -1,3 +1,5 @@
+"use strict";
+
 const gulp = require('gulp'),
     async = require('async'),
     fs = require('fs'),
