@@ -40,6 +40,7 @@
     "require-dir": "^0.3.0",
     "rimraf": "^2.5.4",
     "run-sequence": "^1.2.2",
-    "vinyl-fs": "^2.4.3"
+    "vinyl-fs": "^2.4.3",
+    "vinyl-source-stream": "^1.1.0"
   }
 }
