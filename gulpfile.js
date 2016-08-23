@@ -1,6 +1,7 @@
 'use strict';
 const gulp = require('gulp'),
     electron = require('electron-connect'),
+    rseq = require('run-sequence'),
     config = require('./tasks/config.js');
 
 require('require-dir')('tasks', {recursive: true});
