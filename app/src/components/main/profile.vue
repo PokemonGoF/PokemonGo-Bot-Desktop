@@ -134,9 +134,9 @@
 
 
 <script>
-    import utils from './utils.js'
-    import constants from './const.js'
-    import Modal from '../modal.vue'
+    import utils from './utils'
+    import constants from './const'
+    import Modal from '../modal'
 
     export default {
         data() {

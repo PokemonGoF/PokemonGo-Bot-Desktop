@@ -1,7 +1,7 @@
-import Vue from 'vue';
-import electron from 'vue-electron';
-import resource from 'vue-resource';
-import App from './app.vue';
+const Vue = require('vue');
+const electron = require('vue-electron');
+const resource = require('vue-resource');
+const App = require('./app.js');
 
 Vue.use(electron);
 Vue.use(resource);

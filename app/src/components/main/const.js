@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     itemsArray: {
         '0': 'Unknown',
         '1': 'Pokeball',

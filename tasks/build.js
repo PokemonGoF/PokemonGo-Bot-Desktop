@@ -5,9 +5,8 @@ const gulp = require('gulp'),
     fs = require('fs'),
     rseq = require('run-sequence'),
     merge = require('merge2'),
-    browserify = require('browserify'),
-    babelify = require('babelify'),
-    vueify = require('vueify'),
+    vueify = require('gulp-vueify'),
+    debug = require('gulp-debug'),
     source = require('vinyl-source-stream'),
     editJson = require('gulp-json-editor'),
     config = require('./config');
@@ -29,30 +28,14 @@ gulp.task('build:node', () => {
 });
 
 gulp.task('build:js', () => {
-    const browserConfig = {
-        entries: 'app/src/main.js',
-        extension: ['.js', '.vue'],
-        debug: true
-    };
+    return merge(
+        gulp.src(`${config.paths.src}/**/*.vue`, {base: config.paths.app})
+            .pipe(vueify())
+            .pipe(gulp.dest(config.paths.build)),
+        gulp.src(`${config.paths.app}/**/*.js`)
+            .pipe(gulp.dest(config.paths.build))
+    );
 
-    const appConfig = {
-        entries: `${config.paths.src}/main.js`,
-        extension: ['.js', '.vue'],
-        debug: true
-    };
-    browserify(`${config.paths.app}/electron.js`)
-        .ignore('electron')
-        .transform(babelify, {presets: ['es2015']})
-        .bundle()
-        .pipe(source(config.main))
-        .pipe(gulp.dest(config.paths.build));
-
-    return browserify(browserConfig)
-        .ignore('electron')
-        .transform(vueify, {babel: {presets: ["es2015"]}})
-        .transform(babelify, {presets: ["es2015"]})
-        .bundle()
-        .pipe(fs.createWriteStream('build/bundle.js'));
 });
 
 

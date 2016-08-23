@@ -6,8 +6,8 @@
 </template>
 
 <script>
-    import Login from './components/login.vue'
-    import Main from './components/main.vue'
+    import Login from './components/login'
+    import Main from './components/main'
     import electron from 'electron';
 
     const AppState = { Login: "Login", Main: "Main" },

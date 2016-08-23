@@ -159,7 +159,7 @@
     import path from 'path';
     import os from 'os';
 
-    import Config from './login/config.vue';
+    import Config from './login/config';
 
     const platform = os.platform(),
             appRoot  = electron.getGlobal('appRoot'),
