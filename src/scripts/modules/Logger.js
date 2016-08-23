@@ -18,13 +18,16 @@ class Logger {
         log.action = bracket_data[2].replace(/[\[\]]/g, "");
         log.message = message.split("[" + log.action + "] ")[1];
         // Transform typical json strings into user friendly text
-        log.message = log.message.replace(/\[?{(?:'item_id': [0-9]+, 'name': )?(u'[^}]*)}\]?/g, function(m,x) { return x.replace(/u'([^']*)'(?:, 'item_count') ?: ([0-9]+)/g,'$2x $1'); });
+        log.message = log.message.replace(/\[?{(?:'item_id': [0-9]+, 'name': )?(u'[^}]*)}\]?/g, 
+            function(m,x) { return x.replace(/u'([^']*)'(?:, 'item_count') ?: ([0-9]+)/g,'$2x $1'); });
         log.images = [];
 
         // Check for item words
         // (by descending length : because 'Super Potion' contains 'Potion', and we want to prevent both from showing)
         if (!constants.itemsSorted)
-            constants.itemsSorted = Object.keys(constants.itemsArray).map( function(x) { return { "key":x, "name":constants.itemsArray[x]};}).sort(function(a,b) { return b.name.length-a.name.length;});
+            constants.itemsSorted = Object.keys(constants.itemsArray)
+                .map(function(x) { return { "key":x, "name":constants.itemsArray[x]};})
+                .sort(function(a,b) { return b.name.length-a.name.length;});
         var msg = log.message;
         for (var item in constants.itemsSorted) {
             var key = constants.itemsSorted[item].key;
