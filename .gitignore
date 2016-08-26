@@ -10,3 +10,5 @@ dist
 build/*
 !build/gofbot
 !build/pywin
+release/*
+!release/.gitkeep
