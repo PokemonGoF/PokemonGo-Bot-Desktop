@@ -23,6 +23,7 @@ const config = {
     paths: {
         get build() { return 'build' },
         get release() { return 'release'},
+        get linux_release() { return 'linux_release' },
         get bot() { return `${config.paths.build}/gofbot`},
         get packages() { return `${config.paths.bot}/packages`},
         get app() { return 'app' },
@@ -30,7 +31,8 @@ const config = {
     },
     electron: {
         get win_packages() { return [`${config.paths.build}/**/*`, `!${config.paths.build}/pywin/**/*`, `!${config.paths.build}/pywin`] },
-        get osx_packages() { return [`${config.paths.build}/**/*`] }
+        get osx_packages() { return [`${config.paths.build}/**/*`] },
+        get linux_packages() { return [`${config.paths.build}/**/*`] }
     }
 };
 

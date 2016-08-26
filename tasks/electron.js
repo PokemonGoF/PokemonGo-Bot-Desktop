@@ -11,7 +11,7 @@ gulp.task('electron:osx', () => {
             platform: 'darwin',
             darwinIcon: `${config.paths.build}/pokemon.icns`,
             darwinBundleIdentifier: 'com.github.pokemongof'
-        })).pipe(symdest(config.paths.relrease));
+        })).pipe(symdest(config.paths.release));
 });
 
 gulp.task('electron:windows', () => {
@@ -25,7 +25,17 @@ gulp.task('electron:windows', () => {
             copyright: '2016 , All Rights Reserved.'
         }))
         .pipe(zip('app-windows.exe'))
-        .pipe(gulp.dest(config.paths.relrease));
+        .pipe(gulp.dest(config.paths.release));
 });
 
-gulp.task('electron', ['electron:windows', 'electron:osx']);
+gulp.task('electron:linux', () => {
+    return gulp.src(config.electron.linux_packages, {base: config.paths.build})
+        .pipe(packageElectron({
+            version: config.version,
+            platform: 'linux',
+            arch: 'x64',
+        }))
+        .pipe(gulp.dest(config.paths.release));
+});
+
+gulp.task('electron', ['electron:windows', 'electron:osx', 'electron:linux']);
