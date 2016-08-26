@@ -10,6 +10,7 @@
     "graceful-fs": "^4.1.6",
     "materialize-css": "^0.97.7",
     "request": "^2.74.0",
+    "rimraf": "^2.5.4",
     "socket.io-client": "^1.4.8",
     "socketio-wildcard": "^0.3.0",
     "vue": "^2.0.0-rc.3",
